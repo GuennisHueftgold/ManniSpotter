@@ -5,6 +5,13 @@ Die OSM-Variante sollte in der Lage sein unabhängig von den Google Play Service
 
 Derzeit nicht funktional sind die Android Things&TV Module.
 
+Funktionierende Module:
+
+- osmDebug
+- gmapsDebug
+
+IN BEIDEN FÄLLEN MUSS ÜBER DIE EINSTELLUNGEN EINMAL DER HALTESTOP CACHE AKTUALISIERT WERDEN!!
+
 ===
 
 
