@@ -47,6 +47,14 @@ public interface KvgApiService {
      */
     @FormUrlEncoded
     @POST("services/lookup/autocomplete")
+    Call<List<AutocompleteSearchResult>> getAutocompleteXml(@Field("query") String query);
+
+    /**
+     * @param query
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("services/lookup/autocomplete/json")
     Call<List<AutocompleteSearchResult>> getAutocomplete(@Field("query") String query);
 
     /**

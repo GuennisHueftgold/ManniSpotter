@@ -28,6 +28,10 @@ class KvgApiTypeAdapterFactory implements TypeAdapterFactory {
             return (TypeAdapter<T>) new ShortStationInfo.Converter();
         } else if (type.getRawType() == StopsByCharacterResult.class) {
             return (TypeAdapter<T>) new StopsByCharacterResult.Converter(gson);
+        } else if (type.getRawType() == AutocompleteSearchResult.class) {
+            return (TypeAdapter<T>) new AutocompleteSearchResult.Converter();
+        } else if (type.getRawType() == AutocompleteSearchResult.class) {
+            return (TypeAdapter<T>) new AutocompleteSearchResults.Converter(gson);
         } else {
             return null;
         }
