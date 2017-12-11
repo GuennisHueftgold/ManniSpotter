@@ -8,32 +8,29 @@ import android.support.annotation.Nullable;
 
 import com.semeshky.kvg.kvgapi.VehicleLocation;
 import com.semeshky.kvg.kvgapi.VehicleLocations;
-import com.semeshky.kvg.kvgapi.VehiclePathInfo;
 import com.semeshky.kvgspotter.activities.StationDetailActivity;
 import com.semeshky.kvgspotter.activities.TripPassagesActivity;
 import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.viewmodel.ActivityLiveMapViewModel;
-import com.semeshky.kvgspotter.viewmodel.TripPassagesViewModel;
 
 import java.util.List;
 
-abstract class BaseLiveMapFragment  extends MapFragment{
-    protected ActivityLiveMapViewModel mViewModel;
-    private final Observer<VehicleLocations> mVehicleLocationsObserver=new Observer<VehicleLocations>() {
+abstract class BaseLiveMapFragment extends MapFragment {
+    private final Observer<VehicleLocations> mVehicleLocationsObserver = new Observer<VehicleLocations>() {
         @Override
         public void onChanged(@Nullable VehicleLocations vehicleLocations) {
             BaseLiveMapFragment.this.updateVehicleLocations(vehicleLocations);
         }
     };
-
-    protected abstract void updateVehicleLocations(VehicleLocations vehicleLocations);
-
-    private Observer<List<Stop>> mStopsObserver=new Observer<List<Stop>>() {
+    protected ActivityLiveMapViewModel mViewModel;
+    private Observer<List<Stop>> mStopsObserver = new Observer<List<Stop>>() {
         @Override
         public void onChanged(@Nullable List<Stop> stops) {
             BaseLiveMapFragment.this.updateStops(stops);
         }
     };
+
+    protected abstract void updateVehicleLocations(VehicleLocations vehicleLocations);
 
     protected abstract void updateStops(List<Stop> stops);
 
@@ -50,7 +47,7 @@ abstract class BaseLiveMapFragment  extends MapFragment{
     }
 
     public void onVehicleLocationSelected(VehicleLocation vehicleLocation) {
-        final Intent intent= TripPassagesActivity.createIntent(this.getContext(),
+        final Intent intent = TripPassagesActivity.createIntent(this.getContext(),
                 vehicleLocation.getTripId(),
                 null,
                 null,
@@ -60,7 +57,7 @@ abstract class BaseLiveMapFragment  extends MapFragment{
     }
 
     public void onStopSelected(Stop stop) {
-        final Intent intent = StationDetailActivity.createIntent(this.getContext(),stop);
+        final Intent intent = StationDetailActivity.createIntent(this.getContext(), stop);
         startActivity(intent);
     }
 }

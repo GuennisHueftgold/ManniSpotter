@@ -1,29 +1,16 @@
 package com.semeshky.kvgspotter.activities;
 
 
-import android.arch.lifecycle.LiveData;
-import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
-import com.semeshky.kvg.kvgapi.VehicleLocations;
 import com.semeshky.kvgspotter.R;
-import com.semeshky.kvgspotter.database.AppDatabase;
-import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.databinding.ActivityLiveMapBinding;
 import com.semeshky.kvgspotter.viewmodel.ActivityLiveMapViewModel;
-
-import java.util.List;
-
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class LiveMapActivity extends AppCompatActivity {
 
@@ -46,7 +33,7 @@ public class LiveMapActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         this.mViewModel.refreshData();
     }

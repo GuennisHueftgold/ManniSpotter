@@ -9,7 +9,7 @@
         android:title="@string/licenses">
         <intent
             android:action="android.intent.action.VIEW"
-            android:targetPackage="@string/PACKAGE_NAME"
-            android:targetClass="com.google.android.gms.oss.licenses.OssLicensesMenuActivity" />
+            android:targetClass="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+            android:targetPackage="@string/PACKAGE_NAME"/>
     </Preference>
 </PreferenceScreen>

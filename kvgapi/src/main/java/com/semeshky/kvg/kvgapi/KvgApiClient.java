@@ -17,6 +17,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class KvgApiClient {
 
+    public final static double COORDINATES_CONVERTION_CONSTANT = 3600000d;
     private final static long CACHE_SIZE = 1024 * 1024 * 20;
     private final static String API_BASE_URL = "http://www.kvg-kiel.de/internetservice/";
     private static KvgApiClient mInstance;
@@ -48,7 +49,6 @@ public class KvgApiClient {
                 .build();
     }
 
-    public final static double COORDINATES_CONVERTION_CONSTANT = 3600000d;
     public static KvgApiClient getInstance() {
         return KvgApiClient.mInstance;
     }

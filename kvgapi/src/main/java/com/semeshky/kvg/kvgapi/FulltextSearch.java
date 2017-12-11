@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class FulltextSearch {
-@Expose
+    @Expose
     @SerializedName("results")
     private List<FulltextSearchResult> mResults;
 

@@ -6,13 +6,13 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-public class VehicleLocation implements LatLngInterface  {
+public class VehicleLocation implements LatLngInterface {
     @Expose
     @SerializedName("id")
     private long mId;
     @Expose
     @SerializedName("isDeleted")
-    private boolean mIsDeleted=false;
+    private boolean mIsDeleted = false;
     @Expose
     @SerializedName("category")
     private String mCategory;
