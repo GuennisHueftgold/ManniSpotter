@@ -58,12 +58,12 @@ public class MainActivity extends AppCompatActivity {
                 .observe(this, new Observer<List<FavoriteStationWithName>>() {
                     @Override
                     public void onChanged(@Nullable List<FavoriteStationWithName> favoriteStations) {
-                        if(favoriteStations==null||favoriteStations.size()==0){
+                        if (favoriteStations == null || favoriteStations.size() == 0) {
                             MainActivity
                                     .this
                                     .mMainActivityPresenter
                                     .listContainsItems.set(false);
-                        }else{
+                        } else {
                             MainActivity
                                     .this
                                     .mMainActivityPresenter
