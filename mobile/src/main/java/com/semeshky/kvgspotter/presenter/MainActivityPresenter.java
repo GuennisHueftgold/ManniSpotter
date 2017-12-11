@@ -1,5 +1,7 @@
 package com.semeshky.kvgspotter.presenter;
 
+import android.databinding.ObservableBoolean;
+import android.databinding.ObservableField;
 import android.widget.Toast;
 
 import com.semeshky.kvgspotter.R;
@@ -15,6 +17,7 @@ public class MainActivityPresenter {
 
     private final MainActivity mMainActivity;
 
+    public final ObservableBoolean listContainsItems=new ObservableBoolean(true);
     public MainActivityPresenter(MainActivity mainActivity) {
         this.mMainActivity = mainActivity;
     }
