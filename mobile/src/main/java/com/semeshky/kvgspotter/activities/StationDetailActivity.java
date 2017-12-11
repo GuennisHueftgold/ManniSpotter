@@ -1,6 +1,5 @@
 package com.semeshky.kvgspotter.activities;
 
-import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -19,10 +18,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.semeshky.kvg.kvgapi.FulltextSearchResult;
-import com.semeshky.kvg.kvgapi.Station;
 import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
-import com.semeshky.kvgspotter.adapter.DepartureAdapter;
 import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.databinding.ActivityDetailStationBinding;
 import com.semeshky.kvgspotter.fragments.StationDeparturesFragment;
@@ -63,6 +60,10 @@ public final class StationDetailActivity extends AppCompatActivity {
 
     public final static Intent createIntent(@NonNull Context context) {
         return StationDetailActivity.createIntent(context, null, null);
+    }
+
+    public static Intent createIntent(Context context, Stop stop) {
+        return StationDetailActivity.createIntent(context, stop.getShortName(), stop.getName());
     }
 
     @Override
@@ -160,10 +161,6 @@ public final class StationDetailActivity extends AppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    public static Intent createIntent(Context context,Stop stop) {
-        return StationDetailActivity.createIntent(context, stop.getShortName(),stop.getName());
     }
 
     private class PagerAdapter extends FragmentPagerAdapter {

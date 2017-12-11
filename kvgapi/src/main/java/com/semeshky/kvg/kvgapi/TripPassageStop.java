@@ -20,18 +20,12 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class TripPassageStop {
 
-    public final static int STATUS_PREDICTED =1,
-            STATUS_DEPARTED =2,
-            STATUS_STOPPING=3,
-            STATUS_PLANNED= 4,
-            STATUS_UNKNOWN=-1;
+    public final static int STATUS_PREDICTED = 1,
+            STATUS_DEPARTED = 2,
+            STATUS_STOPPING = 3,
+            STATUS_PLANNED = 4,
+            STATUS_UNKNOWN = -1;
     private final LocalTime mPlannedTime;
-
-    @Retention(SOURCE)
-    @IntDef({STATUS_PREDICTED, STATUS_DEPARTED,STATUS_UNKNOWN,STATUS_STOPPING,STATUS_PLANNED})
-    public @interface Status {
-    }
-
     private final LocalTime mActualTime;
     @Status
     private final int mStatus;
@@ -39,14 +33,13 @@ public class TripPassageStop {
     private final String mShortName;
     private final String mName;
     private final int mStopSeqNum;
-
     private TripPassageStop(Builder builder) {
         this.mActualTime = builder.mActualTime;
         this.mStopSeqNum = builder.mStopSeqNum;
         this.mStatus = builder.mStatus;
         this.mName = builder.mName;
         this.mShortName = builder.mShortName;
-        this.mPlannedTime=builder.mPlannedTime;
+        this.mPlannedTime = builder.mPlannedTime;
         this.mId = builder.mId;
     }
 
@@ -121,6 +114,11 @@ public class TripPassageStop {
                 ", mName='" + mName + '\'' +
                 ", mStopSeqNum=" + mStopSeqNum +
                 '}';
+    }
+
+    @Retention(SOURCE)
+    @IntDef({STATUS_PREDICTED, STATUS_DEPARTED, STATUS_UNKNOWN, STATUS_STOPPING, STATUS_PLANNED})
+    public @interface Status {
     }
 
     public static class Builder {
@@ -207,7 +205,7 @@ public class TripPassageStop {
                 STOP = "stop",
                 STATUS = "status",
                 ACTUAL_TIME = "actualTime",
-        PLANNED_TIME="plannedTime";
+                PLANNED_TIME = "plannedTime";
 
         @Override
         public void write(JsonWriter out, TripPassageStop value) throws IOException {
@@ -249,8 +247,8 @@ public class TripPassageStop {
                 } else if (name.equals(PLANNED_TIME) && in.peek() == JsonToken.STRING) {
                     tripPassageStop.setPlannedTime(LocalTime.parse(in.nextString()));
                 } else if (name.equals(STATUS) && in.peek() == JsonToken.STRING) {
-                    final String status=in.nextString().toLowerCase();
-                    switch (status){
+                    final String status = in.nextString().toLowerCase();
+                    switch (status) {
                         case "departed":
                             tripPassageStop.setStatus(STATUS_DEPARTED);
                             break;
@@ -264,7 +262,7 @@ public class TripPassageStop {
                             tripPassageStop.setStatus(STATUS_PLANNED);
                             break;
                         default:
-                            Timber.d("Parsed Unknown status: "+status);
+                            Timber.d("Parsed Unknown status: " + status);
                             tripPassageStop.setStatus(STATUS_UNKNOWN);
                             break;
                     }

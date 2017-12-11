@@ -50,6 +50,14 @@ public class Route {
         this.mShortName = builder.mShortName;
     }
 
+    public static int getRouteTypeBus() {
+        return ROUTE_TYPE_BUS;
+    }
+
+    public static int getRouteTypeUnknown() {
+        return ROUTE_TYPE_UNKNOWN;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -78,14 +86,6 @@ public class Route {
         result = 31 * result + mRouteType;
         result = 31 * result + (mShortName != null ? mShortName.hashCode() : 0);
         return result;
-    }
-
-    public static int getRouteTypeBus() {
-        return ROUTE_TYPE_BUS;
-    }
-
-    public static int getRouteTypeUnknown() {
-        return ROUTE_TYPE_UNKNOWN;
     }
 
     public List<String> getAlerts() {

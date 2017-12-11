@@ -3,7 +3,7 @@ package com.semeshky.kvg.kvgapi;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class StopPoint implements LatLngInterface{
+public class StopPoint implements LatLngInterface {
     @Expose
     @SerializedName("category")
     private String mCategory;

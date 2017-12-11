@@ -47,7 +47,7 @@ public class GMapsUtil {
 
     public static void openNavigationTo(Context context, LatLngInterface latLngInterface) {
         GMapsUtil.openNavigationTo(context,
-                latLngInterface.getLatitude()/ KvgApiClient.COORDINATES_CONVERTION_CONSTANT,
-                latLngInterface.getLongitude()/KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
+                latLngInterface.getLatitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT,
+                latLngInterface.getLongitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
     }
 }

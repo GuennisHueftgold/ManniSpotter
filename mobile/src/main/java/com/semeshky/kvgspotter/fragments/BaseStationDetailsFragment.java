@@ -21,7 +21,6 @@ import com.semeshky.kvgspotter.adapter.RoutesAdapter;
 import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.database.StopPoint;
 import com.semeshky.kvgspotter.databinding.FragmentStationDetailsBinding;
-import com.semeshky.kvgspotter.map.CoordinateUtil;
 import com.semeshky.kvgspotter.map.GMapsUtil;
 import com.semeshky.kvgspotter.viewmodel.StationDetailActivityViewModel;
 
@@ -109,7 +108,7 @@ abstract class BaseStationDetailsFragment extends MapFragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_navigate_to:
-                GMapsUtil.openNavigationTo(this.getActivity(),this.mViewModel.getStop().getValue());
+                GMapsUtil.openNavigationTo(this.getActivity(), this.mViewModel.getStop().getValue());
                 return true;
 
             default:
