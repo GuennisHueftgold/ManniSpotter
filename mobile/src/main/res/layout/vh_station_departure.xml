@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="departure"
+            type="com.semeshky.kvg.kvgapi.Departure"/>
+        <variable
+            name="presenter"
+            type="com.semeshky.kvgspotter.adapter.DepartureAdapter.Presenter"/>
+        <import type="com.semeshky.kvgspotter.util.JodaUtil"/>
+        <variable
+            name="timeDelta"
+            type="int"/>
+        <import type="android.view.View"/>
+
+    </data>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_double_line_tile_height"
+        android:onClick="@{() -> presenter.onOpenClick(departure)}"
+        android:background="?android:attr/selectableItemBackground">
+
+        <TextView
+            android:id="@id/txtLine"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:text="@{departure.patternText, default=PLACEHOLDER}"
+            android:gravity="center"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            app:layout_constraintRight_toLeftOf="@id/txtTitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:autoSizeTextType="uniform"
+            app:autoSizeMinTextSize="12sp"
+            app:autoSizeMaxTextSize="100sp"
+            app:autoSizeStepGranularity="2sp"
+            android:padding="@dimen/list_double_line_icon_left_padding"
+            android:lines="1"/>
+
+        <TextView
+            android:id="@id/txtTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_double_line_text_left_padding"
+            android:layout_marginEnd="@dimen/list_double_line_text_right_padding"
+            android:text="@{departure.direction, default=PLACEHOLDER}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Title"
+            app:layout_constraintBottom_toTopOf="@id/txtSubtitle"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+        <TextView
+            android:id="@id/txtSubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:layout_marginLeft="@dimen/list_double_line_text_left_padding"
+            android:text="@{JodaUtil.convertLocalTimeOrDelta(departure.actualTime==null?departure.plannedTime:departure.actualTime), default=PLACEHOLDER}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txtTitle"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+        <TextView
+            android:layout_marginLeft="8dp"
+            android:id="@id/txtTimeDelta"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:visibility="@{timeDelta>0?View.VISIBLE:View.GONE}"
+            android:text="@{String.format(@string/plus_x_min, timeDelta), default=PLACEHOLDER}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
+            app:layout_constraintLeft_toRightOf="@id/txtSubtitle"
+            app:layout_constraintTop_toTopOf="@id/txtSubtitle"
+            android:textColor="@color/bus_delayed_red"
+            app:layout_constraintBottom_toBottomOf="@id/txtSubtitle"/>
+
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

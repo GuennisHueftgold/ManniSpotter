@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/preferences">
+
+    <Preference
+        android:key="basic_preference"
+        android:summary="@string/licenses_summary"
+        android:title="@string/licenses">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetPackage="@string/PACKAGE_NAME"
+            android:targetClass="com.google.android.gms.oss.licenses.OssLicensesMenuActivity" />
+    </Preference>
+</PreferenceScreen>

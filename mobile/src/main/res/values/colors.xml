@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="bus_delayed_red">#EF5350</color>
+    <color name="stepper_line">#BDBDBD</color>
+    <color name="text_active_black">#DE000000</color>
+    <color name="text_inactive_black">#26000000</color>
+    <color name="text_secondary_black">#8a000000</color>
+    <color name="stepper_circle_inactive">#26000000</color>
+</resources>

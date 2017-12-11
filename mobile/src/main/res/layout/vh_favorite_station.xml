@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="stop"
+            type="com.semeshky.kvgspotter.database.Stop"/>
+
+        <variable
+            name="favoriteStation"
+            type="com.semeshky.kvgspotter.database.FavoriteStationWithName"/>
+
+        <variable
+            name="stopIcon"
+            type="int"/>
+
+        <variable
+            name="clickListener"
+            type="com.semeshky.kvgspotter.adapter.HomeAdapter.OnFavoriteSelectListener"/>
+
+        <import type="android.support.v4.content.ContextCompat"/>
+    </data>
+
+    <TextView
+        android:id="@id/txtTitle"
+        android:onClick="@{() -> clickListener.onFavoriteSelected(favoriteStation)}"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_single_line_tile_height"
+        android:paddingEnd="@dimen/list_single_line_horizontal_padding"
+        android:paddingStart="@dimen/list_single_line_horizontal_padding"
+        android:drawablePadding="@dimen/list_single_line_icon_left_padding"
+        android:drawableStart="@{ContextCompat.getDrawable(context,stopIcon), default=@drawable/ic_update_black_24dp}"
+        android:gravity="start|center_vertical"
+        android:lines="1"
+        android:text="@{favoriteStation.name, default=PLACEHOLDER}"
+        android:background="?android:attr/selectableItemBackground"/>
+
+</layout>

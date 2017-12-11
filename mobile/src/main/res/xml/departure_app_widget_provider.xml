@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<appwidget-provider xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:minWidth="256dp"
+                    android:minHeight="64dp"
+                    android:updatePeriodMillis="86400000"
+                    android:previewImage="@drawable/ic_directions_bus_white_24dp"
+                    android:initialLayout="@layout/widget_departure"
+                    android:configure="com.semeshky.kvgspotter.activities.EditWidgetActivity"
+                    android:resizeMode="horizontal|vertical"
+                    android:widgetCategory="home_screen">
+</appwidget-provider>

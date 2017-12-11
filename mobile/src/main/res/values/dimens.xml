@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="list_single_line_tile_height">48dp</dimen>
+    <dimen name="list_single_line_icon_left_padding">16dp</dimen>
+    <dimen name="list_single_line_horizontal_padding">16dp</dimen>
+    <dimen name="list_double_line_tile_height">72dp</dimen>
+    <dimen name="list_double_line_icon_left_padding">16dp</dimen>
+    <dimen name="list_double_line_text_right_padding">16dp</dimen>
+    <dimen name="list_double_line_text_left_padding">72dp</dimen>
+    <dimen name="list_double_line_padding_above_list">8dp</dimen>
+    <dimen name="table_data_row_height">48dp</dimen>
+    <dimen name="table_data_row_text_size">13sp</dimen>
+    <dimen name="table_data_row_padding">24dp</dimen>
+    <dimen name="map_padding">24dp</dimen>
+    <dimen name="elevation_appbar">4dp</dimen>
+    <dimen name="elevation_fab_resting">6dp</dimen>
+    <dimen name="elevation_fab_pushed">12dp</dimen>
+    <dimen name="tile_height_subhead">48dp</dimen>
+    <dimen name="stepper_line_margin">8dp</dimen>
+    <dimen name="stepper_line_width">1dp</dimen>
+    <dimen name="stepper_circle_size">24dp</dimen>
+    <dimen name="stepper_title">14sp</dimen>
+    <dimen name="stepper_title_optional">12sp</dimen>
+    <dimen name="stepper_vertical_title_margin_start">12dp</dimen>
+    <dimen name="stepper_vertical_circle_margin_left">24dp</dimen>
+    <dimen name="widget_margin">8dp</dimen>
+</resources>

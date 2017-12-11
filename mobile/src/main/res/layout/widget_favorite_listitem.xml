@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+          xmlns:tools="http://schemas.android.com/tools"
+          android:id="@id/txtTitle"
+          android:layout_width="match_parent"
+          android:layout_height="@dimen/list_single_line_tile_height"
+          android:background="?android:attr/selectableItemBackground"
+          android:drawablePadding="@dimen/list_single_line_icon_left_padding"
+          android:drawableStart="@drawable/ic_update_black_24dp"
+          android:gravity="start|center_vertical"
+          android:lines="1"
+          android:paddingEnd="@dimen/list_single_line_horizontal_padding"
+          android:paddingStart="@dimen/list_single_line_horizontal_padding"
+          android:name="test name"
+          android:textColor="@color/text_active_black"
+          tools:name="Stop Name"/>

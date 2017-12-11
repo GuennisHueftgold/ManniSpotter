@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="tripPassageStop"
+            type="com.semeshky.kvg.kvgapi.TripPassageStop"/>
+        <variable
+            name="activeStop"
+            type="boolean"/>
+        <variable
+            name="firstStop"
+            type="boolean"/>
+        <variable
+            name="lastStop"
+            type="boolean"/>
+        <import type="com.semeshky.kvgspotter.adapter.TripPassagesAdapter"/>
+        <import type="com.semeshky.kvgspotter.util.JodaUtil"/>
+        <import type="com.semeshky.kvgspotter.util.FontBindingAdapter"/>
+        <import type="android.view.View"/>
+
+    </data>
+
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@id/constraintLayout"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_double_line_tile_height">
+
+        <com.semeshky.kvgspotter.views.StationActivityIndicator
+            android:id="@id/passageIndicator"
+            android:layout_width="@dimen/stepper_circle_size"
+            android:layout_height="0dp"
+            android:layout_marginStart="@dimen/stepper_vertical_circle_margin_left"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:active="@{activeStop}"
+            tools:active="true"
+            app:first="@{firstStop}"
+            app:last="@{lastStop}"/>
+
+        <TextView
+            android:id="@id/txtTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/stepper_vertical_title_margin_start"
+            android:layout_marginEnd="@dimen/stepper_vertical_title_margin_start"
+            android:text="@{tripPassageStop.name, default=PLACEHOLDER}"
+            android:gravity="start"
+            android:textSize="@dimen/stepper_title"
+            app:supTypeFace="@{activeStop?`sans-serif-medium`:`sans-serif`}"
+            android:textColor="@{activeStop?@color/text_active_black:@color/text_inactive_black}"
+            app:layout_constraintBottom_toTopOf="@id/txtSubtitle"
+            app:layout_constraintStart_toEndOf="@id/passageIndicator"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+        <TextView
+            android:id="@id/txtSubtitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="0dp"
+            android:gravity="start"
+            android:text="@{TripPassagesAdapter.formatStatus(context,tripPassageStop), default=PLACEHOLDER}"
+            android:textSize="@dimen/stepper_title"
+            android:fontFamily="sans-serif"
+            android:textColor="@color/text_secondary_black"
+            android:visibility="@{activeStop?View.VISIBLE:View.GONE}"
+            app:layout_constraintStart_toStartOf="@id/txtTitle"
+            app:layout_constraintTop_toBottomOf="@id/txtTitle"
+            app:layout_constraintEnd_toEndOf="@id/txtTitle"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
+</layout>

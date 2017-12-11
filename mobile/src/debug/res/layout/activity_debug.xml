@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context="com.semeshky.kvgspotter.activities.DebugInformationActivity">
+
+    <data>
+        <variable
+            name="stopDatabasePresenter"
+            type="com.semeshky.kvgspotter.presenter.DebugStopDatabasePresenter"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@id/toolbar"
+            android:layout_width="0dp"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"/>
+
+        <ScrollView
+            android:id="@id/scrollView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/toolbar">
+
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+                <TextView android:id="@+id/txtView1"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/stops_database"
+                          app:layout_constraintTop_toTopOf="parent"
+                          app:layout_constraintLeft_toLeftOf="parent"/>
+                <TextView android:id="@+id/txtView2"
+                          android:layout_width="wrap_content"
+                          android:layout_height="wrap_content"
+                          android:text="@string/number_of_entries"
+                          app:layout_constraintTop_toBottomOf="@id/txtView1"
+                          app:layout_constraintLeft_toLeftOf="parent"/>
+                <TextView android:id="@+id/txtView3"
+                          android:layout_width="0dp"
+                          android:layout_height="wrap_content"
+                          android:text="@{Integer.toString(stopDatabasePresenter.numberOfEntries)}"
+                          app:layout_constraintTop_toTopOf="@id/txtView2"
+                          app:layout_constraintLeft_toRightOf="@id/txtView2"
+                          android:gravity="right"
+                          app:layout_constraintRight_toRightOf="parent"/>
+                <Button
+                    android:onClick="@{() -> stopDatabasePresenter.refresh()}"
+                    android:id="@id/btnRefreshStops"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/txtView3"
+                        app:layout_constraintRight_toRightOf="parent"/>
+
+            </android.support.constraint.ConstraintLayout>
+        </ScrollView>
+    </android.support.constraint.ConstraintLayout>
+</layout>

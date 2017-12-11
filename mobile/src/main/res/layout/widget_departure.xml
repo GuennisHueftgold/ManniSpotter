@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/widget_favorite_background"
+    android:elevation="6dp"
+    android:padding="@dimen/widget_margin">
+
+    <TextView
+        android:id="@id/txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:drawablePadding="@dimen/list_single_line_icon_left_padding"
+        android:drawableStart="@drawable/ic_stop_black_24dp"
+        android:elevation="4dp"
+        android:gravity="start|center_vertical"
+        android:name="@string/favorites"
+        android:textColor="@color/text_active_black"
+        android:textSize="18sp"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/txtTitle">
+
+        <ListView
+            android:id="@id/listView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <TextView
+            android:id="@id/emptyView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:name="@string/no_stops_favorited"
+            android:textColor="@color/text_inactive_black"
+            android:textSize="20sp"
+            android:textStyle="bold"/>
+    </FrameLayout>
+</RelativeLayout>
