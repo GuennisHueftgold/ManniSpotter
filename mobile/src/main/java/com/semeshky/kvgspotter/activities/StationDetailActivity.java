@@ -22,6 +22,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.semeshky.kvg.kvgapi.FulltextSearchResult;
+import com.semeshky.kvg.kvgapi.TripPassageStop;
 import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.database.Stop;
@@ -70,6 +71,12 @@ public final class StationDetailActivity extends AppCompatActivity {
 
     public static Intent createIntent(@NonNull Context context, @NonNull Stop stop) {
         return StationDetailActivity.createIntent(context, stop.getShortName(), stop.getName());
+    }
+
+    public static Intent createIntent(@NonNull Context context, @NonNull TripPassageStop station) {
+        return StationDetailActivity.createIntent(context,
+                station.getShortName(),
+                station.getName());
     }
 
     @Override

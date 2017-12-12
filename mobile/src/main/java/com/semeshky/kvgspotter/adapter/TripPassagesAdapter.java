@@ -3,6 +3,7 @@ package com.semeshky.kvgspotter.adapter;
 import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.semeshky.kvg.kvgapi.TripPassageStop;
@@ -13,6 +14,11 @@ import com.semeshky.kvgspotter.util.JodaUtil;
 public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPassageStop, VhTripPassageStopBinding> {
 
 
+    private final OnStationClickListener mOnStationClickListener;
+
+    public TripPassagesAdapter(OnStationClickListener stationClickListener) {
+        this.mOnStationClickListener = stationClickListener;
+    }
     public static String formatStatus(Context context, TripPassageStop tripPassageStop) {
         if (tripPassageStop == null)
             return "";
@@ -57,6 +63,7 @@ public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPass
                 binding.setActiveStop(false);
                 break;
         }
+        binding.setPresenter(this.mOnStationClickListener);
         binding.setFirstStop(item.getStopSeqNum() == 1);
         final TripPassageStop lastStop = this.getItem(this.getItemCount() - 1);
         binding.setLastStop(item.getStopSeqNum() == lastStop.getStopSeqNum());
@@ -72,4 +79,7 @@ public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPass
         return oldItem.equals(newItem);
     }
 
+    public interface OnStationClickListener {
+        void onStationSelected(View titleView, TripPassageStop station);
+    }
 }

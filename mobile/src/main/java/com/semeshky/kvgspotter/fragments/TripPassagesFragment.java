@@ -1,10 +1,13 @@
 package com.semeshky.kvgspotter.fragments;
 
+import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,6 +18,7 @@ import android.view.ViewGroup;
 import com.semeshky.kvg.kvgapi.TripPassageStop;
 import com.semeshky.kvg.kvgapi.TripPassages;
 import com.semeshky.kvgspotter.R;
+import com.semeshky.kvgspotter.activities.StationDetailActivity;
 import com.semeshky.kvgspotter.adapter.TripPassagesAdapter;
 import com.semeshky.kvgspotter.databinding.FragmentTripPassagesBinding;
 import com.semeshky.kvgspotter.viewmodel.TripPassagesViewModel;
@@ -79,7 +83,19 @@ public class TripPassagesFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        this.mDepartureAdapter = new TripPassagesAdapter();
+        this.mDepartureAdapter = new TripPassagesAdapter(new TripPassagesAdapter.OnStationClickListener() {
+            @Override
+            public void onStationSelected(View titleView, TripPassageStop station) {
+                final Activity activity = TripPassagesFragment.this.getActivity();
+                final ActivityOptionsCompat options =
+                        ActivityOptionsCompat.makeSceneTransitionAnimation(activity,
+                                titleView,
+                                StationDetailActivity.SCENE_TRANSITION_TITLE);
+                final Intent intent = StationDetailActivity.createIntent(activity,
+                        station);
+                startActivity(intent, options.toBundle());
+            }
+        });
         this.mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this.getContext()));
         this.mBinding.recyclerView.setAdapter(this.mDepartureAdapter);
         this.mBinding.swipeRefreshLayout.setOnRefreshListener(this);
