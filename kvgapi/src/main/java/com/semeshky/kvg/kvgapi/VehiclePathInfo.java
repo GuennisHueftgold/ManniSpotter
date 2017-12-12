@@ -49,8 +49,14 @@ public final class VehiclePathInfo {
 
         @Override
         public void write(JsonWriter out, VehiclePathInfo value) throws IOException {
-            out.nullValue();
-            //TODO:
+            if (value == null) {
+                out.nullValue();
+                return;
+            }
+            out.beginObject();
+            out.name(NAME_PATHS);
+            this.mTypeAdapter.write(out, value.getVehiclePaths());
+            out.endObject();
         }
 
         @Override

@@ -64,8 +64,16 @@ public final class VehiclePath {
 
         @Override
         public void write(JsonWriter out, VehiclePath value) throws IOException {
-            out.nullValue();
-            //TODO:
+            if (value == null) {
+                out.nullValue();
+                return;
+            }
+            out.beginObject();
+            out.name(NAME_COLOR)
+                    .value(value.getColor());
+            out.name(NAME_WAYPOINTS);
+            this.mTypeAdapter.write(out, value.getPathPoints());
+            out.endObject();
         }
 
         @Override
