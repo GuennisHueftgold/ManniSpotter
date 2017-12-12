@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
@@ -14,8 +15,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.semeshky.kvg.kvgapi.FulltextSearchResult;
 import com.semeshky.kvgspotter.BR;
@@ -26,6 +30,7 @@ import com.semeshky.kvgspotter.fragments.StationDeparturesFragment;
 import com.semeshky.kvgspotter.fragments.StationDetailsFragment;
 import com.semeshky.kvgspotter.viewmodel.StationDetailActivityViewModel;
 
+import java.lang.reflect.Field;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.observers.DisposableSingleObserver;
@@ -34,6 +39,7 @@ import timber.log.Timber;
 public final class StationDetailActivity extends AppCompatActivity {
     public final static String EXTRA_STATION_SHORT_NAME = StationDetailActivity.class.getName() + ".stop_short_name";
     public static final String EXTRA_STATION_NAME = StationDetailActivity.class.getName() + ".stop_name";
+    public static final String SCENE_TRANSITION_TITLE = "transitionTitle";
     private final AtomicBoolean mIsRefreshing = new AtomicBoolean(false);
     private ActivityDetailStationBinding mBinding;
     private StationDetailActivityViewModel mViewModel;
@@ -62,7 +68,7 @@ public final class StationDetailActivity extends AppCompatActivity {
         return StationDetailActivity.createIntent(context, null, null);
     }
 
-    public static Intent createIntent(Context context, Stop stop) {
+    public static Intent createIntent(@NonNull Context context, @NonNull Stop stop) {
         return StationDetailActivity.createIntent(context, stop.getShortName(), stop.getName());
     }
 
@@ -91,6 +97,42 @@ public final class StationDetailActivity extends AppCompatActivity {
                                         .setFavoriteDrawable(aBoolean);
                             }
                         });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            final TextView toolbarTitle = this.getToolbarTitleTextView(this.mBinding.toolbar);
+            if (toolbarTitle != null)
+                toolbarTitle.setTransitionName(SCENE_TRANSITION_TITLE);
+        }
+    }
+
+    /**
+     * Gets the toolbar title textview via reflection
+     *
+     * @param toolbar
+     * @return the textview or null
+     */
+    @Nullable
+    private TextView getToolbarTitleTextView(@NonNull Toolbar toolbar) {
+        try {
+            Field f = toolbar.getClass().getDeclaredField("mTitleTextView");
+            f.setAccessible(true);
+            return (TextView) f.get(toolbar);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private TextView getToolbarTitleTextView2(@NonNull Toolbar toolbar) {
+        TextView textViewTitle = null;
+        for (int i = 0; i < toolbar.getChildCount(); i++) {
+            View view = toolbar.getChildAt(i);
+            Timber.d("found: %s", view.toString());
+            if (view instanceof TextView) {
+                textViewTitle = (TextView) view;
+                break;
+            }
+        }
+        return textViewTitle;
     }
 
     @Override

@@ -9,12 +9,14 @@ import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.HomeAdapter;
@@ -30,9 +32,14 @@ public class MainActivity extends AppCompatActivity {
 
     private final HomeAdapter.OnFavoriteSelectListener mFavoriteSelectedListener = new HomeAdapter.OnFavoriteSelectListener() {
         @Override
-        public void onFavoriteSelected(FavoriteStation favoriteStation) {
-            final Intent intent = StationDetailActivity.createIntent(MainActivity.this, favoriteStation.getShortName());
-            startActivity(intent);
+        public void onFavoriteSelected(View titleView, FavoriteStation favoriteStation) {
+            final ActivityOptionsCompat options =
+                    ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,
+                            titleView,
+                            StationDetailActivity.SCENE_TRANSITION_TITLE);
+            final Intent intent = StationDetailActivity.createIntent(MainActivity.this,
+                    favoriteStation.getShortName());
+            startActivity(intent, options.toBundle());
         }
     };
     private ActivityMainBinding mBinding;
