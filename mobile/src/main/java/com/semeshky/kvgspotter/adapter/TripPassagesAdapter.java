@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import com.semeshky.kvg.kvgapi.TripPassageStop;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhTripPassageStopBinding;
+import com.semeshky.kvgspotter.presenter.TripPassagesPresenter;
 import com.semeshky.kvgspotter.util.JodaUtil;
 
 public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPassageStop, VhTripPassageStopBinding> {
@@ -49,24 +50,29 @@ public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPass
     @Override
     protected void bind(VhTripPassageStopBinding binding, TripPassageStop item) {
         binding.setTripPassageStop(item);
+        if (binding.getPresenter() == null) {
+            final TripPassagesPresenter tripPassagesPresenter = new TripPassagesPresenter();
+            tripPassagesPresenter.setOnStationClickListener(this.mOnStationClickListener);
+            binding.setPresenter(tripPassagesPresenter);
+        }
+        final TripPassagesPresenter presenter = binding.getPresenter();
         switch (item.getStatus()) {
             case TripPassageStop.STATUS_PREDICTED:
-                binding.setActiveStop(true);
+                presenter.activeStop.set(true);
                 break;
             case TripPassageStop.STATUS_PLANNED:
-                binding.setActiveStop(true);
+                presenter.activeStop.set(true);
                 break;
             case TripPassageStop.STATUS_STOPPING:
-                binding.setActiveStop(true);
+                presenter.activeStop.set(true);
                 break;
             default:
-                binding.setActiveStop(false);
+                presenter.activeStop.set(false);
                 break;
         }
-        binding.setPresenter(this.mOnStationClickListener);
-        binding.setFirstStop(item.getStopSeqNum() == 1);
+        presenter.firstStation.set(item.getStopSeqNum() == 1);
         final TripPassageStop lastStop = this.getItem(this.getItemCount() - 1);
-        binding.setLastStop(item.getStopSeqNum() == lastStop.getStopSeqNum());
+        presenter.lastStation.set(item.getStopSeqNum() == lastStop.getStopSeqNum());
     }
 
     @Override

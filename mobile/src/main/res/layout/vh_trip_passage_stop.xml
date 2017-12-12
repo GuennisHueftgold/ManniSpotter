@@ -8,20 +8,10 @@
         <variable
             name="tripPassageStop"
             type="com.semeshky.kvg.kvgapi.TripPassageStop"/>
-        <variable
-            name="activeStop"
-            type="boolean"/>
-        <variable
-            name="firstStop"
-            type="boolean"/>
-        <variable
-            name="lastStop"
-            type="boolean"/>
 
         <variable
             name="presenter"
-            type="com.semeshky.kvgspotter.adapter.TripPassagesAdapter.OnStationClickListener"/>
-        <import type="com.semeshky.kvgspotter.adapter.TripPassagesAdapter"/>
+            type="com.semeshky.kvgspotter.presenter.TripPassagesPresenter"/>
         <import type="com.semeshky.kvgspotter.util.FontBindingAdapter"/>
         <import type="android.view.View"/>
 
@@ -40,9 +30,9 @@
             android:layout_width="@dimen/stepper_circle_size"
             android:layout_height="0dp"
             android:layout_marginStart="@dimen/stepper_vertical_circle_margin_left"
-            app:active="@{activeStop}"
-            app:first="@{firstStop}"
-            app:last="@{lastStop}"
+            app:active="@{presenter.activeStop}"
+            app:first="@{presenter.firstStation}"
+            app:last="@{presenter.lastStation}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,14 +46,14 @@
             android:layout_marginStart="@dimen/stepper_vertical_title_margin_start"
             android:gravity="start"
             android:text="@{tripPassageStop.name, default=PLACEHOLDER}"
-            android:textColor="@{activeStop?@color/text_active_black:@color/text_inactive_black}"
+            android:textColor="@{presenter.activeStop?@color/text_active_black:@color/text_inactive_black}"
             android:textSize="@dimen/stepper_title"
             app:layout_constraintBottom_toTopOf="@id/txtSubtitle"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/passageIndicator"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
-            app:supTypeFace="@{activeStop?`sans-serif-medium`:`sans-serif`}"/>
+            app:supTypeFace="@{presenter.activeStop?`sans-serif-medium`:`sans-serif`}"/>
 
         <TextView
             android:id="@id/txtSubtitle"
@@ -72,10 +62,10 @@
             android:layout_marginTop="0dp"
             android:fontFamily="sans-serif"
             android:gravity="start"
-            android:text="@{TripPassagesAdapter.formatStatus(context,tripPassageStop), default=PLACEHOLDER}"
+            android:text="@{presenter.formatStatus(context,tripPassageStop), default=PLACEHOLDER}"
             android:textColor="@color/text_secondary_black"
             android:textSize="@dimen/stepper_title"
-            android:visibility="@{activeStop?View.VISIBLE:View.GONE}"
+            android:visibility="@{presenter.activeStop?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/txtTitle"
             app:layout_constraintStart_toStartOf="@id/txtTitle"
