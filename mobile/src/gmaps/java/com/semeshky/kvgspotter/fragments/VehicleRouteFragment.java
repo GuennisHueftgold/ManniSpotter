@@ -16,8 +16,8 @@ import com.semeshky.kvg.kvgapi.VehiclePath;
 import com.semeshky.kvg.kvgapi.VehiclePathInfo;
 import com.semeshky.kvg.kvgapi.VehiclePathPoint;
 import com.semeshky.kvgspotter.R;
-import com.semeshky.kvgspotter.map.MapStyleGenerator;
 import com.semeshky.kvgspotter.map.CoordinateUtil;
+import com.semeshky.kvgspotter.map.MapStyleGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -74,6 +74,10 @@ public class VehicleRouteFragment extends BaseVehicleRouteFragment {
                 mLatLngList.add(latLng);
                 builder.include(latLng);
             }
+        }
+        if (mLatLngList.size() == 0) {
+            //There is no route so cancel
+            return;
         }
         this.mRoutePolyline.setPoints(mLatLngList);
         this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_padding)));
