@@ -4,22 +4,22 @@ package com.semeshky.kvg.kvgapi;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-class VehicleLocationPath {
+public class VehicleLocationPath {
     @Expose
     @SerializedName("length")
     private float mLength;
     @Expose
     @SerializedName("x1")
-    private long mX1;
+    private long mFromLongitude;
     @Expose
     @SerializedName("x2")
-    private long mX2;
+    private long mToLongitude;
     @Expose
     @SerializedName("y1")
-    private long mY1;
+    private long mFromLatitude;
     @Expose
     @SerializedName("y2")
-    private long mY2;
+    private long mToLatitude;
     @Expose
     @SerializedName("angle")
     private int mAngle;
@@ -28,20 +28,20 @@ class VehicleLocationPath {
         return mLength;
     }
 
-    public long getX1() {
-        return mX1;
+    public long getFromLongitude() {
+        return mFromLongitude;
     }
 
-    public long getX2() {
-        return mX2;
+    public long getToLongitude() {
+        return mToLongitude;
     }
 
-    public long getY1() {
-        return mY1;
+    public long getFromLatitude() {
+        return mFromLatitude;
     }
 
-    public long getY2() {
-        return mY2;
+    public long getToLatitude() {
+        return mToLatitude;
     }
 
     public int getAngle() {

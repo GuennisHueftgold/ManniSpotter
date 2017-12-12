@@ -12,6 +12,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.semeshky.kvg.kvgapi.VehicleLocation;
+import com.semeshky.kvg.kvgapi.VehicleLocationPath;
 import com.semeshky.kvg.kvgapi.VehiclePath;
 import com.semeshky.kvg.kvgapi.VehiclePathInfo;
 import com.semeshky.kvg.kvgapi.VehiclePathPoint;
@@ -21,6 +22,8 @@ import com.semeshky.kvgspotter.map.MapStyleGenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import timber.log.Timber;
 
 public class VehicleRouteFragment extends BaseVehicleRouteFragment {
 
@@ -33,6 +36,7 @@ public class VehicleRouteFragment extends BaseVehicleRouteFragment {
     };
     private Marker mVehicleMarker;
     private List<Polyline> mPolylines = new ArrayList<>();
+    private Polyline mVehicleRoute;
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
@@ -52,6 +56,31 @@ public class VehicleRouteFragment extends BaseVehicleRouteFragment {
             this.mVehicleMarker.setTitle(vehicleLocation.getName());
             this.mVehicleMarker.setRotation(vehicleLocation.getHeading() - 90);
             this.mVehicleMarker.setVisible(true);
+            if (this.mVehicleRoute == null) {
+                final float lineWidth = getResources().getDimension(R.dimen.map_route_path_width) / 2f;
+                final PolylineOptions polylineOptions = new PolylineOptions();
+                polylineOptions
+                        .width(lineWidth)
+                        .color(Color.BLACK);
+                this.mVehicleRoute = this.getGoogleMap().addPolyline(polylineOptions);
+            }
+            final List<VehicleLocationPath> path = vehicleLocation.getPath();
+            if (path == null || path.size() == 0) {
+                this.mVehicleRoute.setVisible(false);
+            } else {
+                List<LatLng> latLngs = new ArrayList<>();
+                for (VehicleLocationPath vehicleLocationPath : path) {
+                    if (latLngs.size() == 0) {
+                        latLngs.add(CoordinateUtil.convert(vehicleLocationPath.getFromLatitude(),
+                                vehicleLocationPath.getFromLongitude()));
+                    }
+                    latLngs.add(CoordinateUtil.convert(vehicleLocationPath.getToLatitude(),
+                            vehicleLocationPath.getToLongitude()));
+                }
+                Timber.d("Poitns set: %s", latLngs.size());
+                this.mVehicleRoute.setPoints(latLngs);
+                this.mVehicleRoute.setVisible(true);
+            }
         } else {
             this.mVehicleMarker.setVisible(false);
         }
