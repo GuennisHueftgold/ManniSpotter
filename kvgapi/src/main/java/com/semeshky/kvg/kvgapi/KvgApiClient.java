@@ -31,8 +31,7 @@ public class KvgApiClient {
         this.mCache = new Cache(cacheDir, KvgApiClient.CACHE_SIZE);
         final OkHttpClient.Builder okHttpClientBuilder = new OkHttpClient.Builder()
                 .cache(this.mCache)
-                .addNetworkInterceptor(new CacheManipulatorInterceptor())
-                .addNetworkInterceptor(new AutocompleteConverterInterceptor());
+                .addNetworkInterceptor(new CacheManipulatorInterceptor());
         if (BuildConfig.DEBUG) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BASIC);

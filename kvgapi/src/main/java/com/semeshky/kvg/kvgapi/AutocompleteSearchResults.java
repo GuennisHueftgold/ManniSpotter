@@ -10,8 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import timber.log.Timber;
-
 public class AutocompleteSearchResults {
     private final List<AutocompleteSearchResult> mSearchResults;
 
@@ -35,9 +33,8 @@ public class AutocompleteSearchResults {
         }
     }
 
-    public static final class Converter extends TypeAdapter<AutocompleteSearchResults>{
+    static final class Converter extends TypeAdapter<AutocompleteSearchResults> {
 
-        private final static String NAME_NAME="name",NAME_ID="id",NAME_TYPE="type";
         private final TypeAdapter<AutocompleteSearchResult> mTypeAdapter;
 
         public Converter(Gson gson){
@@ -51,6 +48,7 @@ public class AutocompleteSearchResults {
         @Override
         public AutocompleteSearchResults read(JsonReader in) throws IOException {
             if(in.peek()== JsonToken.NULL){
+                in.skipValue();
                 return null;
             }
             Builder builder=new Builder();

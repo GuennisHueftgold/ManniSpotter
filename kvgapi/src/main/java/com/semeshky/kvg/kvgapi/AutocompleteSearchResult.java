@@ -1,8 +1,6 @@
 package com.semeshky.kvg.kvgapi;
 
 import com.google.gson.TypeAdapter;
-import com.google.gson.annotations.Expose;
-import com.google.gson.annotations.SerializedName;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
@@ -12,11 +10,10 @@ import java.io.IOException;
 import timber.log.Timber;
 
 public class AutocompleteSearchResult {
+    public final static int TYPE_DIVIDER = 1, TYPE_STOP = 2, TYPE_UNKNOWN = 0;
     private final String mShortName;
     private final String mName;
     private final int mType;
-
-    public final static int TYPE_DIVIDER=1,TYPE_STOP=2,TYPE_UNKNOWN=0;
 
     private AutocompleteSearchResult(Builder builder) {
         this.mShortName=builder.mShortName;
@@ -70,7 +67,7 @@ public class AutocompleteSearchResult {
         }
     }
 
-    public static final class Converter extends TypeAdapter<AutocompleteSearchResult>{
+    static final class Converter extends TypeAdapter<AutocompleteSearchResult> {
 
         private final static String NAME_NAME="name",NAME_ID="id",NAME_TYPE="type";
         @Override
@@ -81,6 +78,7 @@ public class AutocompleteSearchResult {
         @Override
         public AutocompleteSearchResult read(JsonReader in) throws IOException {
             if(in.peek()== JsonToken.NULL){
+                in.skipValue();
                 return null;
             }
             Builder builder=new Builder();

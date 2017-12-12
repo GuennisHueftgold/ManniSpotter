@@ -32,6 +32,12 @@ class KvgApiTypeAdapterFactory implements TypeAdapterFactory {
             return (TypeAdapter<T>) new AutocompleteSearchResult.Converter();
         } else if (type.getRawType() == AutocompleteSearchResult.class) {
             return (TypeAdapter<T>) new AutocompleteSearchResults.Converter(gson);
+        } else if (type.getRawType() == VehiclePathPoint.class) {
+            return (TypeAdapter<T>) new VehiclePathPoint.Converter();
+        } else if (type.getRawType() == VehiclePath.class) {
+            return (TypeAdapter<T>) new VehiclePath.Converter(gson);
+        } else if (type.getRawType() == VehiclePathInfo.class) {
+            return (TypeAdapter<T>) new VehiclePathInfo.Converter(gson);
         } else {
             return null;
         }
