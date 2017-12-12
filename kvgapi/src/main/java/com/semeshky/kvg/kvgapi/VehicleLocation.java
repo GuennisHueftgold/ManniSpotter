@@ -27,7 +27,7 @@ public class VehicleLocation implements LatLngInterface {
     private String mName;
     @Expose
     @SerializedName("path")
-    private List<VehicleLocationPath> mPath;
+    private List<PathSegment> mPath;
     @Expose
     @SerializedName("longitude")
     private long mLongitude;
@@ -62,7 +62,7 @@ public class VehicleLocation implements LatLngInterface {
         return mName;
     }
 
-    public List<VehicleLocationPath> getPath() {
+    public List<PathSegment> getPath() {
         return mPath;
     }
 

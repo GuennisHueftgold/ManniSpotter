@@ -11,8 +11,8 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.semeshky.kvg.kvgapi.PathSegment;
 import com.semeshky.kvg.kvgapi.VehicleLocation;
-import com.semeshky.kvg.kvgapi.VehicleLocationPath;
 import com.semeshky.kvg.kvgapi.VehiclePath;
 import com.semeshky.kvg.kvgapi.VehiclePathInfo;
 import com.semeshky.kvg.kvgapi.VehiclePathPoint;
@@ -64,12 +64,12 @@ public class VehicleRouteFragment extends BaseVehicleRouteFragment {
                         .color(Color.BLACK);
                 this.mVehicleRoute = this.getGoogleMap().addPolyline(polylineOptions);
             }
-            final List<VehicleLocationPath> path = vehicleLocation.getPath();
+            final List<PathSegment> path = vehicleLocation.getPath();
             if (path == null || path.size() == 0) {
                 this.mVehicleRoute.setVisible(false);
             } else {
                 List<LatLng> latLngs = new ArrayList<>();
-                for (VehicleLocationPath vehicleLocationPath : path) {
+                for (PathSegment vehicleLocationPath : path) {
                     if (latLngs.size() == 0) {
                         latLngs.add(CoordinateUtil.convert(vehicleLocationPath.getFromLatitude(),
                                 vehicleLocationPath.getFromLongitude()));
