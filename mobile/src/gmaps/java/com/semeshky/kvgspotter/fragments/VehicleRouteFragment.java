@@ -24,16 +24,19 @@ import java.util.List;
 
 public class VehicleRouteFragment extends BaseVehicleRouteFragment {
 
-    private Polyline mRoutePolyline;
+    private final static String[] POLYLINE_COLORS = {
+            "#F44336",
+            "#3F51B5",
+            "#00BCD4",
+            "#8BC34A",
+            "#FFC107"
+    };
     private Marker mVehicleMarker;
-
+    private List<Polyline> mPolylines = new ArrayList<>();
 
     @Override
     public void onMapReady(final GoogleMap googleMap) {
         super.onMapReady(googleMap);
-        PolylineOptions line = new PolylineOptions();
-        line.width(5).color(Color.RED);
-        this.mRoutePolyline = this.mGoogleMap.addPolyline(line);
         MarkerOptions markerOptions = new MarkerOptions();
         MapStyleGenerator.vehicleMarker(this.getResources(), markerOptions);
         markerOptions.position(new LatLng(0, 0));
@@ -54,33 +57,37 @@ public class VehicleRouteFragment extends BaseVehicleRouteFragment {
         }
     }
 
+    private void clearPolylineList() {
+        while (this.mPolylines.size() > 0) {
+            this.mPolylines.remove(0).remove();
+        }
+    }
+
     @Override
     protected void updatePolylist(VehiclePathInfo body) {
-        if (body == null) {
-            this.mRoutePolyline.setVisible(false);
-            return;
-        } else if (body.getVehiclePaths() == null) {
-            this.mRoutePolyline.setVisible(false);
-            return;
-        } else if (body.getVehiclePaths().size() == 0) {
-            this.mRoutePolyline.setVisible(false);
-            return;
-        }
-        List<LatLng> mLatLngList = new ArrayList<>();
+        this.clearPolylineList();
         final LatLngBounds.Builder builder = LatLngBounds.builder();
+        final float lineWidth = getResources().getDimension(R.dimen.map_route_path_width);
         for (VehiclePath path : body.getVehiclePaths()) {
+            final List<LatLng> latLngList = new ArrayList<>();
             for (VehiclePathPoint point : path.getPathPoints()) {
                 final LatLng latLng = CoordinateUtil.convert(point);
-                mLatLngList.add(latLng);
+                latLngList.add(latLng);
                 builder.include(latLng);
             }
+            if (latLngList.size() == 0) {
+                //No items so skip
+                continue;
+            }
+            PolylineOptions line = new PolylineOptions();
+            line.color(Color.parseColor(POLYLINE_COLORS[this.mPolylines.size() % POLYLINE_COLORS.length]))
+                    .width(lineWidth);
+            line.addAll(latLngList);
+            this.mPolylines.add(this.mGoogleMap.addPolyline(line));
         }
-        if (mLatLngList.size() == 0) {
-            //There is no route so cancel
+        if (this.mPolylines.size() == 0) {
             return;
         }
-        this.mRoutePolyline.setPoints(mLatLngList);
         this.mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngBounds(builder.build(), getResources().getDimensionPixelSize(R.dimen.map_padding)));
-        this.mRoutePolyline.setVisible(true);
     }
 }

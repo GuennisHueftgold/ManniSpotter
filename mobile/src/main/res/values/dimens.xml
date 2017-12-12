@@ -24,4 +24,5 @@
     <dimen name="stepper_vertical_title_margin_start">12dp</dimen>
     <dimen name="stepper_vertical_circle_margin_left">24dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
+    <dimen name="map_route_path_width">1dp</dimen>
 </resources>
