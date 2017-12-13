@@ -28,7 +28,7 @@
                 android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
                 android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
                 app:layout_scrollFlags="scroll|enterAlways"
-                app:subtitle="@{viewModel.lastUpdateTimestamp}"
+                app:subtitle="@{@string/last_updated_x(viewModel.lastUpdateTimestamp)}"
                 app:title="@{viewModel.stationName}"/>
 
             <android.support.design.widget.TabLayout

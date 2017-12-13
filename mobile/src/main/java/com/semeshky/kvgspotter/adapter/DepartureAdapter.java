@@ -33,6 +33,7 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
     public long getItemId(int position) {
         return Long.parseLong(this.getItem(position).getTripId());
     }
+
     @Override
     protected VhStationDepartureBinding createBinding(ViewGroup parent, int type) {
         final VhStationDepartureBinding binding = DataBindingUtil
@@ -46,16 +47,32 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
     protected void bind(VhStationDepartureBinding binding, Departure item) {
         binding.setVariable(BR.departure, item);
         final Resources resources = binding.getRoot().getContext().getResources();
-        if (item.getActualTime() != null && item.getPlannedTime() != null) {
-            final int delta = Minutes.minutesBetween(item.getPlannedTime(), item.getActualTime()).getMinutes();
-            binding.setDelay(delta);
-        } else {
-            binding.setDelay(0);
-        }
-        if (item.getActualRelativeTime() < 0 || item.getStatus() == Departure.STATUS_DEPARTED) {
+        if ((item.getActualRelativeTime() < 0 || item.getStatus() == Departure.STATUS_DEPARTED)
+                && item.getStatus() != Departure.STATUS_STOPPING) {
+            // IF Bus has left
             binding.setActive(false);
+            binding.setSecondaryText(resources.getString(R.string.departed));
+            binding.setSecondaryTextAlert(false);
+            binding.setSecondaryTextVisible(true);
+
         } else {
             binding.setActive(true);
+            if (item.getStatus() == Departure.STATUS_STOPPING) {
+                // if bus is stopping dont display time just potential delay
+                binding.setSecondaryText(resources.getString(R.string.stopping));
+                binding.setSecondaryTextAlert(false);
+                binding.setSecondaryTextVisible(true);
+            } else {
+                int delta = 0;
+                if (item.getActualTime() != null && item.getPlannedTime() != null) {
+                    delta = Minutes.minutesBetween(item.getPlannedTime(), item.getActualTime()).getMinutes();
+                }
+                binding.setSecondaryTextVisible(delta > 0);
+                if (delta > 0) {
+                    binding.setSecondaryText(resources.getQuantityString(R.plurals.minutes_delayed, delta, delta));
+                    binding.setSecondaryTextAlert(true);
+                }
+            }
         }
         if (item.getActualRelativeTime() > 0 && item.getActualRelativeTime() < FIVE_MINUTES_IN_SECONDS) {
             final int delay = item.getActualRelativeTime() / 60;

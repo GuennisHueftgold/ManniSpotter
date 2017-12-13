@@ -7,19 +7,31 @@
         <variable
             name="presenter"
             type="com.semeshky.kvgspotter.adapter.DepartureAdapter.Presenter"/>
+
         <variable
             name="departure"
             type="com.semeshky.kvg.kvgapi.Departure"/>
+
         <variable
             name="active"
             type="Boolean"/>
+
         <variable
-            name="delay"
-            type="Integer"/>
+            name="secondaryText"
+            type="String"/>
+
+        <variable
+            name="secondaryTextVisible"
+            type="Boolean"/>
+
+        <variable
+            name="secondaryTextAlert"
+            type="Boolean"/>
 
         <variable
             name="departureTime"
             type="String"/>
+
         <import type="android.view.View"/>
     </data>
 
@@ -77,18 +89,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@id/txtLine"
             app:layout_constraintTop_toBottomOf="@id/txtTitle"/>
+
         <TextView
             android:id="@id/txtTimeDelta"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="0dp"
+            android:gravity="end|center_vertical"
             android:lines="1"
-            android:text="@{@plurals/minutes_delayed(delay,delay), default=`2 minutes`}"
-            android:textAppearance="@style/TextAppearance.AppCompat.Subhead"
-            android:textColor="@color/bus_delayed_red"
-            android:visibility="@{delay>0?View.VISIBLE:View.GONE}"
+            android:text="@{secondaryText, default=`2 minutes`}"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
+            android:textColor="@{secondaryTextAlert?@color/bus_delayed_red:@color/text_secondary_black}"
+            android:visibility="@{secondaryTextVisible?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="@id/txtSubtitle"
+            app:layout_constraintEnd_toEndOf="@id/txtTitle"
             app:layout_constraintStart_toEndOf="@id/txtSubtitle"
             app:layout_constraintTop_toTopOf="@id/txtSubtitle"/>
 
