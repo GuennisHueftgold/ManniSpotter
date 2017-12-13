@@ -21,6 +21,7 @@ import static java.lang.annotation.RetentionPolicy.SOURCE;
 public class Departure {
     public final static int STATUS_DEPARTED = 1;
     public final static int STATUS_PREDICTED = 2;
+    public final static int STATUS_PLANNED = 3;
     public final static int STATUS_UNKNOWN = 0;
     private final int mActualRelativeTime;
     private final String mDirection;
@@ -112,7 +113,7 @@ public class Departure {
     }
 
     @Retention(SOURCE)
-    @IntDef({STATUS_DEPARTED, STATUS_PREDICTED, STATUS_UNKNOWN})
+    @IntDef({STATUS_DEPARTED, STATUS_PREDICTED, STATUS_UNKNOWN, STATUS_PLANNED})
     public @interface Status {
     }
 
@@ -285,7 +286,14 @@ public class Departure {
                             builder.setStatus(STATUS_DEPARTED);
                             break;
                         case "predicted":
-                            builder.setStatus(STATUS_DEPARTED);
+                            builder.setStatus(STATUS_PREDICTED);
+                            break;
+                        case "planned":
+                            builder.setStatus(STATUS_PLANNED);
+                            break;
+                        default:
+                            builder.setStatus(STATUS_UNKNOWN);
+                            Timber.d("Unknown status: %s", status);
                             break;
                     }
                 } else {

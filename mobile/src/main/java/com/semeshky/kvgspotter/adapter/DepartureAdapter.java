@@ -1,5 +1,6 @@
 package com.semeshky.kvgspotter.adapter;
 
+import android.content.res.Resources;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import com.semeshky.kvgspotter.databinding.VhStationDepartureBinding;
 
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
+import org.joda.time.format.DateTimeFormat;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -20,12 +22,17 @@ import java.util.List;
 public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, VhStationDepartureBinding> {
 
 
+    final static int FIVE_MINUTES_IN_SECONDS = 300;
     private final Presenter mPresenter;
 
     public DepartureAdapter(@NonNull Presenter presenter) {
         this.mPresenter = presenter;
+        this.setHasStableIds(true);
     }
 
+    public long getItemId(int position) {
+        return Long.parseLong(this.getItem(position).getTripId());
+    }
     @Override
     protected VhStationDepartureBinding createBinding(ViewGroup parent, int type) {
         final VhStationDepartureBinding binding = DataBindingUtil
@@ -38,11 +45,28 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
     @Override
     protected void bind(VhStationDepartureBinding binding, Departure item) {
         binding.setVariable(BR.departure, item);
+        final Resources resources = binding.getRoot().getContext().getResources();
         if (item.getActualTime() != null && item.getPlannedTime() != null) {
             final int delta = Minutes.minutesBetween(item.getPlannedTime(), item.getActualTime()).getMinutes();
-            binding.setTimeDelta(delta);
+            binding.setDelay(delta);
         } else {
-            binding.setTimeDelta(0);
+            binding.setDelay(0);
+        }
+        if (item.getActualRelativeTime() < 0 || item.getStatus() == Departure.STATUS_DEPARTED) {
+            binding.setActive(false);
+        } else {
+            binding.setActive(true);
+        }
+        if (item.getActualRelativeTime() > 0 && item.getActualRelativeTime() < FIVE_MINUTES_IN_SECONDS) {
+            final int delay = item.getActualRelativeTime() / 60;
+            binding.setDepartureTime(resources.getQuantityString(R.plurals.minutes, delay, delay));
+        } else {
+            LocalTime localTime = (item.getActualTime() == null ? item.getPlannedTime() : item.getActualTime());
+            if (localTime == null) {
+                binding.setDepartureTime("--:--");
+            } else {
+                binding.setDepartureTime(localTime.toString(DateTimeFormat.shortTime()));
+            }
         }
     }
 
@@ -92,7 +116,7 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
         super.setItems(departures);
     }
 
-    public static interface Presenter {
-        public abstract void onOpenClick(Departure departure);
+    public interface Presenter {
+        void onOpenClick(Departure departure);
     }
 }

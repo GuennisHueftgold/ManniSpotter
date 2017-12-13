@@ -21,44 +21,44 @@
             android:id="@id/txtLine"
             android:layout_width="80dp"
             android:layout_height="0dp"
-            android:text="@{departure.patternText, default=`60s`}"
             android:gravity="center"
-            android:textAppearance="@style/AppTheme.TextAppearance.TableRow"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:lines="1"
             android:paddingLeft="@dimen/table_data_row_padding"
             android:paddingRight="@dimen/table_data_row_padding"
-            app:autoSizeTextType="uniform"
-            app:autoSizeMinTextSize="2sp"
+            android:text="@{departure.patternText, default=`60s`}"
+            android:textAppearance="@style/AppTheme.TextAppearance.TableRow"
             app:autoSizeMaxTextSize="@dimen/table_data_row_text_size"
+            app:autoSizeMinTextSize="2sp"
             app:autoSizeStepGranularity="1sp"
-            android:lines="1"/>
+            app:autoSizeTextType="uniform"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@id/txtTitle"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:text="@{departure.direction, default=PLACEHOLDER}"
             android:gravity="start|center_vertical"
+            android:text="@{departure.direction, default=PLACEHOLDER}"
             android:textAppearance="@style/AppTheme.TextAppearance.TableRow"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/txtSubtitle"
             app:layout_constraintStart_toEndOf="@id/txtLine"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/txtSubtitle"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <TextView
             android:id="@id/txtSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:gravity="start|center_vertical"
-            android:text="@{JodaUtil.convertLocalTimeOrDelta(departure.actualTime), default=`20min`}"
+            android:paddingLeft="@dimen/table_data_row_padding"
+            android:paddingRight="@dimen/table_data_row_padding"
+            android:text="@{JodaUtil.convertLocalTimeOrDelta(context, departure.actualTime), default=`20min`}"
             android:textAppearance="@style/AppTheme.TextAppearance.TableRow"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:paddingLeft="@dimen/table_data_row_padding"
-            android:paddingRight="@dimen/table_data_row_padding"/>
+            app:layout_constraintTop_toTopOf="parent"/>
 
 
     </android.support.constraint.ConstraintLayout>

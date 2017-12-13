@@ -1,6 +1,11 @@
 package com.semeshky.kvgspotter.util;
 
 
+import android.content.Context;
+import android.support.annotation.NonNull;
+
+import com.semeshky.kvgspotter.R;
+
 import org.joda.time.DateTime;
 import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
@@ -17,15 +22,15 @@ public final class JodaUtil {
         return localTime.toString("HH:mm");
     }
 
-    public static String convertLocalTimeOrDelta(LocalTime localTime) {
+    public static String convertLocalTimeOrDelta(@NonNull Context context, @NonNull LocalTime localTime) {
         if (localTime == null) {
             return "--:--";
         }
         final int delta = Minutes.minutesBetween(LocalTime.now(), localTime).getMinutes();
         if (delta < 20) {
-            return delta + "min";
+            return context.getResources().getQuantityText(R.plurals.minutes, delta).toString();
         } else {
-            return localTime.toString("HH:mm");
+            return localTime.toString(DateTimeFormat.shortDateTime());
         }
     }
 

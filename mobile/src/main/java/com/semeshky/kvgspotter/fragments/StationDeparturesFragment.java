@@ -20,7 +20,10 @@ import com.semeshky.kvgspotter.adapter.DepartureAdapter;
 import com.semeshky.kvgspotter.databinding.FragmentStationDeparturesBinding;
 import com.semeshky.kvgspotter.viewmodel.StationDetailActivityViewModel;
 
-public class StationDeparturesFragment extends Fragment {
+import java.util.ArrayList;
+import java.util.List;
+
+public final class StationDeparturesFragment extends Fragment {
 
     private StationDetailActivityViewModel mViewModel;
     private FragmentStationDeparturesBinding mBinding;
@@ -28,7 +31,10 @@ public class StationDeparturesFragment extends Fragment {
     private SwipeRefreshLayout.OnRefreshListener mSwipeRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
-
+            StationDeparturesFragment
+                    .this
+                    .mViewModel
+                    .refresh();
         }
     };
 
@@ -43,6 +49,7 @@ public class StationDeparturesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         this.mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_station_departures, container, false);
+        this.mBinding.setViewModel(this.mViewModel);
         return this.mBinding.getRoot();
     }
 
@@ -64,10 +71,13 @@ public class StationDeparturesFragment extends Fragment {
                     public void onChanged(@Nullable Station station) {
                         if (station == null)
                             return;
+                        List<Departure> departureList = new ArrayList<Departure>();
+                        departureList.addAll(station.getActual());
+                        departureList.addAll(station.getOld());
                         StationDeparturesFragment
                                 .this
                                 .mDepartureAdapter
-                                .setItems(station.getActual());
+                                .setItems(departureList);
                     }
                 });
     }
