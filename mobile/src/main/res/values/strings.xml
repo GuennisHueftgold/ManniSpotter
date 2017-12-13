@@ -37,4 +37,5 @@
     <string name="licenses">Licenses</string>
     <string name="licenses_summary">OSS Licenses</string>
     <string name="favorite_stop_to_list_it">Favorite a stop to list it here</string>
+    <string name="last_updated_x">Last updated: %s</string>
 </resources>
