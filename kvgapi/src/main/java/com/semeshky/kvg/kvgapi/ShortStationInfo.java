@@ -1,11 +1,14 @@
 package com.semeshky.kvg.kvgapi;
 
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.TypeAdapter;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonToken;
 import com.google.gson.stream.JsonWriter;
 
 import java.io.IOException;
+
+import timber.log.Timber;
 
 public final class ShortStationInfo {
     private final String mId;
@@ -69,7 +72,8 @@ public final class ShortStationInfo {
 
         @Override
         public void write(JsonWriter out, ShortStationInfo value) throws IOException {
-
+            //TODO:
+            throw new JsonSyntaxException("Not yet implemented");
         }
 
         @Override
@@ -90,6 +94,7 @@ public final class ShortStationInfo {
                 } else if (NAME_NUMBER.equalsIgnoreCase(name) && in.peek() == JsonToken.STRING) {
                     builder.setStopShortName(in.nextString());
                 } else {
+                    Timber.d("Unknown Name: %s", name);
                     in.skipValue();
                 }
             }
