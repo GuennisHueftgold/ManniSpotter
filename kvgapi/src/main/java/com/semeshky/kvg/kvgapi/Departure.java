@@ -22,6 +22,7 @@ public class Departure {
     public final static int STATUS_DEPARTED = 1;
     public final static int STATUS_PREDICTED = 2;
     public final static int STATUS_PLANNED = 3;
+    public final static int STATUS_STOPPING = 4;
     public final static int STATUS_UNKNOWN = 0;
     private final int mActualRelativeTime;
     private final String mDirection;
@@ -113,7 +114,7 @@ public class Departure {
     }
 
     @Retention(SOURCE)
-    @IntDef({STATUS_DEPARTED, STATUS_PREDICTED, STATUS_UNKNOWN, STATUS_PLANNED})
+    @IntDef({STATUS_DEPARTED, STATUS_PREDICTED, STATUS_UNKNOWN, STATUS_PLANNED, STATUS_STOPPING})
     public @interface Status {
     }
 
@@ -290,6 +291,9 @@ public class Departure {
                             break;
                         case "planned":
                             builder.setStatus(STATUS_PLANNED);
+                            break;
+                        case "stopping":
+                            builder.setStatus(STATUS_STOPPING);
                             break;
                         default:
                             builder.setStatus(STATUS_UNKNOWN);
