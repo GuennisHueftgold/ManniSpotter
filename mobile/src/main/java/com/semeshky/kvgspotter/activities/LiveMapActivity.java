@@ -3,10 +3,13 @@ package com.semeshky.kvgspotter.activities;
 
 import android.arch.lifecycle.ViewModelProviders;
 import android.databinding.DataBindingUtil;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.ActivityLiveMapBinding;
@@ -20,6 +23,12 @@ public class LiveMapActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, android.R.color.transparent));
+        }
         this.mBinding = DataBindingUtil.setContentView(this, R.layout.activity_live_map);
         this.mViewModel = ViewModelProviders.of(this).get(ActivityLiveMapViewModel.class);
         this.setSupportActionBar(this.mBinding.toolbar);

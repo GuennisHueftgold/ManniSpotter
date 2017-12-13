@@ -16,8 +16,8 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".activities.SplashActivity"
-            android:theme="@style/SplashTheme"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -53,7 +53,8 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activities.LiveMapActivity">
+            android:name=".activities.LiveMapActivity"
+            android:theme="@style/AppTheme.TranslucentStatus">
         </activity>
 
         <activity
