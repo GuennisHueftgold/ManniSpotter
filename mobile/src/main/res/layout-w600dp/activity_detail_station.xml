@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context="com.semeshky.kvgspotter.activities.StationDetailActivity">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.semeshky.kvgspotter.viewmodel.StationDetailActivityViewModel"/>
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@id/appBarLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                android:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+                app:subtitle="@{@string/last_updated_x(viewModel.lastUpdateTimestamp)}"
+                app:title="@{viewModel.stationName}"/>
+
+        </android.support.design.widget.AppBarLayout>
+
+        <fragment
+            android:id="@id/stationDetailsFragment"
+            android:name="com.semeshky.kvgspotter.fragments.StationDetailsFragment"
+            android:layout_width="300dp"
+            android:layout_height="0dp"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appBarLayout"/>
+
+        <fragment
+            android:id="@id/stationDeparturesFragment"
+            android:name="com.semeshky.kvgspotter.fragments.StationDeparturesFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/stationDetailsFragment"
+            app:layout_constraintTop_toBottomOf="@id/appBarLayout"/>
+    </android.support.constraint.ConstraintLayout>
+</layout>
