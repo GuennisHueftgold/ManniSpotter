@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         this.mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
         this.mViewModel = ViewModelProviders.of(this)
                 .get(MainActivityViewModel.class);
-        this.setSupportActionBar((Toolbar) this.mBinding.toolbar);
+        this.setSupportActionBar((Toolbar) this.mBinding.toolbar.getRoot());
         this.mMainActivityPresenter = new MainActivityPresenter(this);
         this.mHomeAdapter = new HomeAdapter(this.mFavoriteSelectedListener);
         this.mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));

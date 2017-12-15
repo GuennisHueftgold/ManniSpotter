@@ -39,6 +39,8 @@ public final class StationDetailsFragment extends BaseStationDetailsFragment {
 
     @Override
     protected void updateMap(final Stop stop, final List<StopPoint> stopPoints) {
+        if(this.getGoogleMap()==null)
+            return;
         this.getGoogleMap().clear();
         if (stop != null) {
             final LatLng latLng = CoordinateUtil.convert(stop);

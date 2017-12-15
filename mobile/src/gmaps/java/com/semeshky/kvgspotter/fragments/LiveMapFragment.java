@@ -27,9 +27,11 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
         @Override
         public boolean onMarkerClick(Marker marker) {
             if (marker.getTag() instanceof Stop) {
+                /*
                 startActivity(StationDetailActivity
                         .createIntent(getContext(),
-                                (Stop) marker.getTag()));
+                                (Stop) marker.getTag()));*/
+                mViewModel.setSelectedStop((Stop) marker.getTag());
                 return true;
             }
             return false;
@@ -76,6 +78,8 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
 
     @Override
     protected void updateVehicleLocations(VehicleLocations vehicleLocations) {
+        if(this.getGoogleMap()==null)
+            return;
         this.mClusterManager.clearItems();
         for(VehicleLocation vehicleLocation:vehicleLocations.getVehicles()){
             if(vehicleLocation.isDeleted())
@@ -114,6 +118,8 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
 
     @Override
     protected void updateStops(List<Stop> stops) {
+        if(this.getGoogleMap()==null)
+            return;
         int i = 0;
         final int markers = this.mStopMarker.size();
         for (; i < stops.size(); i++) {

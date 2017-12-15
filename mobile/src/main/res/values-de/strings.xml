@@ -37,4 +37,5 @@
     <string name="licenses">Lizenzen</string>
     <string name="licenses_summary">OSS Lizenzen</string>
     <string name="favorite_stop_to_list_it">Favorisiere eine Haltestation um sie hier aufzulisten!</string>
+    <string name="details">Details</string>
 </resources>

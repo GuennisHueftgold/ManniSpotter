@@ -25,4 +25,8 @@
     <dimen name="stepper_vertical_circle_margin_left">24dp</dimen>
     <dimen name="widget_margin">8dp</dimen>
     <dimen name="map_route_path_width">2dp</dimen>
+    <dimen name="image_button_size">48dp</dimen>
+    <dimen name="live_map_toolbar_horizontal_margin">8dp</dimen>
+    <dimen name="live_map_details_top_margin">8dp</dimen>
+    <dimen name="live_map_details_bottom_margin">8dp</dimen>
 </resources>

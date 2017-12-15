@@ -5,6 +5,8 @@ import com.semeshky.kvg.kvgapi.VehicleLocations;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.map.CoordinateUtil;
+import com.semeshky.kvgspotter.map.ExtendedOverlayManager;
+import com.semeshky.kvgspotter.viewmodel.ActivityLiveMapViewModel;
 
 import org.osmdroid.util.GeoPoint;
 import org.osmdroid.views.MapView;
@@ -24,11 +26,21 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
                 if(marker.getRelatedObject() instanceof VehicleLocation){
                     LiveMapFragment
                             .this
-                            .onVehicleLocationSelected((VehicleLocation) marker.getRelatedObject());
+                            .mViewModel
+                            .setSelectedVehicle((VehicleLocation) marker.getRelatedObject());
+                    /*
+                    LiveMapFragment
+                            .this
+                            .onVehicleLocationSelected((VehicleLocation) marker.getRelatedObject());*/
                 }else if(marker.getRelatedObject() instanceof Stop){
                     LiveMapFragment
                             .this
-                            .onStopSelected((Stop)marker.getRelatedObject());
+                            .mViewModel
+                            .setSelectedStop((Stop) marker.getRelatedObject());
+                    /*
+                    LiveMapFragment
+                            .this
+                            .onStopSelected((Stop)marker.getRelatedObject());*/
                 }else{
                     return false;
                 }
@@ -40,6 +52,8 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
 
     @Override
     public void onMapReady(MapView map) {
+        final ExtendedOverlayManager extendedOverlayManager = new ExtendedOverlayManager(map.getOverlayManager().getTilesOverlay());
+        map.setOverlayManager(extendedOverlayManager);
         map.setMultiTouchControls(true);
         map.getController()
                 .setZoom(10);
@@ -49,6 +63,15 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
                 .add(0,this.mStopOverlay);
         map.getOverlayManager()
                 .add(1,this.mVehicleOverlay);
+        extendedOverlayManager.setOnTapMissListener(new ExtendedOverlayManager.OnTapMissListener() {
+            @Override
+            public void onTapMissed() {
+                LiveMapFragment
+                        .this
+                        .mViewModel
+                        .setDetailsStatus(ActivityLiveMapViewModel.DETAILS_STATUS_CLOSED);
+            }
+        });
     }
 
     @Override
@@ -67,7 +90,7 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
             }else{
                 marker=new Marker(getGoogleMap());
                 marker.setFlat(true);
-                marker.setIcon(getResources().getDrawable(R.drawable.ic_label_black_24dp));
+                marker.setIcon(getResources().getDrawable(R.drawable.ic_label_red_24dp));
                 marker.setAnchor(0.5f,0.5f);
                 marker.setOnMarkerClickListener(this.mMarkerClickListener);
                 this.mVehicleOverlay.add(marker);

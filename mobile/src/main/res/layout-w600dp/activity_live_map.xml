@@ -7,28 +7,32 @@
     <data>
     </data>
 
-    <android.support.design.widget.CoordinatorLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="false"
-        android:focusableInTouchMode="false">
+        android:fitsSystemWindows="false">
+
 
         <fragment
             android:id="@id/mapFragment"
             android:name="com.semeshky.kvgspotter.fragments.LiveMapFragment"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
 
         <!-- Keep this clickable so no stations behind are selected -->
         <LinearLayout
             android:id="@id/searchBox"
-            android:layout_width="match_parent"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/live_map_toolbar_horizontal_margin"
             android:layout_marginStart="@dimen/live_map_toolbar_horizontal_margin"
             android:layout_marginTop="8dp"
-            android:clickable="true"
-            android:fitsSystemWindows="true">
+            android:fitsSystemWindows="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
@@ -78,17 +82,29 @@
             </android.support.v7.widget.CardView>
         </LinearLayout>
 
-
-        <FrameLayout
-            android:id="@+id/bottom_sheet"
-            android:name="com.semeshky.kvgspotter.fragments.LiveMapDepartureFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@android:color/background_light"
+        <android.support.v7.widget.CardView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_gravity="bottom"
+            android:layout_marginBottom="@dimen/live_map_details_bottom_margin"
+            android:layout_marginTop="@dimen/live_map_details_top_margin"
             android:clipToPadding="true"
-            app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+            app:cardBackgroundColor="@android:color/background_light"
+            app:cardCornerRadius="4dp"
+            app:cardElevation="4dp"
+            app:cardPreventCornerOverlap="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/searchBox"
+            app:layout_constraintStart_toStartOf="@id/searchBox"
+            app:layout_constraintTop_toBottomOf="@id/searchBox">
 
-        </FrameLayout>
+            <FrameLayout
+                android:id="@id/detailsFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:tag="departureFragment">
 
-    </android.support.design.widget.CoordinatorLayout>
+            </FrameLayout>
+        </android.support.v7.widget.CardView>
+    </android.support.constraint.ConstraintLayout>
 </layout>

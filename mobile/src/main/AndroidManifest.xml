@@ -55,6 +55,9 @@
         <activity
             android:name=".activities.LiveMapActivity"
             android:theme="@style/AppTheme.TranslucentStatus">
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/station_searchable"/>
         </activity>
 
         <activity

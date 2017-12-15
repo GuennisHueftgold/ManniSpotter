@@ -57,6 +57,17 @@ public class Stop implements LatLngInterface {
         return stops;
     }
 
+    @Override
+    public String toString() {
+        return "Stop{" +
+                "mUid=" + mUid +
+                ", mCategory='" + mCategory + '\'' +
+                ", mId='" + mId + '\'' +
+                ", mName='" + mName + '\'' +
+                ", mShortName='" + mShortName + '\'' +
+                '}';
+    }
+
     public int getUid() {
         return mUid;
     }

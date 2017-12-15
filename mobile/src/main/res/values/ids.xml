@@ -35,4 +35,12 @@
     <item name="listView" type="id"/>
     <item name="emptyView" type="id"/>
     <item name="spacer" type="id"/>
+    <item name="autoCompleteTextView" type="id"/>
+    <item name="btnRefresh" type="id"/>
+    <item name="btnMenu" type="id"/>
+    <item name="searchView" type="id"/>
+    <item name="searchBox" type="id"/>
+    <item name="bottomSheetToolbar" type="id"/>
+    <item name="action_details" type="id"/>
+    <item name="detailsFragment" type="id"/>
 </resources>
