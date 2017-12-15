@@ -12,6 +12,19 @@ Funktionierende Module:
 
 IN BEIDEN FÄLLEN MUSS ÜBER DIE EINSTELLUNGEN EINMAL DER HALTESTOP CACHE AKTUALISIERT WERDEN!!
 
+### Setup Schritte
+
+Zunächst müssen zwei zusätzliche Dateien erstellt werden:
+
+1. ~/mobile/debug.secrets
+2. ~/mobile/release.secrets
+
+Beide Dateien können identisch sein müssen dennoch beide erstellt werden. Den Inhalt sollte wie folgt aussehen
+
+```
+GMAPS_API_KEY=DEIN_GMAPS_API_KEY
+```
+
 ===
 
 
