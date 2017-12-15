@@ -81,13 +81,19 @@
 
         <FrameLayout
             android:id="@+id/bottom_sheet"
-            android:name="com.semeshky.kvgspotter.fragments.LiveMapDepartureFragment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@android:color/background_light"
             android:clipToPadding="true"
             app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
 
+            <FrameLayout
+                android:id="@id/detailsFragment"
+                android:name="com.semeshky.kvgspotter.fragments.LiveMapDepartureFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </FrameLayout>
         </FrameLayout>
 
     </android.support.design.widget.CoordinatorLayout>
