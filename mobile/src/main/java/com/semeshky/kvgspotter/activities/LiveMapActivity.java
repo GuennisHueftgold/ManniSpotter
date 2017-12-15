@@ -9,6 +9,7 @@ import android.content.Context;
 import android.databinding.DataBindingUtil;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.content.ContextCompat;
@@ -47,10 +48,28 @@ public class LiveMapActivity extends AppCompatActivity {
         this.mBinding = DataBindingUtil.setContentView(this, R.layout.activity_live_map);
         this.mViewModel = ViewModelProviders.of(this).get(ActivityLiveMapViewModel.class);
         if (this.mBinding.bottomSheet != null) {
-            mBottomSheetBehavior = BottomSheetBehavior.from(this.mBinding.bottomSheet);
-            mBottomSheetBehavior.setPeekHeight(300);
-            mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
-            mBottomSheetBehavior.setHideable(true);
+            this.mBottomSheetBehavior = BottomSheetBehavior.from(this.mBinding.bottomSheet);
+            this.mBottomSheetBehavior.setPeekHeight(300);
+            this.mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
+            this.mBottomSheetBehavior.setHideable(true);
+            this.mBottomSheetBehavior
+                    .setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+                        @Override
+                        public void onStateChanged(@NonNull View bottomSheet, int newState) {
+                            if (newState == BottomSheetBehavior.STATE_HIDDEN) {
+                                // Update the ViewHolder State if the Sheet was Dismissed
+                                LiveMapActivity
+                                        .this
+                                        .mViewModel
+                                        .setDetailsStatus(ActivityLiveMapViewModel.DETAILS_STATUS_CLOSED);
+                            }
+                        }
+
+                        @Override
+                        public void onSlide(@NonNull View bottomSheet, float slideOffset) {
+
+                        }
+                    });
         }
         final SearchView searchView = this.mBinding.searchView;
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -101,22 +120,27 @@ public class LiveMapActivity extends AppCompatActivity {
                 .observe(this, new Observer<Integer>() {
                     @Override
                     public void onChanged(@Nullable Integer integer) {
-                        final View view = (View) findViewById(R.id.detailsFragment).getParent();
                         switch (integer) {
                             case ActivityLiveMapViewModel.DETAILS_STATUS_SHOW_STOP:
                                 getSupportFragmentManager().beginTransaction()
                                         .replace(R.id.detailsFragment, new LiveMapDepartureFragment(), "departure_fragment")
                                         .commit();
-                                view.setVisibility(View.VISIBLE);
+                                LiveMapActivity
+                                        .this
+                                        .setDetailsVisible(true);
                                 break;
                             case ActivityLiveMapViewModel.DETAILS_STATUS_SHOW_TRIP:
                                 getSupportFragmentManager().beginTransaction()
                                         .replace(R.id.detailsFragment, new LiveMapPassagesFragment(), "transit_fragment")
                                         .commit();
-                                view.setVisibility(View.VISIBLE);
+                                LiveMapActivity
+                                        .this
+                                        .setDetailsVisible(false);
                                 break;
                             default:
-                                view.setVisibility(View.GONE);
+                                LiveMapActivity
+                                        .this
+                                        .setDetailsVisible(false);
                                 break;
                         }
                     }
@@ -145,6 +169,28 @@ public class LiveMapActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Hides or shows the Details Pane for selected Markers on the map
+     *
+     * @param detailsVisible
+     */
+    public void setDetailsVisible(boolean detailsVisible) {
+        /**
+         * We are on a smaller device so we need to handle the bottom sheet
+         */
+        if (this.mBottomSheetBehavior != null) {
+            this.mBottomSheetBehavior.setState(detailsVisible ?
+                    BottomSheetBehavior.STATE_EXPANDED :
+                    BottomSheetBehavior.STATE_HIDDEN);
+        } else {
+            // Select details fragment container CardView
+            final View view = (View) findViewById(R.id.detailsFragment).getParent();
+            view.setVisibility(detailsVisible ?
+                    View.VISIBLE :
+                    View.GONE);
         }
     }
 }
