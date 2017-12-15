@@ -38,4 +38,5 @@
     <string name="licenses_summary">OSS Licenses</string>
     <string name="favorite_stop_to_list_it">Favorite a stop to list it here</string>
     <string name="details">Details</string>
+    <string name="stop_points">Stop Points</string>
 </resources>

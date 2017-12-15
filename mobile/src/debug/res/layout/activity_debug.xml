@@ -7,8 +7,8 @@
     <data>
 
         <variable
-            name="stopDatabasePresenter"
-            type="com.semeshky.kvgspotter.presenter.DebugStopDatabasePresenter"/>
+            name="viewModel"
+            type="com.semeshky.kvgspotter.viewmodel.DebugInformationActivityViewModel"/>
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -45,7 +45,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/stops_database"
-                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"/>
 
                 <TextView
@@ -53,28 +53,47 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/number_of_entries"
-                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/txtView1"/>
 
                 <TextView
                     android:id="@+id/txtView3"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:text="@{Integer.toString(stopDatabasePresenter.numberOfEntries)}"
-                    app:layout_constraintLeft_toRightOf="@id/txtView2"
-                    app:layout_constraintRight_toRightOf="parent"
+                    android:gravity="end"
+                    android:text="@{Integer.toString(viewModel.stops),default=PLACEHOLDER}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/txtView2"
                     app:layout_constraintTop_toTopOf="@id/txtView2"/>
+
+                <TextView
+                    android:id="@+id/txtTitleStopPoints"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:text="@string/stop_points"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtView2"/>
+
+                <TextView
+                    android:id="@+id/txtContentStopPoints"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:gravity="end"
+                    android:text="@{Integer.toString(viewModel.stopPoints),default=PLACEHOLDER}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/txtTitleStopPoints"
+                    app:layout_constraintTop_toBottomOf="@id/txtView2"/>
 
                 <Button
                     android:id="@id/btnRefreshStops"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{() -> stopDatabasePresenter.refresh()}"
+                    android:enabled="@{!viewModel.refreshingStops}"
+                    android:onClick="@{() -> viewModel.updateStops()}"
                     android:text="@string/refresh"
-                    app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/txtView3"/>
-
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/txtTitleStopPoints"/>
             </android.support.constraint.ConstraintLayout>
         </ScrollView>
     </android.support.constraint.ConstraintLayout>
