@@ -96,7 +96,6 @@ public class LiveMapActivity extends AppCompatActivity {
                             }
                     );
             searchBox.clearFocus();
-            this.mBinding.getRoot().requestFocus();
             this.mViewModel.getSelectedStop()
                     .observe(this, new Observer<Stop>() {
                         @Override
