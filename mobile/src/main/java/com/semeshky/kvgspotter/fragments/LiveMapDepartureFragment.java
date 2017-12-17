@@ -96,7 +96,7 @@ public class LiveMapDepartureFragment extends Fragment {
     }
 
     private void getStation(Stop stop) {
-        this.mViewModel.loadStation(stop.getShortName())
+        this.mViewModel.loadVehicleLocations(stop.getShortName())
                 .subscribe(new DisposableSingleObserver<Station>() {
                     @Override
                     public void onSuccess(Station station) {

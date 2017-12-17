@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.SearchView;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
@@ -154,19 +153,14 @@ public class LiveMapActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        this.mViewModel.refreshData();
+        //this.mViewModel.updateData();
+        this.mViewModel.startVehicleLocationUpdater();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.action_refresh:
-                this.mViewModel.refreshData();
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
+    public void onPause() {
+        this.mViewModel.stopVehicleLocationUpdater();
+        super.onPause();
     }
 
     /**
