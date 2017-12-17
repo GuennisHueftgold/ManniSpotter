@@ -75,11 +75,8 @@ public class LiveMapActivity extends AppCompatActivity {
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView.setSearchableInfo(searchManager.getSearchableInfo(new ComponentName(this, StationSearchActivity.class)));
 
-        searchView.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View view, boolean focused) {
-            }
-        });
+        // prevent autofocus of searchview
+        this.mBinding.getRoot().requestFocus();
 
         final View bottomBox = this.mBinding.bottomSheet;
         if (bottomBox != null) {
