@@ -1,19 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
-            name="stop"
-            type="com.semeshky.kvgspotter.database.Stop"/>
-
-        <variable
-            name="favoriteStation"
-            type="com.semeshky.kvgspotter.database.FavoriteStationWithName"/>
-
-        <variable
             name="stopIcon"
             type="int"/>
+
+        <variable
+            name="shortName"
+            type="String"/>
+
+        <variable
+            name="title"
+            type="String"/>
+
+        <variable
+            name="distance"
+            type="Float"/>
+
+        <import type="android.view.View"/>
 
         <variable
             name="clickListener"
@@ -22,18 +29,40 @@
         <import type="android.support.v4.content.ContextCompat"/>
     </data>
 
-    <TextView
-        android:id="@id/txtTitle"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_single_line_tile_height"
         android:background="?android:attr/selectableItemBackground"
-        android:drawablePadding="@dimen/list_single_line_icon_left_padding"
-        android:drawableStart="@{ContextCompat.getDrawable(context,stopIcon), default=@drawable/ic_update_black_24dp}"
-        android:gravity="start|center_vertical"
-        android:lines="1"
-        android:onClick="@{(view) -> clickListener.onFavoriteSelected(view,favoriteStation)}"
+        android:onClick="@{(view) -> clickListener.onFavoriteSelected(shortName,title)}"
         android:paddingEnd="@dimen/list_single_line_horizontal_padding"
-        android:paddingStart="@dimen/list_single_line_horizontal_padding"
-        android:text="@{favoriteStation.name, default=PLACEHOLDER}"/>
+        android:paddingStart="@dimen/list_single_line_horizontal_padding">
+
+        <TextView
+            android:id="@id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:drawablePadding="@dimen/list_single_line_icon_left_padding"
+            android:drawableStart="@{ContextCompat.getDrawable(context,stopIcon), default=@drawable/ic_update_black_24dp}"
+            android:gravity="start|center_vertical"
+            android:lines="1"
+            android:text="@{title, default=PLACEHOLDER}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@id/txtSubtitle"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:gravity="end|center_vertical"
+            android:lines="1"
+            android:text="@{distance &lt; 1000 ? @string/x_meter_short(distance) : @string/x_kilometer_short(distance/1000.0f), default=PLACEHOLDER}"
+            android:visibility="@{distance>=0?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/txtTitle"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+    </android.support.constraint.ConstraintLayout>
 
 </layout>

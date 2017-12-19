@@ -1,6 +1,7 @@
 package com.semeshky.kvgspotter.activities;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
@@ -9,10 +10,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.location.Location;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -20,11 +22,12 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.HomeAdapter;
-import com.semeshky.kvgspotter.database.FavoriteStation;
 import com.semeshky.kvgspotter.database.FavoriteStationWithName;
 import com.semeshky.kvgspotter.databinding.ActivityMainBinding;
 import com.semeshky.kvgspotter.presenter.MainActivityPresenter;
@@ -32,25 +35,25 @@ import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
 
 import java.util.List;
 
+import timber.log.Timber;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_ACCESS_LOCATION = 2928;
     private final HomeAdapter.OnFavoriteSelectListener mFavoriteSelectedListener = new HomeAdapter.OnFavoriteSelectListener() {
         @Override
-        public void onFavoriteSelected(View titleView, FavoriteStation favoriteStation) {
-            final ActivityOptionsCompat options =
-                    ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this,
-                            titleView,
-                            StationDetailActivity.SCENE_TRANSITION_TITLE);
+        public void onFavoriteSelected(@NonNull String shortName, @Nullable String name) {
             final Intent intent = StationDetailActivity.createIntent(MainActivity.this,
-                    favoriteStation.getShortName());
-            startActivity(intent, options.toBundle());
+                    shortName,
+                    name);
+            startActivity(intent);
         }
     };
     private ActivityMainBinding mBinding;
     private MainActivityPresenter mMainActivityPresenter;
     private MainActivityViewModel mViewModel;
     private HomeAdapter mHomeAdapter;
+    private FusedLocationProviderClient mFusedLocationProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,8 +87,19 @@ public class MainActivity extends AppCompatActivity {
                         MainActivity
                                 .this
                                 .mHomeAdapter
-                                .setItems(favoriteStations);
+                                .setFavorites(favoriteStations);
 
+                    }
+                });
+        this.mViewModel
+                .getLocation()
+                .observe(this, new Observer<Location>() {
+                    @Override
+                    public void onChanged(@Nullable Location location) {
+                        if (location != null) {
+                            Timber.d("location is: %s", location.toString());
+                        }
+                        mHomeAdapter.setCurrentLocation(location);
                     }
                 });
     }
@@ -120,7 +134,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+                                           String permissions[],
+                                           int[] grantResults) {
         switch (requestCode) {
             case REQUEST_CODE_ACCESS_LOCATION: {
                 // If request is cancelled, the result arrays are empty.
@@ -135,11 +150,7 @@ public class MainActivity extends AppCompatActivity {
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
-                return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 
@@ -159,7 +170,33 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @SuppressLint("MissingPermission")
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (this.hasLocationPermission()) {
+            this.mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(this);
+            this.mViewModel.setLocation(this.mFusedLocationProvider.getLastLocation());
+            this.mFusedLocationProvider.requestLocationUpdates(LocationRequest.create(),
+                    this.mViewModel.LocationUpdateCallback, null);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (this.mFusedLocationProvider != null) {
+            this.mFusedLocationProvider.removeLocationUpdates(this.mViewModel.LocationUpdateCallback);
+            Timber.d("Removed update listener");
+        }
+    }
+
     private void showRequestPermissionDialog() {
 
+    }
+
+    private boolean hasLocationPermission() {
+        return ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 }

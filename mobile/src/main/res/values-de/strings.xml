@@ -38,4 +38,6 @@
     <string name="licenses_summary">OSS Lizenzen</string>
     <string name="favorite_stop_to_list_it">Favorisiere eine Haltestation um sie hier aufzulisten!</string>
     <string name="details">Details</string>
+    <string name="x_kilometer_short">%.2f km</string>
+    <string name="x_meter_short">%.2f m</string>
 </resources>

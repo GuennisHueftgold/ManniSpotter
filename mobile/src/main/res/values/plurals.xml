@@ -10,4 +10,14 @@
         <item quantity="two">Two minutes delayed</item>
         <item quantity="other">%d minutes delayed</item>
     </plurals>
+    <plurals name="x_meter">
+        <item quantity="one">One meter</item>
+        <item quantity="two">Two meters</item>
+        <item quantity="other">%d meters</item>
+    </plurals>
+    <plurals name="x_kilometer">
+        <item quantity="one">One kilometer</item>
+        <item quantity="two">Two kilometers</item>
+        <item quantity="other">%d kilometers</item>
+    </plurals>
 </resources>

@@ -8,8 +8,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
 import com.semeshky.kvg.kvgapi.VehicleLocation;
 import com.semeshky.kvg.kvgapi.VehicleLocations;
-import com.semeshky.kvgspotter.R;
-import com.semeshky.kvgspotter.activities.StationDetailActivity;
 import com.semeshky.kvgspotter.activities.TripPassagesActivity;
 import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.map.CoordinateUtil;
@@ -22,7 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class LiveMapFragment extends BaseLiveMapFragment {
-    private ClusterManager<VehicleClusterItem> mClusterManager;
     private final GoogleMap.OnMarkerClickListener mOnMarkerClickListener = new GoogleMap.OnMarkerClickListener() {
         @Override
         public boolean onMarkerClick(Marker marker) {
@@ -49,7 +46,7 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
                     "departure"));
         }
     };
-
+    private ClusterManager<VehicleClusterItem> mClusterManager;
     private List<Marker> mVehicleMarker=new ArrayList<>();
     private List<Marker> mStopMarker=new ArrayList<>();
     @Override
@@ -102,7 +99,7 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
                 final MarkerOptions markerOptions= MapStyleGenerator.vehicleMarker(getResources());
                 markerOptions.position(CoordinateUtil.convert(vehicleLocation));
                 marker=this.getGoogleMap().addMarker(markerOptions);
-                this.mClusterManager.addItem();
+                this.mClusterManager.addFavorite();
                 this.mVehicleMarker.add(marker);
             }
             marker.setTag(vehicleLocation);
