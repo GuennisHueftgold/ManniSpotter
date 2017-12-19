@@ -41,4 +41,5 @@
     <string name="stop_points">Stop Points</string>
     <string name="x_kilometer_short">%.2f km</string>
     <string name="x_meter_short">%.2f m</string>
+    <string name="nearby">Nearby</string>
 </resources>
