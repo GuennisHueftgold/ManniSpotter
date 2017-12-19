@@ -24,7 +24,7 @@
 
         <variable
             name="clickListener"
-            type="com.semeshky.kvgspotter.adapter.HomeAdapter.OnFavoriteSelectListener"/>
+            type="com.semeshky.kvgspotter.adapter.HomeAdapter.HomeAdapterEventListener"/>
 
         <import type="android.support.v4.content.ContextCompat"/>
     </data>

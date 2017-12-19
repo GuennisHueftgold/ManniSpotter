@@ -9,9 +9,11 @@ import android.view.ViewGroup;
 
 import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
+import com.semeshky.kvgspotter.databinding.VhHomeRequestPermissionBinding;
 import com.semeshky.kvgspotter.databinding.VhListSectionTitleBinding;
 import com.semeshky.kvgspotter.databinding.VhStopDistanceBinding;
 import com.semeshky.kvgspotter.viewholder.DataboundViewHolder;
+import com.semeshky.kvgspotter.viewholder.HomeRequestPermissionViewHolder;
 import com.semeshky.kvgspotter.viewholder.ListSectionTitleViewHolder;
 import com.semeshky.kvgspotter.viewholder.StopDistanceViewHolder;
 
@@ -22,12 +24,13 @@ import java.util.List;
 public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
 
     private final static int TYPE_TITLE = 1, TYPE_STOP = 2, TYPE_FAVORITE_INFO = 3, TYPE_NEARBY_STOP_INFO = 5;
-    private final WeakReference<OnFavoriteSelectListener> mOnFavoriteClickListener;
+    private final WeakReference<HomeAdapterEventListener> mOnFavoriteClickListener;
     private List<DistanceStop> mFavoriteStationList = new ArrayList<>();
     private List<DistanceStop> mNearbyStopList = new ArrayList<>();
     private List<ListItem> mListItems = new ArrayList<>();
+    private boolean mHasLocationpermission = false;
 
-    public HomeAdapter(OnFavoriteSelectListener onFavoriteSelectListener) {
+    public HomeAdapter(HomeAdapterEventListener onFavoriteSelectListener) {
         super();
         this.mOnFavoriteClickListener = new WeakReference<>(onFavoriteSelectListener);
         this.setHasStableIds(true);
@@ -40,6 +43,8 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
                 return new StopDistanceViewHolder(parent);
             case TYPE_TITLE:
                 return new ListSectionTitleViewHolder(parent);
+            case TYPE_NEARBY_STOP_INFO:
+                return new HomeRequestPermissionViewHolder(parent);
             default:
                 // Prevent NotFoundException
                 // TODO FIX
@@ -63,6 +68,10 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
                 break;
             case TYPE_FAVORITE_INFO:
 
+                break;
+            case TYPE_NEARBY_STOP_INFO:
+                final VhHomeRequestPermissionBinding requestPermissionBinding = (VhHomeRequestPermissionBinding) holder.getBinding();
+                requestPermissionBinding.setClickListener(this.mOnFavoriteClickListener.get());
                 break;
             case TYPE_TITLE:
                 final VhListSectionTitleBinding bindingTitle = (VhListSectionTitleBinding) holder.getBinding();
@@ -126,11 +135,15 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         }
         itemList.add(new ListItem(2,
                 TYPE_TITLE, R.string.nearby));
-        for (DistanceStop stop : this.mNearbyStopList) {
-            ListItem favoriteItem = new ListItem(stop.id,
-                    TYPE_STOP,
-                    stop);
-            itemList.add(favoriteItem);
+        if (this.mHasLocationpermission) {
+            for (DistanceStop stop : this.mNearbyStopList) {
+                ListItem favoriteItem = new ListItem(stop.id,
+                        TYPE_STOP,
+                        stop);
+                itemList.add(favoriteItem);
+            }
+        } else {
+            itemList.add(new ListItem(1, TYPE_NEARBY_STOP_INFO, null));
         }
         final AdapterDiffCallback diffCallback = new AdapterDiffCallback(this.mListItems, itemList);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback, true);
@@ -139,8 +152,15 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         diffResult.dispatchUpdatesTo(this);
     }
 
-    public interface OnFavoriteSelectListener {
+    public void setHasLocationPermission(boolean hasLocationPermission) {
+        this.mHasLocationpermission = hasLocationPermission;
+        this.updateIndex();
+    }
+
+    public interface HomeAdapterEventListener {
         void onFavoriteSelected(@NonNull String stopShortName, @Nullable String stopName);
+
+        void onRequestPermission();
     }
 
     private static final class AdapterDiffCallback extends DiffUtil.Callback {

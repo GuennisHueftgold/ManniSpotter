@@ -32,6 +32,7 @@ import com.semeshky.kvgspotter.database.AppDatabase;
 import com.semeshky.kvgspotter.database.FavoriteStationWithName;
 import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.databinding.ActivityMainBinding;
+import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
 import com.semeshky.kvgspotter.presenter.MainActivityPresenter;
 import com.semeshky.kvgspotter.rx.LocationFlowableOnSubscribe;
 import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
@@ -52,13 +53,20 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity {
 
     private static final int REQUEST_CODE_ACCESS_LOCATION = 2928;
-    private final HomeAdapter.OnFavoriteSelectListener mFavoriteSelectedListener = new HomeAdapter.OnFavoriteSelectListener() {
+    private final HomeAdapter.HomeAdapterEventListener mFavoriteSelectedListener = new HomeAdapter.HomeAdapterEventListener() {
         @Override
         public void onFavoriteSelected(@NonNull String shortName, @Nullable String name) {
             final Intent intent = StationDetailActivity.createIntent(MainActivity.this,
                     shortName,
                     name);
             startActivity(intent);
+        }
+
+        @Override
+        public void onRequestPermission() {
+            MainActivity
+                    .this
+                    .requestLocationPermission();
         }
     };
     private ActivityMainBinding mBinding;
@@ -154,6 +162,7 @@ public class MainActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         if (this.hasLocationPermission()) {
+            this.mHomeAdapter.setHasLocationPermission(true);
             this.mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(this);
 
             LocationFlowableOnSubscribe locationFlowableOnSubscribe = new LocationFlowableOnSubscribe();
@@ -239,6 +248,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
 
+        } else {
+            this.mHomeAdapter.setHasLocationPermission(false);
         }
     }
 
@@ -255,7 +266,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRequestPermissionDialog() {
-
+        Timber.d("showRequestPermissionDialgo");
+        new RequestLocationPermissionDialogFragment().show(this.getSupportFragmentManager(), "asked");
     }
 
     private boolean hasLocationPermission() {
