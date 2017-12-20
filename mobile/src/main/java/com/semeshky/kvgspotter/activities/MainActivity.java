@@ -25,12 +25,8 @@ import android.view.MenuItem;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.semeshky.kvg.kvgapi.KvgApiClient;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.HomeAdapter;
-import com.semeshky.kvgspotter.database.AppDatabase;
-import com.semeshky.kvgspotter.database.FavoriteStationWithName;
-import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.databinding.ActivityMainBinding;
 import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
 import com.semeshky.kvgspotter.presenter.MainActivityPresenter;
@@ -39,15 +35,12 @@ import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
 
 import org.reactivestreams.Subscription;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.BiFunction;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
@@ -75,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     private HomeAdapter mHomeAdapter;
     private FusedLocationProviderClient mFusedLocationProvider;
     private Subscription mStopSubscription;
+    private Disposable mFavoriteDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,43 +159,23 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        Flowable<Location> locationFlowable = null;
         if (this.hasLocationPermission()) {
             this.mHomeAdapter.setHasLocationPermission(true);
             this.mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(this);
 
             LocationFlowableOnSubscribe locationFlowableOnSubscribe = new LocationFlowableOnSubscribe();
-
-            this.mFusedLocationProvider.requestLocationUpdates(LocationRequest.create(),
+            final LocationRequest locationRequest = LocationRequest.create()
+                    .setInterval(10000)
+                    .setFastestInterval(5000)
+                    .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
+            this.mFusedLocationProvider.requestLocationUpdates(locationRequest,
                     locationFlowableOnSubscribe, null);
             this.mFusedLocationProvider.getLastLocation()
                     .addOnSuccessListener(locationFlowableOnSubscribe.getOnSuccessListener());
-            Flowable<Location> locationFlowable =
+            locationFlowable =
                     Flowable.create(locationFlowableOnSubscribe, BackpressureStrategy.LATEST);
-            Flowable.combineLatest(AppDatabase
-                            .getInstance()
-                            .stopDao()
-                            .getAllFlow(), locationFlowable,
-                    new BiFunction<List<Stop>, Location, List<HomeAdapter.DistanceStop>>() {
-                        @Override
-                        public List<HomeAdapter.DistanceStop> apply(List<Stop> stops, Location location) throws Exception {
-                            List<HomeAdapter.DistanceStop> list = new ArrayList<>();
-                            for (Stop stop : stops) {
-                                float distance = -1;
-                                if (location != null) {
-                                    Location loc = new Location("");
-                                    loc.setLongitude(stop.getLongitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
-                                    loc.setLatitude(stop.getLatitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
-                                    distance = loc.distanceTo(location);
-                                }
-                                list.add(new HomeAdapter.DistanceStop(stop.getUid(), stop.getShortName(), stop.getName(), distance));
-                            }
-                            Timber.d("Parsed list");
-                            return list;
-                        }
-                    }
-            ).map(MainActivityViewModel.DISTANCE_STOP_SORT_SHORT_FUNC)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
+            this.mViewModel.createNearbyFlowable(locationFlowable)
                     .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
                         @Override
                         public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
@@ -209,52 +183,30 @@ public class MainActivity extends AppCompatActivity {
                             mHomeAdapter.setNearby(distanceStops);
                         }
                     });
-            Flowable.combineLatest(this.mViewModel.getFavoriteStations(), locationFlowable, new BiFunction<List<FavoriteStationWithName>, Location, List<HomeAdapter.DistanceStop>>() {
-                @Override
-                public List<HomeAdapter.DistanceStop> apply(List<FavoriteStationWithName> favoriteStationWithNames, Location location) throws Exception {
-                    List<HomeAdapter.DistanceStop> distanceStops = new ArrayList<>();
-                    for (FavoriteStationWithName favoriteStationWithName : favoriteStationWithNames) {
-                        float distance = -1f;
-                        if (location != null) {
-                            Location loc = new Location("");
-                            loc.setLongitude(favoriteStationWithName.getLongitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
-                            loc.setLatitude(favoriteStationWithName.getLatitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
-                            distance = loc.distanceTo(location);
-                        }
-                        distanceStops
-                                .add(new HomeAdapter.DistanceStop(favoriteStationWithName.getId(),
-                                        favoriteStationWithName.getShortName(),
-                                        favoriteStationWithName.getName()
-                                        , distance));
-
-                    }
-                    return distanceStops;
-                }
-            })
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
-                        @Override
-                        public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
-                            Timber.d("Stops set");
-                            if (distanceStops == null || distanceStops.size() == 0) {
-                                MainActivity
-                                        .this
-                                        .mMainActivityPresenter
-                                        .listContainsItems.set(false);
-                            } else {
-                                MainActivity
-                                        .this
-                                        .mMainActivityPresenter
-                                        .listContainsItems.set(true);
-                            }
-                            mHomeAdapter.setFavorites(distanceStops);
-                        }
-                    });
 
         } else {
             this.mHomeAdapter.setHasLocationPermission(false);
         }
+        this.mFavoriteDisposable = this.mViewModel
+                .getFavoriteFlowable(locationFlowable)
+                .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
+                    @Override
+                    public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
+                        Timber.d("Stops set");
+                        if (distanceStops == null || distanceStops.size() == 0) {
+                            MainActivity
+                                    .this
+                                    .mMainActivityPresenter
+                                    .listContainsItems.set(false);
+                        } else {
+                            MainActivity
+                                    .this
+                                    .mMainActivityPresenter
+                                    .listContainsItems.set(true);
+                        }
+                        mHomeAdapter.setFavorites(distanceStops);
+                    }
+                });
     }
 
     @Override
@@ -263,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
         if (this.mFusedLocationProvider != null) {
             Timber.d("Removed update listener");
         }
+        this.mFavoriteDisposable.dispose();
         if (this.mStopSubscription != null) {
             this.mStopSubscription.cancel();
             this.mStopSubscription = null;
