@@ -1,5 +1,9 @@
 package com.semeshky.kvgspotter.fragments;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.support.v4.content.ContextCompat;
+
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLng;
@@ -71,6 +75,13 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
         this.mClusterManager.setOnClusterItemInfoWindowClickListener(this.mOnClusterItemClickListener);
         //this.refreshData();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(54.3232941, 10.1381642), 12f));
+        //If location permission is given show the current location
+        if (android.os.Build.VERSION.SDK_INT >= 23) {
+            if (ContextCompat.checkSelfPermission(this.getContext(),
+                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                map.setMyLocationEnabled(true);
+            }
+        }
     }
 
     @Override
