@@ -71,7 +71,6 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
 
         map.setOnMarkerClickListener(dualOnMarkerClickListener);
         map.setOnInfoWindowClickListener(this.mClusterManager);
-        //this.mClusterManager.setOnClusterItemClickListener(this.mOnClusterItemClickListener);
         this.mClusterManager.setOnClusterItemInfoWindowClickListener(this.mOnClusterItemClickListener);
         //this.refreshData();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(54.3232941, 10.1381642), 12f));
