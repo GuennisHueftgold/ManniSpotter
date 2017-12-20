@@ -131,9 +131,9 @@ public class MainActivity extends AppCompatActivity {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-
+                    Timber.d("approved perms");
                 } else {
-
+                    Timber.d("Location permission denied");
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
@@ -142,11 +142,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void requestLocationPermission() {
+        this.requestLocationPermission(true);
+    }
+
+    private void requestLocationPermission(boolean showDialog) {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    Manifest.permission.ACCESS_FINE_LOCATION) && showDialog) {
                 showRequestPermissionDialog();
             } else {
                 ActivityCompat.requestPermissions(this,
@@ -266,8 +270,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void showRequestPermissionDialog() {
-        Timber.d("showRequestPermissionDialgo");
-        new RequestLocationPermissionDialogFragment().show(this.getSupportFragmentManager(), "asked");
+        RequestLocationPermissionDialogFragment dialog = new RequestLocationPermissionDialogFragment();
+        dialog.setOnLocationRequestDialogListener(new RequestLocationPermissionDialogFragment.OnLocationRequestDialogListener() {
+            @Override
+            public void onApproveRequest(boolean approved) {
+                if (!approved)
+                    return;
+                MainActivity
+                        .this
+                        .requestLocationPermission(false);
+            }
+        });
+        dialog.show(this.getSupportFragmentManager(), "ask_for_location");
     }
 
     private boolean hasLocationPermission() {
