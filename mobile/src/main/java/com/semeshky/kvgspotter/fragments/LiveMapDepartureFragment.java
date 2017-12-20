@@ -2,6 +2,7 @@ package com.semeshky.kvgspotter.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,6 +17,7 @@ import android.view.ViewGroup;
 import com.semeshky.kvg.kvgapi.Departure;
 import com.semeshky.kvg.kvgapi.Station;
 import com.semeshky.kvgspotter.R;
+import com.semeshky.kvgspotter.activities.StationDetailActivity;
 import com.semeshky.kvgspotter.activities.TripPassagesActivity;
 import com.semeshky.kvgspotter.adapter.DepartureAdapter;
 import com.semeshky.kvgspotter.database.Stop;
@@ -27,19 +29,27 @@ import timber.log.Timber;
 
 public class LiveMapDepartureFragment extends Fragment {
 
+    private ActivityLiveMapViewModel mViewModel;
     private final Toolbar.OnMenuItemClickListener mToolbarMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_details:
-                    //TODO
+                    final Stop stop = LiveMapDepartureFragment.this
+                            .mViewModel
+                            .getSelectedStop()
+                            .getValue();
+                    final Intent intent = StationDetailActivity
+                            .createIntent(LiveMapDepartureFragment.this.getContext(), stop);
+                    LiveMapDepartureFragment
+                            .this
+                            .startActivity(intent);
                     return true;
                 default:
                     return false;
             }
         }
     };
-    private ActivityLiveMapViewModel mViewModel;
     private FragmentLiveMapDeparturesBinding mBinding;
     private DepartureAdapter mDepartureAdapter;
     private Toolbar mToolbar;
@@ -86,7 +96,7 @@ public class LiveMapDepartureFragment extends Fragment {
     }
 
     private void getStation(Stop stop) {
-        this.mViewModel.loadStation(stop.getShortName())
+        this.mViewModel.loadVehicleLocations(stop.getShortName())
                 .subscribe(new DisposableSingleObserver<Station>() {
                     @Override
                     public void onSuccess(Station station) {

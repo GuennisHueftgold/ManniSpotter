@@ -60,7 +60,7 @@ android.applicationVariants.all { variant ->
     }
 }
 def getGoogleMapsApiKey(release){
-    def Properties props = new Properties()
+    Properties props = new Properties()
     if(release){
         props.load(new FileInputStream(new File('mobile/release.secrets')))
     }else{
@@ -85,10 +85,12 @@ dependencies {
     implementation 'com.android.support:design:' + rootProject.supportLibVersion
     implementation 'com.android.support:cardview-v7:' + rootProject.supportLibVersion
     implementation 'android.arch.persistence.room:runtime:' + rootProject.archRoomVersion
+    implementation 'android.arch.persistence.room:rxjava2:' + rootProject.archRoomVersion
     annotationProcessor 'android.arch.persistence.room:compiler:' + rootProject.archRoomVersion
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'io.reactivex.rxjava2:rxjava:2.1.5'
     gmapsImplementation 'com.google.android.gms:play-services-maps:' + rootProject.playServicesVersion
+    gmapsImplementation 'com.google.android.gms:play-services-location:' + rootProject.playServicesVersion
     gmapsCompile 'com.google.maps.android:android-maps-utils:0.5'
     osmCompile 'org.osmdroid:osmdroid-android:5.6.5'
     compile 'com.android.support:preference-v14:' + rootProject.supportLibVersion

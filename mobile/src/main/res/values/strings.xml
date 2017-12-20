@@ -39,4 +39,9 @@
     <string name="favorite_stop_to_list_it">Favorite a stop to list it here</string>
     <string name="details">Details</string>
     <string name="stop_points">Stop Points</string>
+    <string name="x_kilometer_short">%.2f km</string>
+    <string name="x_meter_short">%.2f m</string>
+    <string name="nearby">Nearby</string>
+    <string name="request">Request</string>
+    <string name="request_location_permission_description">In order to provide you with nearby stops you must allow access to Location Information</string>
 </resources>
