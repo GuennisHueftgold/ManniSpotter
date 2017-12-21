@@ -33,5 +33,8 @@ cache:
 before_install:
   - chmod +x gradlew
   - ./gradlew dependencies || true
+before_script:
+  - cp ./mobile/example.secrets ./mobile/debug.secrets
+  - cp ./mobile/example.secrets ./mobile/release.secrets
 script:
   - ./gradlew build connectedCheck
