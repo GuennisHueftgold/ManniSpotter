@@ -1,10 +1,8 @@
 package com.semeshky.kvgspotter.location;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
+import android.annotation.SuppressLint;
 import android.location.Location;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationAvailability;
@@ -25,12 +23,10 @@ class LocationFlowableOnSubscribe extends LocationCallback implements FlowableOn
         this.mFusedLocationProvider = fusedLocationProvider;
     }
 
+    @SuppressLint("MissingPermission")
     @Override
     public void subscribe(FlowableEmitter<Location> emitter) throws Exception {
-        if (ActivityCompat.checkSelfPermission(this.mFusedLocationProvider.getApplicationContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this.mFusedLocationProvider.getApplicationContext(),
-                Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (LocationHelper.hasLocationPermission(this.mFusedLocationProvider.getApplicationContext())) {
             emitter.onError(new SecurityException("No location permission requested"));
             emitter.onComplete();
             return;
