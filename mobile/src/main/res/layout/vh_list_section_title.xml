@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
             name="title"
             type="Integer"/>
+
+        <variable
+            name="primaryColor"
+            type="boolean"/>
 
     </data>
 
@@ -18,7 +23,7 @@
         android:paddingEnd="@dimen/list_single_line_horizontal_padding"
         android:paddingStart="@dimen/list_single_line_horizontal_padding"
         android:text="@{title, default=PLACEHOLDER}"
-        android:textColor="@color/text_secondary_black"
-        android:textSize="@dimen/list_section_title_text_size"/>
+        android:textSize="@dimen/list_section_title_text_size"
+        app:sectionTitleColorPrimary="@{primaryColor}"/>
 
 </layout>

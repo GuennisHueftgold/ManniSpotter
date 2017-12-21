@@ -12,7 +12,8 @@
         <variable
             name="presenter"
             type="com.semeshky.kvgspotter.presenter.TripPassagesPresenter"/>
-        <import type="com.semeshky.kvgspotter.util.FontBindingAdapter"/>
+
+        <import type="com.semeshky.kvgspotter.util.BindungUtil"/>
         <import type="android.view.View"/>
 
     </data>

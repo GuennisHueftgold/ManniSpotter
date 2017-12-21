@@ -31,37 +31,53 @@
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="@dimen/list_single_line_tile_height"
+        android:layout_height="@dimen/list_double_line_tile_height"
         android:background="?android:attr/selectableItemBackground"
-        android:onClick="@{(view) -> clickListener.onFavoriteSelected(shortName,title)}"
-        android:paddingEnd="@dimen/list_single_line_horizontal_padding"
-        android:paddingStart="@dimen/list_single_line_horizontal_padding">
+        android:onClick="@{(view) -> clickListener.onFavoriteSelected(shortName,title)}">
 
-        <TextView
-            android:id="@id/txtTitle"
+        <ImageView
+            android:id="@id/ivIcon"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:drawablePadding="@dimen/list_single_line_icon_left_padding"
-            android:drawableStart="@{ContextCompat.getDrawable(context,stopIcon), default=@drawable/ic_update_black_24dp}"
-            android:gravity="start|center_vertical"
-            android:lines="1"
-            android:text="@{title, default=PLACEHOLDER}"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/list_double_line_icon_left_padding"
+            android:maxHeight="@dimen/default_icon_size"
+            android:maxWidth="@dimen/default_icon_size"
+            android:scaleType="fitXY"
+            android:src="@{ContextCompat.getDrawable(context,stopIcon), default=@drawable/ic_update_black_24dp}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
+        <TextView
+            android:id="@id/txtTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/list_double_line_text_right_padding"
+            android:layout_marginStart="@dimen/list_double_line_text_left_padding"
+            android:gravity="start|center_vertical"
+            android:lines="1"
+            android:text="@{title, default=PLACEHOLDER}"
+            android:textColor="@color/text_active_black"
+            android:textSize="@dimen/list_double_line_text_size_primary"
+            app:layout_constraintBottom_toTopOf="@id/txtSubtitle"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"/>
 
         <TextView
             android:id="@id/txtSubtitle"
             android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:gravity="end|center_vertical"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
             android:lines="1"
             android:text="@{distance &lt; 1000 ? @string/x_meter_short(distance) : @string/x_kilometer_short(distance/1000.0f), default=PLACEHOLDER}"
+            android:textColor="@color/text_secondary_black"
+            android:textSize="@dimen/list_double_line_text_size_secondary"
             android:visibility="@{distance>=0?View.VISIBLE:View.GONE}"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/txtTitle"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintEnd_toEndOf="@id/txtTitle"
+            app:layout_constraintStart_toStartOf="@id/txtTitle"
+            app:layout_constraintTop_toBottomOf="@id/txtTitle"/>
 
     </android.support.constraint.ConstraintLayout>
 
