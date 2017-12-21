@@ -1,7 +1,6 @@
 package com.semeshky.kvgspotter.activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
@@ -31,6 +30,7 @@ import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import timber.log.Timber;
@@ -148,10 +148,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onResume() {
         super.onResume();
+        Flowable<List<HomeAdapter.DistanceStop>> favoriteFlowable;
         if (LocationHelper.hasLocationPermission(this)) {
             this.mHomeAdapter.setHasLocationPermission(true);
             this.mNearbyDisposable = this.mViewModel.createNearbyFlowable(this.mLocationHelper.getLocationFlowable())
@@ -161,16 +161,15 @@ public class MainActivity extends AppCompatActivity {
                             mHomeAdapter.setNearby(distanceStops);
                         }
                     });
-
+            favoriteFlowable = this.mViewModel.getFavoriteFlowable(this.mLocationHelper.getLocationFlowable());
         } else {
             this.mHomeAdapter.setHasLocationPermission(false);
+            favoriteFlowable = this.mViewModel.getFavoriteFlowable(null);
         }
-        this.mFavoriteDisposable = this.mViewModel
-                .getFavoriteFlowable(this.mLocationHelper.getLocationFlowable())
+        this.mFavoriteDisposable = favoriteFlowable
                 .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
                     @Override
                     public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
-                        Timber.d("Stops set");
                         if (distanceStops == null || distanceStops.size() == 0) {
                             MainActivity
                                     .this
