@@ -29,4 +29,5 @@
     <dimen name="live_map_toolbar_horizontal_margin">8dp</dimen>
     <dimen name="live_map_details_top_margin">8dp</dimen>
     <dimen name="live_map_details_bottom_margin">8dp</dimen>
+    <dimen name="list_section_title_text_size">14sp</dimen>
 </resources>
