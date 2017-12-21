@@ -10,7 +10,7 @@ android:
     - build-tools-26.0.2
 
     # The SDK version used to compile your project
-    - android-27
+    - android-26
 
     # Additional components
     - extra-google-google_play_services
@@ -34,9 +34,11 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 before_install:
+  - android update sdk --no-ui --filter build-tools-26.0.2,android-26,extra-android-m2repository
   - cp ./mobile/example.secrets ./mobile/debug.secrets
   - cp ./mobile/example.secrets ./mobile/release.secrets
   - chmod +x gradlew
+after_install:
   - ./gradlew dependencies || true
 script:
   - ./gradlew build connectedCheck
