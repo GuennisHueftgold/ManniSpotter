@@ -35,10 +35,9 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 before_install:
-  - chmod +x gradlew
-  - ./gradlew dependencies || true
-before_script:
   - cp ./mobile/example.secrets ./mobile/debug.secrets
   - cp ./mobile/example.secrets ./mobile/release.secrets
+  - chmod +x gradlew
+  - ./gradlew dependencies || true
 script:
   - ./gradlew build connectedCheck
