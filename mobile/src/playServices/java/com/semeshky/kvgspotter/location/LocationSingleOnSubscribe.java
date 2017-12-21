@@ -23,7 +23,7 @@ class LocationSingleOnSubscribe implements SingleOnSubscribe<Location> {
     @SuppressLint("MissingPermission")
     @Override
     public void subscribe(final SingleEmitter<Location> emitter) throws Exception {
-        if (LocationHelper.hasLocationPermission(this.mClient.getApplicationContext())) {
+        if (!LocationHelper.hasLocationPermission(this.mClient.getApplicationContext())) {
             emitter.onError(new Exception("Location Permission is required"));
             return;
         }

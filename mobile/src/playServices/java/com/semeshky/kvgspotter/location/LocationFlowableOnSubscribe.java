@@ -26,7 +26,7 @@ class LocationFlowableOnSubscribe extends LocationCallback implements FlowableOn
     @SuppressLint("MissingPermission")
     @Override
     public void subscribe(FlowableEmitter<Location> emitter) throws Exception {
-        if (LocationHelper.hasLocationPermission(this.mFusedLocationProvider.getApplicationContext())) {
+        if (!LocationHelper.hasLocationPermission(this.mFusedLocationProvider.getApplicationContext())) {
             emitter.onError(new SecurityException("No location permission requested"));
             emitter.onComplete();
             return;
