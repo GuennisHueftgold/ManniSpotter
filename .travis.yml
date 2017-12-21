@@ -34,12 +34,12 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 before_install:
-  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+#  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
   - cp ./mobile/example.secrets ./mobile/debug.secrets
   - cp ./mobile/example.secrets ./mobile/release.secrets
   - chmod +x gradlew
 after_install:
   - ./gradlew dependencies || true
-  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+#  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 script:
   - ./gradlew build connectedCheck
