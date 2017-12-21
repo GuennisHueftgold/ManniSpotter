@@ -89,7 +89,7 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
         if (LocationHelper.hasLocationPermission(this.getContext())) {
             googleMap.setMyLocationEnabled(true);
         } else {
-            googleMap.setMyLocationEnabled(true);
+            googleMap.setMyLocationEnabled(false);
         }
     }
 
