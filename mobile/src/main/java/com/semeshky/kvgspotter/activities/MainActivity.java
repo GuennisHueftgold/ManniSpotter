@@ -54,6 +54,12 @@ public class MainActivity extends AppCompatActivity {
                     .requestLocationPermission();
         }
     };
+    private final Consumer<Throwable> LOCATION_THROWABLE_CONSUMER = new Consumer<Throwable>() {
+        @Override
+        public void accept(Throwable throwable) throws Exception {
+            Timber.e(throwable);
+        }
+    };
     private ActivityMainBinding mBinding;
     private MainActivityPresenter mMainActivityPresenter;
     private MainActivityViewModel mViewModel;
@@ -160,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
                         public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
                             mHomeAdapter.setNearby(distanceStops);
                         }
-                    });
+                    }, LOCATION_THROWABLE_CONSUMER);
             favoriteFlowable = this.mViewModel.getFavoriteFlowable(this.mLocationHelper.getLocationFlowable());
         } else {
             this.mHomeAdapter.setHasLocationPermission(false);
@@ -170,20 +176,9 @@ public class MainActivity extends AppCompatActivity {
                 .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
                     @Override
                     public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
-                        if (distanceStops == null || distanceStops.size() == 0) {
-                            MainActivity
-                                    .this
-                                    .mMainActivityPresenter
-                                    .listContainsItems.set(false);
-                        } else {
-                            MainActivity
-                                    .this
-                                    .mMainActivityPresenter
-                                    .listContainsItems.set(true);
-                        }
                         mHomeAdapter.setFavorites(distanceStops);
                     }
-                });
+                }, LOCATION_THROWABLE_CONSUMER);
     }
 
     @Override

@@ -62,6 +62,7 @@ public final class StationDetailActivityViewModel extends ViewModel {
     public void setStation(final Station station) {
         this.isRefreshing.set(false);
         if (station != null) {
+            this.mFavoritedLiveData.setValue(false);
             this.lastUpdateTimestamp.set(LocalTime.now().toString(DateTimeFormat.shortTime()));
             this.stationShortName.set(station.getStopShortName());
             this.stationName.set(station.getStopName());
@@ -74,7 +75,6 @@ public final class StationDetailActivityViewModel extends ViewModel {
             this.mFavoritedLiveData.addSource(this.mFavoriteDatabaseLiveData, new Observer<Boolean>() {
                 @Override
                 public void onChanged(@Nullable Boolean aBoolean) {
-                    Timber.d("onchanged:" + aBoolean);
                     mFavoritedLiveData.setValue(aBoolean);
                 }
             });
