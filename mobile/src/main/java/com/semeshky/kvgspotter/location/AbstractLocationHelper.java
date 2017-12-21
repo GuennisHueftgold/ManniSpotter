@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 
@@ -23,6 +24,9 @@ abstract class AbstractLocationHelper {
      * @return
      */
     public static boolean hasLocationPermission(@NonNull Context context) {
+        if (Build.VERSION.SDK_INT < 23) {
+            return true;
+        }
         return !(ActivityCompat.checkSelfPermission(context,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(context,
