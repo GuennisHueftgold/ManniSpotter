@@ -112,11 +112,16 @@ dependencies {
     annotationProcessor 'android.arch.persistence.room:compiler:' + rootProject.archRoomVersion
     compile 'io.reactivex.rxjava2:rxandroid:2.0.1'
     compile 'io.reactivex.rxjava2:rxjava:2.1.5'
+    compile 'com.android.support:preference-v14:' + rootProject.supportLibVersion
+
+    // GMaps Dependencies
     gmapsImplementation 'com.google.android.gms:play-services-maps:' + rootProject.playServicesVersion
-    playServicesImplementation 'com.google.android.gms:play-services-location:' + rootProject.playServicesVersion
     gmapsCompile 'com.google.maps.android:android-maps-utils:0.5'
+
+    // OSM Dependencies
     osmCompile 'org.osmdroid:osmdroid-android:5.6.5'
 
-    compile 'com.android.support:preference-v14:' + rootProject.supportLibVersion
-    gmapsCompile 'com.google.android.gms:play-services-oss-licenses:' + rootProject.playServicesVersion
+    // Play Services Dependencies
+    playServicesCompile 'com.google.android.gms:play-services-oss-licenses:' + rootProject.playServicesVersion
+    playServicesImplementation 'com.google.android.gms:play-services-location:' + rootProject.playServicesVersion
 }
