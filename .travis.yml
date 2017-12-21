@@ -34,6 +34,7 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 before_install:
+  - $ANDROID_HOME/tools/bin/sdkmanager "build-tools;26.0.2" "platforms;android-26"
   - android update sdk --no-ui --filter build-tools-27.0.0,android-27,extra-android-m2repository
   - cp ./mobile/example.secrets ./mobile/debug.secrets
   - cp ./mobile/example.secrets ./mobile/release.secrets
