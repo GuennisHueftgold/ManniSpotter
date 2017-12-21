@@ -9,7 +9,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,23 +21,16 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.HomeAdapter;
 import com.semeshky.kvgspotter.databinding.ActivityMainBinding;
 import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
+import com.semeshky.kvgspotter.location.LocationHelper;
 import com.semeshky.kvgspotter.presenter.MainActivityPresenter;
-import com.semeshky.kvgspotter.rx.LocationFlowableOnSubscribe;
 import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
-
-import org.reactivestreams.Subscription;
 
 import java.util.List;
 
-import io.reactivex.BackpressureStrategy;
-import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
 import timber.log.Timber;
@@ -66,9 +58,9 @@ public class MainActivity extends AppCompatActivity {
     private MainActivityPresenter mMainActivityPresenter;
     private MainActivityViewModel mViewModel;
     private HomeAdapter mHomeAdapter;
-    private FusedLocationProviderClient mFusedLocationProvider;
-    private Subscription mStopSubscription;
     private Disposable mFavoriteDisposable;
+    private LocationHelper mLocationHelper;
+    private Disposable mNearbyDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         this.mBinding.recyclerView.setAdapter(this.mHomeAdapter);
         this.mBinding.setPresenter(this.mMainActivityPresenter);
         this.mBinding.executePendingBindings();
+        this.mLocationHelper = new LocationHelper(this);
     }
 
     @Override
@@ -159,27 +152,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        Flowable<Location> locationFlowable = null;
         if (this.hasLocationPermission()) {
             this.mHomeAdapter.setHasLocationPermission(true);
-            this.mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(this);
-
-            LocationFlowableOnSubscribe locationFlowableOnSubscribe = new LocationFlowableOnSubscribe();
-            final LocationRequest locationRequest = LocationRequest.create()
-                    .setInterval(10000)
-                    .setFastestInterval(5000)
-                    .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-            this.mFusedLocationProvider.requestLocationUpdates(locationRequest,
-                    locationFlowableOnSubscribe, null);
-            this.mFusedLocationProvider.getLastLocation()
-                    .addOnSuccessListener(locationFlowableOnSubscribe.getOnSuccessListener());
-            locationFlowable =
-                    Flowable.create(locationFlowableOnSubscribe, BackpressureStrategy.LATEST);
-            this.mViewModel.createNearbyFlowable(locationFlowable)
+            this.mNearbyDisposable = this.mViewModel.createNearbyFlowable(this.mLocationHelper.getLocationFlowable())
                     .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
                         @Override
                         public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
-                            Timber.d("Stops set");
                             mHomeAdapter.setNearby(distanceStops);
                         }
                     });
@@ -188,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
             this.mHomeAdapter.setHasLocationPermission(false);
         }
         this.mFavoriteDisposable = this.mViewModel
-                .getFavoriteFlowable(locationFlowable)
+                .getFavoriteFlowable(this.mLocationHelper.getLocationFlowable())
                 .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
                     @Override
                     public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
@@ -212,14 +190,10 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         super.onPause();
-        if (this.mFusedLocationProvider != null) {
-            Timber.d("Removed update listener");
-        }
-        this.mFavoriteDisposable.dispose();
-        if (this.mStopSubscription != null) {
-            this.mStopSubscription.cancel();
-            this.mStopSubscription = null;
-        }
+        if (this.mFavoriteDisposable != null && !this.mFavoriteDisposable.isDisposed())
+            this.mFavoriteDisposable.dispose();
+        if (this.mNearbyDisposable != null && !this.mNearbyDisposable.isDisposed())
+            this.mNearbyDisposable.dispose();
     }
 
     private void showRequestPermissionDialog() {
