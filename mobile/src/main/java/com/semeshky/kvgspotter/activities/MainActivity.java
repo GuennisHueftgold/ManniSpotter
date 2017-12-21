@@ -152,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (this.hasLocationPermission()) {
+        if (LocationHelper.hasLocationPermission(this)) {
             this.mHomeAdapter.setHasLocationPermission(true);
             this.mNearbyDisposable = this.mViewModel.createNearbyFlowable(this.mLocationHelper.getLocationFlowable())
                     .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
@@ -209,10 +209,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         dialog.show(this.getSupportFragmentManager(), "ask_for_location");
-    }
-
-    private boolean hasLocationPermission() {
-        return ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 }
