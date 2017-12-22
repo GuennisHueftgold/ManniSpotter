@@ -41,11 +41,6 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
-
 import java.util.Collections;
 import java.util.List;
 
@@ -98,19 +93,6 @@ public class VideoDetailsFragment extends DetailsFragment {
 
     private void initializeBackground(Movie data) {
         mDetailsBackground.enableParallax();
-        Glide.with(getActivity())
-                .load(data.getBackgroundImageUrl())
-                .asBitmap()
-                .centerCrop()
-                .error(R.drawable.default_background)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap bitmap,
-                                                GlideAnimation<? super Bitmap> glideAnimation) {
-                        mDetailsBackground.setCoverBitmap(bitmap);
-                        mAdapter.notifyArrayItemRangeChanged(0, mAdapter.size());
-                    }
-                });
     }
 
     private void setupDetailsOverviewRow() {
@@ -120,20 +102,6 @@ public class VideoDetailsFragment extends DetailsFragment {
                 ContextCompat.getDrawable(getActivity(), R.drawable.default_background));
         int width = convertDpToPixel(getActivity().getApplicationContext(), DETAIL_THUMB_WIDTH);
         int height = convertDpToPixel(getActivity().getApplicationContext(), DETAIL_THUMB_HEIGHT);
-        Glide.with(getActivity())
-                .load(mSelectedMovie.getCardImageUrl())
-                .centerCrop()
-                .error(R.drawable.default_background)
-                .into(new SimpleTarget<GlideDrawable>(width, height) {
-                    @Override
-                    public void onResourceReady(GlideDrawable resource,
-                                                GlideAnimation<? super GlideDrawable>
-                                                        glideAnimation) {
-                        Log.d(TAG, "details overview card image url ready: " + resource);
-                        row.setImageDrawable(resource);
-                        mAdapter.notifyArrayItemRangeChanged(0, mAdapter.size());
-                    }
-                });
 
         ArrayObjectAdapter actionAdapter = new ArrayObjectAdapter();
 
