@@ -29,6 +29,12 @@
 # Retain declared checked exceptions for use by a Proxy instance.
 -keepattributes Exceptions
 
+# Okhttp https://github.com/square/okhttp/issues/2230
+-keepattributes Signature
+-keepattributes Annotation
+-keep class okhttp3.** { *; }
+-keep interface okhttp3.** { *; }
+-dontwarn okhttp3.**
 -dontwarn okio.**
 
 ## Joda Time 2.3
