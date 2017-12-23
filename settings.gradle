@@ -1,1 +1,1 @@
-include ':mobile', ':things', ':kvgapi', ':tv'
+include ':mobile', ':kvgapi'

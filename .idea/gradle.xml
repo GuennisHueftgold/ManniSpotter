@@ -10,8 +10,6 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/kvgapi" />
             <option value="$PROJECT_DIR$/mobile" />
-            <option value="$PROJECT_DIR$/things" />
-            <option value="$PROJECT_DIR$/tv" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
