@@ -58,14 +58,12 @@ public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPass
         final TripPassagesPresenter presenter = binding.getPresenter();
         switch (item.getStatus()) {
             case TripPassageStop.STATUS_PREDICTED:
-                presenter.activeStop.set(true);
-                break;
             case TripPassageStop.STATUS_PLANNED:
-                presenter.activeStop.set(true);
-                break;
             case TripPassageStop.STATUS_STOPPING:
                 presenter.activeStop.set(true);
                 break;
+            case TripPassageStop.STATUS_DEPARTED:
+            case TripPassageStop.STATUS_UNKNOWN:
             default:
                 presenter.activeStop.set(false);
                 break;
