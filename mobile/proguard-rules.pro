@@ -46,3 +46,6 @@
 -dontwarn org.joda.time.**
 -keep class org.joda.time.** { *; }
 -keep interface org.joda.time.** { *; }
+
+-dontwarn org.osmdroid.**
+-dontnote org.osmdroid.**
