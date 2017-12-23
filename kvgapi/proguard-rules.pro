@@ -35,7 +35,9 @@
 -keep class okhttp3.** { *; }
 -keep interface okhttp3.** { *; }
 -dontwarn okhttp3.**
+-dontnote okhttp3.**
 -dontwarn okio.**
+-dontnote okio.**
 
 ## Joda Time 2.3
 
