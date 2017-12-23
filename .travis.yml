@@ -1,6 +1,8 @@
 language: android
-
 env:
+  global:
+    - ANDROID_BUILD_TOOLS=27.0.3
+    - ADB_INSTALL_TIMEOUT=5
   matrix:
     - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
     - ANDROID_TARGET=android-25 ANDROID_ABI=armeabi-v7a
@@ -14,10 +16,11 @@ android:
     - platform-tools
 
     # The BuildTools version used by your project
-    - build-tools-27.0.3
+    - build-tools-$ANDROID_BUILD_TOOLS
 
     # The SDK version used to compile your project
     - $ANDROID_TARGET
+    - android-27
 
     # Additional components
     - extra-google-google_play_services
