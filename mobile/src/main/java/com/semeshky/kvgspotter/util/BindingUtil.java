@@ -9,14 +9,14 @@ import android.widget.TextView;
 
 import com.semeshky.kvgspotter.R;
 
-public final class BindungUtil {
+public final class BindingUtil {
 
-    @BindingAdapter({"bind:supTypeFace"})
+    @BindingAdapter({"supTypeFace"})
     public static void setTypeFace(TextView textView, String typeface) {
         textView.setTypeface(Typeface.create(typeface, Typeface.NORMAL));
     }
 
-    @BindingAdapter({"app:sectionTitleColorPrimary"})
+    @BindingAdapter({"sectionTitleColorPrimary"})
     public static void setListSectionTitleColor(TextView v, boolean primaryColor) {
         final TypedValue typedValue = new TypedValue();
         final Context context = v.getContext();

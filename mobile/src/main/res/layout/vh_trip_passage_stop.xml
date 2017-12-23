@@ -13,7 +13,7 @@
             name="presenter"
             type="com.semeshky.kvgspotter.presenter.TripPassagesPresenter"/>
 
-        <import type="com.semeshky.kvgspotter.util.BindungUtil"/>
+        <import type="com.semeshky.kvgspotter.util.BindingUtil"/>
         <import type="android.view.View"/>
 
     </data>
