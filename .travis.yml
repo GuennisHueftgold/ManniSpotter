@@ -61,4 +61,4 @@ script:
   - ./gradlew build
   - ./gradlew connectedCheck
 after_success:
-  - ./gradlew coveralls
+  - ./gradlew jacocoRootReport coveralls
