@@ -20,8 +20,6 @@ import android.support.v17.leanback.widget.Presenter;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import com.bumptech.glide.Glide;
-
 /*
  * A CardPresenter is used to generate Views and bind Objects to them on demand.
  * It contains an Image CardView
@@ -80,11 +78,6 @@ public class CardPresenter extends Presenter {
             cardView.setTitleText(movie.getTitle());
             cardView.setContentText(movie.getStudio());
             cardView.setMainImageDimensions(CARD_WIDTH, CARD_HEIGHT);
-            Glide.with(viewHolder.view.getContext())
-                    .load(movie.getCardImageUrl())
-                    .centerCrop()
-                    .error(mDefaultCardImage)
-                    .into(cardView.getMainImageView());
         }
     }
 
