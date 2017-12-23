@@ -53,7 +53,7 @@ public class TripPassagesViewModel extends AndroidViewModel {
     }
 
     public void setTripId(@NonNull final String tripId) {
-        Timber.d("Trip id set: " + tripId);
+        Timber.d("Trip id set: %s", tripId);
         this.mTripIdMutableLiveData.postValue(tripId);
         this.updateData(tripId);
     }

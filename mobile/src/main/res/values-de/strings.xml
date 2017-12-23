@@ -20,7 +20,7 @@
     <string name="favorize">Favorisieren</string>
     <string name="navigate_to">Navigiere zu</string>
     <string name="routes">Routen</string>
-    <string name="authority">Authorität</string>
+    <string name="authority">Autorität</string>
     <string name="last_passage_time">Letzte Passagezeit</string>
     <string name="first_passage_time">Erste Passagezeit</string>
     <string name="advanced">Erweitert</string>
@@ -43,4 +43,6 @@
     <string name="nearby">In der Nähe</string>
     <string name="request">Request</string>
     <string name="request_location_permission_description">In order to provide you with nearby stops you must allow access to Location Information</string>
+    <string name="menu">Menu</string>
+    <string name="requesting_location_permission">Requesting location permission</string>
 </resources>

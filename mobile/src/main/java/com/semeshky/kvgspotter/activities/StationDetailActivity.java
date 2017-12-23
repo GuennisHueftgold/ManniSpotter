@@ -183,7 +183,7 @@ public final class StationDetailActivity extends AppCompatActivity {
                 .subscribe(new DisposableSingleObserver<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
-                        Timber.d("Successfully liked: " + aBoolean);
+                        Timber.d("Successfully liked: %s", aBoolean);
                     }
 
                     @Override
@@ -207,7 +207,7 @@ public final class StationDetailActivity extends AppCompatActivity {
 
     private class PagerAdapter extends FragmentPagerAdapter {
 
-        public PagerAdapter(FragmentManager fm) {
+        PagerAdapter(FragmentManager fm) {
             super(fm);
         }
 
