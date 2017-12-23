@@ -1,4 +1,11 @@
 language: android
+
+env:
+  matrix:
+    - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
+    - ANDROID_TARGET=android-25 ANDROID_ABI=armeabi-v7a
+
+
 android:
   components:
     # Uncomment the lines below if you want to
@@ -20,7 +27,7 @@ android:
 
     # Specify at least one system image,
     # if you need to run emulator(s) during your tests
-    - sys-img-armeabi-v7a-android-27
+    - sys-img-$ANDROID_ABI-$ANDROID_TARGET
     #- sys-img-armeabi-v7a-android-21
     - add-on
     - extra
@@ -44,7 +51,7 @@ after_install:
   - ./gradlew dependencies || true
 #  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 before_script:
-  - echo no | android create avd --force -n test -t android-27 --abi armeabi-v7a --tag google_apis
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI --tag google_apis
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
