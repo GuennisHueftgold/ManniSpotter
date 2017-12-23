@@ -5,11 +5,6 @@
         tools:context="com.semeshky.kvgspotter.activities.MainActivity">
 
     <data>
-
-        <variable
-            name="presenter"
-            type="com.semeshky.kvgspotter.presenter.MainActivityPresenter"/>
-        <import type="android.view.View"/>
     </data>
 
     <android.support.constraint.ConstraintLayout
