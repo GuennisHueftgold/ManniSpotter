@@ -122,7 +122,7 @@ coveralls {
 tasks.coveralls {
     description = 'Uploads the aggregated coverage report to Coveralls'
 
-    dependsOn jacocoRootReport
+    
     //dependsOn 'connectedAndroidTest'
     ///onlyIf { System.env.'CI' }
 }
