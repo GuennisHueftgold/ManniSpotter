@@ -5,7 +5,7 @@ env:
     - ADB_INSTALL_TIMEOUT=5
   matrix:
     - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a ANDROID_VERSION=21
-    - ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a ANDROID_VERSION=24
+    #- ANDROID_TARGET=android-24 ANDROID_ABI=arm64-v8a ANDROID_VERSION=24
     - ANDROID_TARGET=android-25 ANDROID_ABI=arm64-v8a ANDROID_VERSION=25
 
 
@@ -50,12 +50,13 @@ before_install:
   - cp ./mobile/example.secrets ./mobile/debug.secrets
   - cp ./mobile/example.secrets ./mobile/release.secrets
   - chmod +x gradlew
+  - export QEMU_AUDIO_DRV=none
 after_install:
   - ./gradlew dependencies || true
 #  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 before_script:
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI --tag google_apis
-  - emulator -avd test -no-audio -no-window &
+  - emulator -avd test -no-window &
   - android-wait-for-emulator
   - adb shell input keyevent 82 &
 script:
