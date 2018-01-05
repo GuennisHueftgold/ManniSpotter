@@ -39,8 +39,6 @@ public class SearchContentProvider extends ContentProvider {
             return null;
         }
         Timber.d("path: %s", uri.toString());
-        if (projection != null)
-            Timber.d("projection args: %s", projection);
         Timber.d("selection args: %s", selectionArgs[0]);
         Timber.d("selection: %s", selection);
         int limit = 50;
