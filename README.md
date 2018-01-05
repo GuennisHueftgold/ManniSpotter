@@ -1,5 +1,8 @@
 # MANNISPOTTER
 
+[![Build Status](https://travis-ci.org/GuennisHueftgold/ManniSpotter.svg?branch=master)](https://travis-ci.org/GuennisHueftgold/ManniSpotter)
+[![codecov](https://codecov.io/gh/GuennisHueftgold/ManniSpotter/branch/master/graph/badge.svg)](https://codecov.io/gh/GuennisHueftgold/ManniSpotter)
+
 ![Image of Main Menu](docs/screenshot_tablet_1.png)
 
 Derzeit bietet dieses Repo zwei Varianten des ManniSpotter. Eine OSM- und eine GMaps-Version.
