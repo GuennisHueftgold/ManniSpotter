@@ -8,12 +8,12 @@ import android.databinding.ObservableField;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
-import com.semeshky.kvg.kvgapi.KvgApiService;
-import com.semeshky.kvg.kvgapi.TripPassages;
-import com.semeshky.kvg.kvgapi.VehicleLocation;
-import com.semeshky.kvg.kvgapi.VehicleLocations;
-import com.semeshky.kvg.kvgapi.VehiclePathInfo;
+import com.github.guennishueftgold.trapezeapi.TrapezeApiService;
+import com.github.guennishueftgold.trapezeapi.TripPassages;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
+import com.github.guennishueftgold.trapezeapi.VehicleLocations;
+import com.github.guennishueftgold.trapezeapi.VehiclePathInfo;
+import com.semeshky.kvgspotter.api.KvgApiClient;
 
 import org.joda.time.DateTime;
 
@@ -98,8 +98,7 @@ public class TripPassagesViewModel extends AndroidViewModel {
         if (tripId == null)
             return;
         this.canclePendingRequests();
-        final KvgApiService service = KvgApiClient.getInstance()
-                .getService();
+        final TrapezeApiService service = KvgApiClient.getService();
         this.mTripPassagesCall = service
                 .getTripPassages(tripId,
                         null,

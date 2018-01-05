@@ -4,7 +4,7 @@ import android.content.Context;
 import android.databinding.ObservableBoolean;
 import android.view.View;
 
-import com.semeshky.kvg.kvgapi.TripPassageStop;
+import com.github.guennishueftgold.trapezeapi.TripPassageStop;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.TripPassagesAdapter;
 import com.semeshky.kvgspotter.util.JodaUtil;

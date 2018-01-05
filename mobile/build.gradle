@@ -73,59 +73,6 @@ task mergeJacocoReport(type: JacocoMerge) {
 jacoco {
     toolVersion = "0.7.8"
 }
-task jacocoRootReport(type: JacocoReport, group: 'Coverage reports') {
-    description = 'Generates an aggregate report from all subprojects'
-    def fileFilter = []
-    def debugFiles = []
-    def buildTypes = android.buildTypes.collect { type -> type.name }
-    def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
-    def sourceDirs=[]
-    new File("${project.projectDir}").traverse([maxDepth: 2,
-                                                filter  : ~/.*(?<!(test|Test))(\/|\\)java$/,
-                                                type    : groovy.io.FileType.DIRECTORIES]) {
-        f -> sourceDirs.add(f)
-    }
-    def classesDirs = []
-    new File("${buildDir}/intermediates/classes").traverse([maxDepth: 2,
-                                                filter  : ~/.*debug$/,
-                                                type    : groovy.io.FileType.DIRECTORIES]) {
-        f -> classesDirs.add(f)
-    }
-    def execData = new File("${buildDir}/outputs/code-coverage/connected/flavors").traverse([
-            filter: ~/.*(\..*exex|\.ec)$/,
-            type  : groovy.io.FileType.FILES])
-    def excData = fileTree(dir: "${buildDir}/outputs/code-coverage/connected/flavors", includes: ['**.*exex', '**/*.ec'])
-    excData.each { f ->
-        logger.info("ex data: {}",f)
-    }
-    sourceDirs.each{ dir ->
-        logger.info("SourceDir: "+dir.toString())
-    }
-    def mainSrcs = ['${project.projectDir}/src/main/java',
-                    '${project.projectDir}/src/debug/java',
-                    '${project.projectDir}/src/osm/java',
-                    '${project.projectDir}/src/gmaps/java']
-    sourceDirectories = files(sourceDirs)
-    classDirectories = files(classesDirs)
-    executionData = fileTree(dir: "${buildDir}/outputs/code-coverage/connected/flavors", includes:['**.*exex', '**/*.ec'])
-    reports {
-        html.enabled = true
-        xml.enabled = true
-    }
-}
-
-coveralls {
-    sourceDirs = subprojects.sourceSets.main.allSource.srcDirs.flatten()
-    jacocoReportPath = "${buildDir}/reports/jacoco/jacocoRootReport/jacocoRootReport.xml"
-}
-
-tasks.coveralls {
-    description = 'Uploads the aggregated coverage report to Coveralls'
-
-    dependsOn jacocoRootReport
-    //dependsOn 'connectedAndroidTest'
-    ///onlyIf { System.env.'CI' }
-}
 
 android.variantFilter { variant ->
     // Filter variants for impossible combinations
@@ -177,7 +124,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation project(':kvgapi')
     implementation 'com.android.support:recyclerview-v7:' + rootProject.supportLibVersion
     implementation 'com.android.support:design:' + rootProject.supportLibVersion
     implementation 'com.android.support:cardview-v7:' + rootProject.supportLibVersion
@@ -198,4 +144,7 @@ dependencies {
     // Play Services Dependencies
     playServicesCompile 'com.google.android.gms:play-services-oss-licenses:' + rootProject.playServicesVersion
     playServicesImplementation 'com.google.android.gms:play-services-location:' + rootProject.playServicesVersion
+
+    implementation 'com.github.guennishueftgold.trapeze.api:trapezeapi:1.3.+'
+    implementation 'com.jakewharton.timber:timber:' + rootProject.timberVersion
 }

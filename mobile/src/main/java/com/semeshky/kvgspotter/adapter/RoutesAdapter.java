@@ -4,8 +4,8 @@ import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.semeshky.kvg.kvgapi.Route;
-import com.semeshky.kvg.kvgapi.Station;
+import com.github.guennishueftgold.trapezeapi.Route;
+import com.github.guennishueftgold.trapezeapi.Station;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhStationRouteBinding;
 

@@ -5,8 +5,8 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.semeshky.kvg.kvgapi.LatLngInterface;
-import com.semeshky.kvg.kvgapi.StationLocation;
+import com.github.guennishueftgold.trapezeapi.LatLngInterface;
+import com.github.guennishueftgold.trapezeapi.StationLocation;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -6,7 +6,8 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.semeshky.kvg.kvgapi.Departure;
+import com.github.guennishueftgold.trapezeapi.Departure;
+import com.github.guennishueftgold.trapezeapi.DepartureStatus;
 import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhStationDepartureBinding;
@@ -47,8 +48,8 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
     protected void bind(VhStationDepartureBinding binding, Departure item) {
         binding.setVariable(BR.departure, item);
         final Resources resources = binding.getRoot().getContext().getResources();
-        if ((item.getActualRelativeTime() < 0 || item.getStatus() == Departure.STATUS_DEPARTED)
-                && item.getStatus() != Departure.STATUS_STOPPING) {
+        if ((item.getActualRelativeTime() < 0 || item.getStatus() == DepartureStatus.STATUS_DEPARTED)
+                && item.getStatus() != DepartureStatus.STATUS_STOPPING) {
             // IF Bus has left
             binding.setActive(false);
             binding.setSecondaryText(resources.getString(R.string.departed));
@@ -57,7 +58,7 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
 
         } else {
             binding.setActive(true);
-            if (item.getStatus() == Departure.STATUS_STOPPING) {
+            if (item.getStatus() == DepartureStatus.STATUS_STOPPING) {
                 // if bus is stopping dont display time just potential delay
                 binding.setSecondaryText(resources.getString(R.string.stopping));
                 binding.setSecondaryTextAlert(false);

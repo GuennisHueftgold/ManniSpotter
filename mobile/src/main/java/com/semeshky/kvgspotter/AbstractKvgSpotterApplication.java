@@ -2,7 +2,7 @@ package com.semeshky.kvgspotter;
 
 import android.app.Application;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
+import com.semeshky.kvgspotter.api.KvgApiClient;
 import com.semeshky.kvgspotter.database.AppDatabase;
 import com.semeshky.kvgspotter.jobs.SynchronizeJobManager;
 

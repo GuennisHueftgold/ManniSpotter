@@ -21,8 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.semeshky.kvg.kvgapi.FulltextSearchResult;
-import com.semeshky.kvg.kvgapi.TripPassageStop;
+import com.github.guennishueftgold.trapezeapi.FulltextSearchResult;
+import com.github.guennishueftgold.trapezeapi.TripPassageStop;
 import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.database.Stop;
