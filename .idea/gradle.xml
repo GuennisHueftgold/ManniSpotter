@@ -8,7 +8,6 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/kvgapi" />
             <option value="$PROJECT_DIR$/mobile" />
           </set>
         </option>

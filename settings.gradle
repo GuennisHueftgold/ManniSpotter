@@ -1,1 +1,1 @@
-include ':mobile', ':kvgapi'
+include ':mobile'
