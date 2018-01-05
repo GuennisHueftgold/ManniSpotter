@@ -17,9 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.semeshky.kvg.kvgapi.Departure;
-import com.semeshky.kvg.kvgapi.TripPassages;
-import com.semeshky.kvg.kvgapi.VehicleLocation;
+import com.github.guennishueftgold.trapezeapi.Departure;
+import com.github.guennishueftgold.trapezeapi.TripPassages;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.TripPassagesAdapter;
 import com.semeshky.kvgspotter.databinding.ActivityTripPassagesBinding;

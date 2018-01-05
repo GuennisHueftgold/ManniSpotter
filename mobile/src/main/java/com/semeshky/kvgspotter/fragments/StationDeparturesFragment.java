@@ -12,8 +12,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.semeshky.kvg.kvgapi.Departure;
-import com.semeshky.kvg.kvgapi.Station;
+import com.github.guennishueftgold.trapezeapi.Departure;
+import com.github.guennishueftgold.trapezeapi.Station;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.activities.TripPassagesActivity;
 import com.semeshky.kvgspotter.adapter.DepartureAdapter;

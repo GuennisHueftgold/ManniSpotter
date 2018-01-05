@@ -6,11 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.semeshky.kvg.kvgapi.TripPassageStop;
+import com.github.guennishueftgold.trapezeapi.TripPassageStop;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhTripPassageStopBinding;
 import com.semeshky.kvgspotter.presenter.TripPassagesPresenter;
 import com.semeshky.kvgspotter.util.JodaUtil;
+
+import java.util.List;
 
 public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPassageStop, VhTripPassageStopBinding> {
 
@@ -48,7 +50,7 @@ public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPass
     }
 
     @Override
-    protected void bind(VhTripPassageStopBinding binding, TripPassageStop item) {
+    protected void bind(VhTripPassageStopBinding binding, TripPassageStop item, List<Object> payloads) {
         binding.setTripPassageStop(item);
         if (binding.getPresenter() == null) {
             final TripPassagesPresenter tripPassagesPresenter = new TripPassagesPresenter();
@@ -58,14 +60,12 @@ public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPass
         final TripPassagesPresenter presenter = binding.getPresenter();
         switch (item.getStatus()) {
             case TripPassageStop.STATUS_PREDICTED:
-                presenter.activeStop.set(true);
-                break;
             case TripPassageStop.STATUS_PLANNED:
-                presenter.activeStop.set(true);
-                break;
             case TripPassageStop.STATUS_STOPPING:
                 presenter.activeStop.set(true);
                 break;
+            case TripPassageStop.STATUS_DEPARTED:
+            case TripPassageStop.STATUS_UNKNOWN:
             default:
                 presenter.activeStop.set(false);
                 break;

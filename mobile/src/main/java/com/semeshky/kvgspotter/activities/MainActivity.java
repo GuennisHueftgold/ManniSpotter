@@ -25,7 +25,6 @@ import com.semeshky.kvgspotter.adapter.HomeAdapter;
 import com.semeshky.kvgspotter.databinding.ActivityMainBinding;
 import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
 import com.semeshky.kvgspotter.location.LocationHelper;
-import com.semeshky.kvgspotter.presenter.MainActivityPresenter;
 import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
 
 import java.util.List;
@@ -61,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     private ActivityMainBinding mBinding;
-    private MainActivityPresenter mMainActivityPresenter;
     private MainActivityViewModel mViewModel;
     private HomeAdapter mHomeAdapter;
     private Disposable mFavoriteDisposable;
@@ -75,11 +73,9 @@ public class MainActivity extends AppCompatActivity {
         this.mViewModel = ViewModelProviders.of(this)
                 .get(MainActivityViewModel.class);
         this.setSupportActionBar((Toolbar) this.mBinding.toolbar.getRoot());
-        this.mMainActivityPresenter = new MainActivityPresenter(this);
         this.mHomeAdapter = new HomeAdapter(this.mFavoriteSelectedListener);
         this.mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.mBinding.recyclerView.setAdapter(this.mHomeAdapter);
-        this.mBinding.setPresenter(this.mMainActivityPresenter);
         this.mBinding.executePendingBindings();
         this.mLocationHelper = new LocationHelper(this);
     }

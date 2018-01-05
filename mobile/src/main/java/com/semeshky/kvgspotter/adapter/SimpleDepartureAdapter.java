@@ -4,12 +4,14 @@ import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.semeshky.kvg.kvgapi.Departure;
+import com.github.guennishueftgold.trapezeapi.Departure;
 import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.ListitemSimpleDepartureBinding;
 
 import org.joda.time.LocalTime;
+
+import java.util.List;
 
 
 public class SimpleDepartureAdapter extends AbstractDataboundAdapter<Departure, ListitemSimpleDepartureBinding> {
@@ -22,7 +24,7 @@ public class SimpleDepartureAdapter extends AbstractDataboundAdapter<Departure, 
     }
 
     @Override
-    protected void bind(ListitemSimpleDepartureBinding binding, Departure item) {
+    protected void bind(ListitemSimpleDepartureBinding binding, Departure item, List<Object> payloads) {
         binding.setVariable(BR.departure, item);
     }
 

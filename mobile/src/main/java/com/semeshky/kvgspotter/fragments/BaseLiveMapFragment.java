@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.semeshky.kvg.kvgapi.VehicleLocation;
-import com.semeshky.kvg.kvgapi.VehicleLocations;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
+import com.github.guennishueftgold.trapezeapi.VehicleLocations;
 import com.semeshky.kvgspotter.activities.StationDetailActivity;
 import com.semeshky.kvgspotter.activities.TripPassagesActivity;
 import com.semeshky.kvgspotter.database.Stop;

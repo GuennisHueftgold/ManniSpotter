@@ -18,7 +18,7 @@ public class DebugStopDatabasePresenter {
                 .subscribe(new DisposableSingleObserver<Integer>() {
                     @Override
                     public void onSuccess(Integer integer) {
-                        Timber.d("data syncronized: " + integer);
+                        Timber.d("data syncronized: %s", integer);
                     }
 
                     @Override

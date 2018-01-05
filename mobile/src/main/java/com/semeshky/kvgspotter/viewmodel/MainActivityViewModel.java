@@ -6,7 +6,7 @@ import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
+import com.github.guennishueftgold.trapezeapi.TrapezeApiClient;
 import com.semeshky.kvgspotter.adapter.HomeAdapter;
 import com.semeshky.kvgspotter.database.AppDatabase;
 import com.semeshky.kvgspotter.database.FavoriteStationWithName;
@@ -53,8 +53,8 @@ public class MainActivityViewModel extends AndroidViewModel {
                 float distance = -1f;
                 if (location != null) {
                     Location loc = new Location("");
-                    loc.setLongitude(favoriteStationWithName.getLongitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
-                    loc.setLatitude(favoriteStationWithName.getLatitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
+                    loc.setLongitude(favoriteStationWithName.getLongitude() / TrapezeApiClient.COORDINATES_CONVERTION_CONSTANT);
+                    loc.setLatitude(favoriteStationWithName.getLatitude() / TrapezeApiClient.COORDINATES_CONVERTION_CONSTANT);
                     distance = loc.distanceTo(location);
                 }
                 distanceStops
@@ -88,8 +88,8 @@ public class MainActivityViewModel extends AndroidViewModel {
                 float distance = -1;
                 if (location != null) {
                     Location loc = new Location("");
-                    loc.setLongitude(stop.getLongitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
-                    loc.setLatitude(stop.getLatitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
+                    loc.setLongitude(stop.getLongitude() / TrapezeApiClient.COORDINATES_CONVERTION_CONSTANT);
+                    loc.setLatitude(stop.getLatitude() / TrapezeApiClient.COORDINATES_CONVERTION_CONSTANT);
                     distance = loc.distanceTo(location);
                 }
                 list.add(new HomeAdapter.DistanceStop(stop.getUid(), stop.getShortName(), stop.getName(), distance));

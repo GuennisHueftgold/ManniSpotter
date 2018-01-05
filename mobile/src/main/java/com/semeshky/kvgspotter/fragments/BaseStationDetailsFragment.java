@@ -15,7 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.semeshky.kvg.kvgapi.Station;
+import com.github.guennishueftgold.trapezeapi.Station;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.RoutesAdapter;
 import com.semeshky.kvgspotter.database.Stop;

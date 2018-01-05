@@ -1,7 +1,7 @@
 package com.semeshky.kvgspotter.fragments;
 
-import com.semeshky.kvg.kvgapi.VehicleLocation;
-import com.semeshky.kvg.kvgapi.VehicleLocations;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
+import com.github.guennishueftgold.trapezeapi.VehicleLocations;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.map.CoordinateUtil;

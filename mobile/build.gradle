@@ -1,8 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.oss.licenses.plugin'
+//apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'jacoco'
 
 android {
     compileSdkVersion 27
+    buildToolsVersion rootProject.buildToolsVersion
     defaultConfig {
         applicationId "com.semeshky.kvgspotter"
         minSdkVersion 21
@@ -24,6 +27,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
+            testCoverageEnabled true
             minifyEnabled false
             versionNameSuffix "-debug"
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -51,6 +55,23 @@ android {
             versionNameSuffix "-gmaps"
         }
     }
+    lintOptions{
+        abortOnError true
+    }
+}
+task mergeJacocoReport(type: JacocoMerge) {
+    group "Jacoco Report"
+    description "Merge Jacoco Code Coverage Report"
+
+    def executionFiles = fileTree(dir: "${buildDir}/outputs/code-coverage/connected/flavors",
+        includes : ['**/*.exec','**/*.ec'],
+        excludes : ['mergeJacocoReport.exec']
+    )
+    setExecutionData(executionFiles)
+}
+
+jacoco {
+    toolVersion = "0.7.8"
 }
 
 android.variantFilter { variant ->
@@ -103,7 +124,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
-    implementation project(':kvgapi')
     implementation 'com.android.support:recyclerview-v7:' + rootProject.supportLibVersion
     implementation 'com.android.support:design:' + rootProject.supportLibVersion
     implementation 'com.android.support:cardview-v7:' + rootProject.supportLibVersion
@@ -124,4 +144,7 @@ dependencies {
     // Play Services Dependencies
     playServicesCompile 'com.google.android.gms:play-services-oss-licenses:' + rootProject.playServicesVersion
     playServicesImplementation 'com.google.android.gms:play-services-location:' + rootProject.playServicesVersion
+
+    implementation 'com.github.guennishueftgold.trapeze.api:trapezeapi:1.3.+'
+    implementation 'com.jakewharton.timber:timber:' + rootProject.timberVersion
 }
