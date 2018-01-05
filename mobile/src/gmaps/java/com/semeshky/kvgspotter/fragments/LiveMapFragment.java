@@ -1,9 +1,7 @@
 package com.semeshky.kvgspotter.fragments;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.os.Build;
-import android.support.v4.content.ContextCompat;
+import android.annotation.SuppressLint;
+import android.support.annotation.NonNull;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -11,10 +9,11 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.clustering.ClusterManager;
-import com.semeshky.kvg.kvgapi.VehicleLocation;
-import com.semeshky.kvg.kvgapi.VehicleLocations;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
+import com.github.guennishueftgold.trapezeapi.VehicleLocations;
 import com.semeshky.kvgspotter.activities.TripPassagesActivity;
 import com.semeshky.kvgspotter.database.Stop;
+import com.semeshky.kvgspotter.location.LocationHelper;
 import com.semeshky.kvgspotter.map.CoordinateUtil;
 import com.semeshky.kvgspotter.map.DualOnMarkerClickListener;
 import com.semeshky.kvgspotter.map.MapStyleGenerator;
@@ -52,8 +51,9 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
         }
     };
     private ClusterManager<VehicleClusterItem> mClusterManager;
-    private List<Marker> mVehicleMarker=new ArrayList<>();
-    private List<Marker> mStopMarker=new ArrayList<>();
+    private List<Marker> mVehicleMarker = new ArrayList<>();
+    private List<Marker> mStopMarker = new ArrayList<>();
+
     @Override
     public void onMapReady(GoogleMap map) {
         super.onMapReady(map);
@@ -76,23 +76,30 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
         //this.refreshData();
         map.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(54.3232941, 10.1381642), 12f));
         //If location permission is given show the current location
-        if (Build.VERSION.SDK_INT >= 23) {
-            if (ContextCompat.checkSelfPermission(this.getContext(),
-                    Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                map.setMyLocationEnabled(true);
-            }
+        this.maybeEnableMyLocation(map);
+    }
+
+    /**
+     * Enables the MyLocation Option if LocationPermission is provided
+     *
+     * @param googleMap
+     */
+    @SuppressLint("MissingPermission")
+    private void maybeEnableMyLocation(@NonNull final GoogleMap googleMap) {
+        if (LocationHelper.hasLocationPermission(this.getContext())) {
+            googleMap.setMyLocationEnabled(true);
         } else {
-            map.setMyLocationEnabled(true);
+            googleMap.setMyLocationEnabled(false);
         }
     }
 
     @Override
     protected void updateVehicleLocations(VehicleLocations vehicleLocations) {
-        if(this.getGoogleMap()==null)
+        if (this.getGoogleMap() == null)
             return;
         this.mClusterManager.clearItems();
-        for(VehicleLocation vehicleLocation:vehicleLocations.getVehicles()){
-            if(vehicleLocation.isDeleted())
+        for (VehicleLocation vehicleLocation : vehicleLocations.getVehicles()) {
+            if (vehicleLocation.isDeleted())
                 continue;
             this.mClusterManager.addItem(new VehicleClusterItem(vehicleLocation));
         }
@@ -128,7 +135,7 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
 
     @Override
     protected void updateStops(List<Stop> stops) {
-        if(this.getGoogleMap()==null)
+        if (this.getGoogleMap() == null)
             return;
         int i = 0;
         final int markers = this.mStopMarker.size();
@@ -139,16 +146,16 @@ public final class LiveMapFragment extends BaseLiveMapFragment {
                 marker = this.mStopMarker.get(i);
                 marker.setPosition(CoordinateUtil.convert(stop));
             } else {
-                final MarkerOptions markerOptions= MapStyleGenerator.stationMarker(getResources());
+                final MarkerOptions markerOptions = MapStyleGenerator.stationMarker(getResources());
                 markerOptions.position(CoordinateUtil.convert(stop));
-                marker=this.getGoogleMap().addMarker(markerOptions);
+                marker = this.getGoogleMap().addMarker(markerOptions);
                 this.mVehicleMarker.add(marker);
             }
             marker.setTag(stop);
             marker.setTitle(stop.getName());
             marker.setSnippet(stop.getName());
         }
-        while(i<this.mStopMarker.size()) {
+        while (i < this.mStopMarker.size()) {
             this.mStopMarker.remove(i).remove();
         }
     }

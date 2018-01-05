@@ -9,7 +9,7 @@
 
         <variable
             name="searchResult"
-            type="com.semeshky.kvg.kvgapi.FulltextSearchResult"/>
+            type="com.github.guennishueftgold.trapezeapi.FulltextSearchResult"/>
 
         <variable
             name="searchResultIcon"
@@ -23,16 +23,16 @@
     </data>
 
     <TextView
-        android:onClick="@{() -> clickListener.onSearchResultSelected(searchResult)}"
         android:layout_width="match_parent"
         android:layout_height="@dimen/list_single_line_tile_height"
-        android:paddingEnd="@dimen/list_single_line_horizontal_padding"
-        android:paddingStart="@dimen/list_single_line_horizontal_padding"
+        android:background="?android:attr/selectableItemBackground"
         android:drawablePadding="@dimen/list_single_line_icon_left_padding"
         android:drawableStart="@{ContextCompat.getDrawable(context,searchResultIcon), default=@drawable/ic_update_black_24dp}"
         android:gravity="start|center_vertical"
         android:lines="1"
-        android:text="@{searchResultTitle, default=PLACEHOLDER}"
-        android:background="?android:attr/selectableItemBackground"/>
+        android:onClick="@{() -> clickListener.onSearchResultSelected(searchResult)}"
+        android:paddingEnd="@dimen/list_single_line_horizontal_padding"
+        android:paddingStart="@dimen/list_single_line_horizontal_padding"
+        android:text="@{searchResultTitle, default=PLACEHOLDER}"/>
 
 </layout>

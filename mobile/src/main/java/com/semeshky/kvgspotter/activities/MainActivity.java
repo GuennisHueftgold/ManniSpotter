@@ -1,7 +1,6 @@
 package com.semeshky.kvgspotter.activities;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.SearchManager;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.ComponentName;
@@ -9,7 +8,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
-import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -22,22 +20,15 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.HomeAdapter;
 import com.semeshky.kvgspotter.databinding.ActivityMainBinding;
 import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
-import com.semeshky.kvgspotter.presenter.MainActivityPresenter;
-import com.semeshky.kvgspotter.rx.LocationFlowableOnSubscribe;
+import com.semeshky.kvgspotter.location.LocationHelper;
 import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
-
-import org.reactivestreams.Subscription;
 
 import java.util.List;
 
-import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
@@ -62,13 +53,18 @@ public class MainActivity extends AppCompatActivity {
                     .requestLocationPermission();
         }
     };
+    private final Consumer<Throwable> LOCATION_THROWABLE_CONSUMER = new Consumer<Throwable>() {
+        @Override
+        public void accept(Throwable throwable) throws Exception {
+            Timber.e(throwable);
+        }
+    };
     private ActivityMainBinding mBinding;
-    private MainActivityPresenter mMainActivityPresenter;
     private MainActivityViewModel mViewModel;
     private HomeAdapter mHomeAdapter;
-    private FusedLocationProviderClient mFusedLocationProvider;
-    private Subscription mStopSubscription;
     private Disposable mFavoriteDisposable;
+    private LocationHelper mLocationHelper;
+    private Disposable mNearbyDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +73,11 @@ public class MainActivity extends AppCompatActivity {
         this.mViewModel = ViewModelProviders.of(this)
                 .get(MainActivityViewModel.class);
         this.setSupportActionBar((Toolbar) this.mBinding.toolbar.getRoot());
-        this.mMainActivityPresenter = new MainActivityPresenter(this);
         this.mHomeAdapter = new HomeAdapter(this.mFavoriteSelectedListener);
         this.mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.mBinding.recyclerView.setAdapter(this.mHomeAdapter);
-        this.mBinding.setPresenter(this.mMainActivityPresenter);
         this.mBinding.executePendingBindings();
+        this.mLocationHelper = new LocationHelper(this);
     }
 
     @Override
@@ -155,71 +150,40 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    @SuppressLint("MissingPermission")
     @Override
     public void onResume() {
         super.onResume();
-        Flowable<Location> locationFlowable = null;
-        if (this.hasLocationPermission()) {
+        Flowable<List<HomeAdapter.DistanceStop>> favoriteFlowable;
+        if (LocationHelper.hasLocationPermission(this)) {
             this.mHomeAdapter.setHasLocationPermission(true);
-            this.mFusedLocationProvider = LocationServices.getFusedLocationProviderClient(this);
-
-            LocationFlowableOnSubscribe locationFlowableOnSubscribe = new LocationFlowableOnSubscribe();
-            final LocationRequest locationRequest = LocationRequest.create()
-                    .setInterval(10000)
-                    .setFastestInterval(5000)
-                    .setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY);
-            this.mFusedLocationProvider.requestLocationUpdates(locationRequest,
-                    locationFlowableOnSubscribe, null);
-            this.mFusedLocationProvider.getLastLocation()
-                    .addOnSuccessListener(locationFlowableOnSubscribe.getOnSuccessListener());
-            locationFlowable =
-                    Flowable.create(locationFlowableOnSubscribe, BackpressureStrategy.LATEST);
-            this.mViewModel.createNearbyFlowable(locationFlowable)
+            this.mNearbyDisposable = this.mViewModel.createNearbyFlowable(this.mLocationHelper.getLocationFlowable())
                     .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
                         @Override
                         public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
-                            Timber.d("Stops set");
                             mHomeAdapter.setNearby(distanceStops);
                         }
-                    });
-
+                    }, LOCATION_THROWABLE_CONSUMER);
+            favoriteFlowable = this.mViewModel.getFavoriteFlowable(this.mLocationHelper.getLocationFlowable());
         } else {
             this.mHomeAdapter.setHasLocationPermission(false);
+            favoriteFlowable = this.mViewModel.getFavoriteFlowable(null);
         }
-        this.mFavoriteDisposable = this.mViewModel
-                .getFavoriteFlowable(locationFlowable)
+        this.mFavoriteDisposable = favoriteFlowable
                 .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
                     @Override
                     public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
-                        Timber.d("Stops set");
-                        if (distanceStops == null || distanceStops.size() == 0) {
-                            MainActivity
-                                    .this
-                                    .mMainActivityPresenter
-                                    .listContainsItems.set(false);
-                        } else {
-                            MainActivity
-                                    .this
-                                    .mMainActivityPresenter
-                                    .listContainsItems.set(true);
-                        }
                         mHomeAdapter.setFavorites(distanceStops);
                     }
-                });
+                }, LOCATION_THROWABLE_CONSUMER);
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (this.mFusedLocationProvider != null) {
-            Timber.d("Removed update listener");
-        }
-        this.mFavoriteDisposable.dispose();
-        if (this.mStopSubscription != null) {
-            this.mStopSubscription.cancel();
-            this.mStopSubscription = null;
-        }
+        if (this.mFavoriteDisposable != null && !this.mFavoriteDisposable.isDisposed())
+            this.mFavoriteDisposable.dispose();
+        if (this.mNearbyDisposable != null && !this.mNearbyDisposable.isDisposed())
+            this.mNearbyDisposable.dispose();
     }
 
     private void showRequestPermissionDialog() {
@@ -235,10 +199,5 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         dialog.show(this.getSupportFragmentManager(), "ask_for_location");
-    }
-
-    private boolean hasLocationPermission() {
-        return ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED;
     }
 }

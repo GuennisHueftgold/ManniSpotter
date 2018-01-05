@@ -45,4 +45,5 @@
     <item name="detailsFragment" type="id"/>
     <item name="stationDeparturesFragment" type="id"/>
     <item name="stationDetailsFragment" type="id"/>
+    <item name="ivIcon" type="id"/>
 </resources>

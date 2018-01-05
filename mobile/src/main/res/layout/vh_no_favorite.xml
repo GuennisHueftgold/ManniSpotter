@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+    </data>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:drawablePadding="@dimen/list_single_line_icon_left_padding"
+        android:drawableStart="@drawable/ic_favorite_border_black_24dp"
+        android:gravity="start|center_vertical"
+        android:minHeight="@dimen/list_single_line_tile_height"
+        android:paddingEnd="@dimen/list_single_line_horizontal_padding"
+        android:paddingStart="@dimen/list_single_line_horizontal_padding"
+        android:text="@string/no_stops_favorited"
+        android:textSize="@dimen/list_single_line_text_size"/>
+
+</layout>

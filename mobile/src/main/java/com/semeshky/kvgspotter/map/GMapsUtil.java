@@ -5,8 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
-import com.semeshky.kvg.kvgapi.LatLngInterface;
+import com.github.guennishueftgold.trapezeapi.LatLngInterface;
+import com.github.guennishueftgold.trapezeapi.TrapezeApiClient;
 
 
 public class GMapsUtil {
@@ -47,7 +47,7 @@ public class GMapsUtil {
 
     public static void openNavigationTo(Context context, LatLngInterface latLngInterface) {
         GMapsUtil.openNavigationTo(context,
-                latLngInterface.getLatitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT,
-                latLngInterface.getLongitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
+                latLngInterface.getLatitude() / TrapezeApiClient.COORDINATES_CONVERTION_CONSTANT,
+                latLngInterface.getLongitude() / TrapezeApiClient.COORDINATES_CONVERTION_CONSTANT);
     }
 }

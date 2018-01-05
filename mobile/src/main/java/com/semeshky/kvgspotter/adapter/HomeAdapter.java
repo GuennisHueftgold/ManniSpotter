@@ -15,6 +15,7 @@ import com.semeshky.kvgspotter.databinding.VhStopDistanceBinding;
 import com.semeshky.kvgspotter.viewholder.DataboundViewHolder;
 import com.semeshky.kvgspotter.viewholder.HomeRequestPermissionViewHolder;
 import com.semeshky.kvgspotter.viewholder.ListSectionTitleViewHolder;
+import com.semeshky.kvgspotter.viewholder.NoFavoriteViewHolder;
 import com.semeshky.kvgspotter.viewholder.StopDistanceViewHolder;
 
 import java.lang.ref.WeakReference;
@@ -45,12 +46,10 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
                 return new ListSectionTitleViewHolder(parent);
             case TYPE_NEARBY_STOP_INFO:
                 return new HomeRequestPermissionViewHolder(parent);
+            case TYPE_FAVORITE_INFO:
+                return new NoFavoriteViewHolder(parent);
             default:
-                // Prevent NotFoundException
-                // TODO FIX
-                ListSectionTitleViewHolder placeholder = new ListSectionTitleViewHolder(parent);
-                placeholder.getBinding().setTitle(R.string.please_try_again);
-                return placeholder;
+                throw new RuntimeException("Unkown viewType: " + viewType);
         }
     }
 
@@ -67,7 +66,6 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
                 bindingFavorite.setDistance(distanceStop.distance);
                 break;
             case TYPE_FAVORITE_INFO:
-
                 break;
             case TYPE_NEARBY_STOP_INFO:
                 final VhHomeRequestPermissionBinding requestPermissionBinding = (VhHomeRequestPermissionBinding) holder.getBinding();
@@ -76,6 +74,7 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
             case TYPE_TITLE:
                 final VhListSectionTitleBinding bindingTitle = (VhListSectionTitleBinding) holder.getBinding();
                 bindingTitle.setTitle((int) this.mListItems.get(position).tag);
+                bindingTitle.setPrimaryColor(true);
                 break;
         }
     }

@@ -16,7 +16,7 @@
     <string name="search_description">Search for stops</string>
     <string name="plus_x_min">+%d Min</string>
     <string name="favorite_deleted">Favorite was deleted</string>
-    <string name="favorite_deletion_error">An error occured while deleting the favorite</string>
+    <string name="favorite_deletion_error">An error occurred while deleting the favorite</string>
     <string name="favorize">Favorize</string>
     <string name="navigate_to">Navigate to</string>
     <string name="routes">Routes</string>
@@ -44,4 +44,6 @@
     <string name="nearby">Nearby</string>
     <string name="request">Request</string>
     <string name="request_location_permission_description">In order to provide you with nearby stops you must allow access to Location Information</string>
+    <string name="menu">Menu</string>
+    <string name="requesting_location_permission">Requesting location permission</string>
 </resources>

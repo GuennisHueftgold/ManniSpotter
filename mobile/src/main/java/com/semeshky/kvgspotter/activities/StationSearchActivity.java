@@ -11,7 +11,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 
-import com.semeshky.kvg.kvgapi.FulltextSearchResult;
+import com.github.guennishueftgold.trapezeapi.FulltextSearchResult;
 import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.BuildConfig;
 import com.semeshky.kvgspotter.R;

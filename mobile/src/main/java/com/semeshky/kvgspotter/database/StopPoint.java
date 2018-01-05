@@ -5,7 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Index;
 import android.arch.persistence.room.PrimaryKey;
 
-import com.semeshky.kvg.kvgapi.LatLngInterface;
+import com.github.guennishueftgold.trapezeapi.LatLngInterface;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +40,7 @@ public class StopPoint implements LatLngInterface {
             typeAffinity = ColumnInfo.TEXT)
     private String mStopPoint;
 
-    public static StopPoint create(com.semeshky.kvg.kvgapi.StopPoint stopPoint) {
+    public static StopPoint create(com.github.guennishueftgold.trapezeapi.StopPoint stopPoint) {
         final StopPoint stop = new StopPoint();
         stop.mId = stopPoint.getId();
         stop.mCategory = stopPoint.getCategory();
@@ -53,9 +53,9 @@ public class StopPoint implements LatLngInterface {
         return stop;
     }
 
-    public static List<StopPoint> create(List<com.semeshky.kvg.kvgapi.StopPoint> stopPoints) {
+    public static List<StopPoint> create(List<com.github.guennishueftgold.trapezeapi.StopPoint> stopPoints) {
         final List<StopPoint> stops = new ArrayList<>();
-        for (com.semeshky.kvg.kvgapi.StopPoint stopPoint : stopPoints) {
+        for (com.github.guennishueftgold.trapezeapi.StopPoint stopPoint : stopPoints) {
             stops.add(StopPoint.create(stopPoint));
         }
         return stops;

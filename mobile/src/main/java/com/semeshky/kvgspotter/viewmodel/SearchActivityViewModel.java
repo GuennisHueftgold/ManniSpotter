@@ -6,10 +6,10 @@ import android.databinding.ObservableInt;
 import android.support.annotation.IntDef;
 import android.support.v4.widget.SwipeRefreshLayout;
 
-import com.semeshky.kvg.kvgapi.FulltextSearch;
-import com.semeshky.kvg.kvgapi.FulltextSearchResult;
-import com.semeshky.kvg.kvgapi.KvgApiClient;
+import com.github.guennishueftgold.trapezeapi.FulltextSearch;
+import com.github.guennishueftgold.trapezeapi.FulltextSearchResult;
 import com.semeshky.kvgspotter.adapter.SearchResultAdapter;
+import com.semeshky.kvgspotter.api.KvgApiClient;
 
 import java.lang.annotation.Retention;
 
@@ -45,7 +45,6 @@ public class SearchActivityViewModel extends ViewModel implements SwipeRefreshLa
         this.filterText.set(query);
         this.searchStatus.set(STATUS_SEARCHING);
         KvgApiClient
-                .getInstance()
                 .getService()
                 .getStopsByName(query)
                 .enqueue(new Callback<FulltextSearch>() {

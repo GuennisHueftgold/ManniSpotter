@@ -2,7 +2,7 @@ package com.semeshky.kvgspotter.map;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.clustering.ClusterItem;
-import com.semeshky.kvg.kvgapi.VehicleLocation;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
 
 
 public class VehicleClusterItem implements ClusterItem {

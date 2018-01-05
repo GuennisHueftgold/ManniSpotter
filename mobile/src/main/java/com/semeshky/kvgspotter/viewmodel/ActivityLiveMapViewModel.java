@@ -5,11 +5,11 @@ import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
 import android.support.annotation.IntDef;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
-import com.semeshky.kvg.kvgapi.Station;
-import com.semeshky.kvg.kvgapi.TripPassages;
-import com.semeshky.kvg.kvgapi.VehicleLocation;
-import com.semeshky.kvg.kvgapi.VehicleLocations;
+import com.github.guennishueftgold.trapezeapi.Station;
+import com.github.guennishueftgold.trapezeapi.TripPassages;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
+import com.github.guennishueftgold.trapezeapi.VehicleLocations;
+import com.semeshky.kvgspotter.api.KvgApiClient;
 import com.semeshky.kvgspotter.database.AppDatabase;
 import com.semeshky.kvgspotter.database.Stop;
 
@@ -87,8 +87,7 @@ public class ActivityLiveMapViewModel extends ViewModel {
     }
 
     private VehicleLocations loadVehicleLocations() throws IOException {
-        Response<VehicleLocations> resp = KvgApiClient.getInstance()
-                .getService()
+        Response<VehicleLocations> resp = KvgApiClient.getService()
                 .getVehicleLocations()
                 .execute();
         if (resp.code() == 200) {
@@ -144,7 +143,7 @@ public class ActivityLiveMapViewModel extends ViewModel {
     }
 
     public void refreshData() {
-        KvgApiClient.getInstance()
+        KvgApiClient
                 .getService()
                 .getVehicleLocations()
                 .enqueue(new Callback<VehicleLocations>() {
@@ -171,8 +170,7 @@ public class ActivityLiveMapViewModel extends ViewModel {
                 if (shortName == null) {
                     e.onError(new RuntimeException("No name provided"));
                 }
-                Response<Station> resp = KvgApiClient.getInstance()
-                        .getService()
+                Response<Station> resp = KvgApiClient.getService()
                         .getStation(shortName, "departure")
                         .execute();
                 if (resp.code() == 200) {
@@ -193,8 +191,7 @@ public class ActivityLiveMapViewModel extends ViewModel {
                 if (tripId == null) {
                     e.onError(new RuntimeException("No name provided"));
                 }
-                Response<TripPassages> resp = KvgApiClient.getInstance()
-                        .getService()
+                Response<TripPassages> resp = KvgApiClient.getService()
                         .getTripPassages(tripId, "departure")
                         .execute();
                 if (resp.code() == 200) {

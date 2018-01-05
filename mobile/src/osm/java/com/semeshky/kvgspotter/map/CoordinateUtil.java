@@ -1,14 +1,14 @@
 package com.semeshky.kvgspotter.map;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
-import com.semeshky.kvg.kvgapi.LatLngInterface;
+import com.github.guennishueftgold.trapezeapi.LatLngInterface;
+import com.github.guennishueftgold.trapezeapi.TrapezeApiClient;
 
 import org.osmdroid.util.GeoPoint;
 
 public final class CoordinateUtil {
 
     public static GeoPoint convert(LatLngInterface latLngInterface) {
-        return new GeoPoint(latLngInterface.getLatitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT,
-                latLngInterface.getLongitude() / KvgApiClient.COORDINATES_CONVERTION_CONSTANT);
+        return new GeoPoint(latLngInterface.getLatitude() / TrapezeApiClient.COORDINATES_CONVERTION_CONSTANT,
+                latLngInterface.getLongitude() / TrapezeApiClient.COORDINATES_CONVERTION_CONSTANT);
     }
 }

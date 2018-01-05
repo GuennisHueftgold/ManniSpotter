@@ -2,8 +2,6 @@ package com.semeshky.kvgspotter;
 
 import android.app.Application;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
-
 import timber.log.Timber;
 
 

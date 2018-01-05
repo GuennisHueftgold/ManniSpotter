@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="stops_database">Stops Database</string>
+    <string name="number_of_entries">Number of entries</string>
+    <string name="debug_information">Debug Information</string>
+    <string name="debug_information_summary">Displays additional information</string>
+</resources>

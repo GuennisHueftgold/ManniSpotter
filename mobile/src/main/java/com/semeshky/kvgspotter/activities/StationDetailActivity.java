@@ -21,8 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.semeshky.kvg.kvgapi.FulltextSearchResult;
-import com.semeshky.kvg.kvgapi.TripPassageStop;
+import com.github.guennishueftgold.trapezeapi.FulltextSearchResult;
+import com.github.guennishueftgold.trapezeapi.TripPassageStop;
 import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.database.Stop;
@@ -183,7 +183,7 @@ public final class StationDetailActivity extends AppCompatActivity {
                 .subscribe(new DisposableSingleObserver<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
-                        Timber.d("Successfully liked: " + aBoolean);
+                        Timber.d("Successfully liked: %s", aBoolean);
                     }
 
                     @Override
@@ -207,7 +207,7 @@ public final class StationDetailActivity extends AppCompatActivity {
 
     private class PagerAdapter extends FragmentPagerAdapter {
 
-        public PagerAdapter(FragmentManager fm) {
+        PagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

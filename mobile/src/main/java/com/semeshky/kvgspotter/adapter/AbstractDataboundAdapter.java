@@ -29,10 +29,13 @@ public abstract class AbstractDataboundAdapter<T, V extends ViewDataBinding>
     protected abstract V createBinding(ViewGroup parent, int viewType);
 
     @Override
-    public final void onBindViewHolder(DataboundViewHolder<V> holder, int position) {
-        //noinspection ConstantConditions
-        bind(holder.getBinding(), mItems.get(position));
+    public void onBindViewHolder(DataboundViewHolder<V> holder, int position, List<Object> payloads) {
+        bind(holder.getBinding(), mItems.get(position), payloads);
         holder.getBinding().executePendingBindings();
+    }
+
+    @Override
+    public void onBindViewHolder(DataboundViewHolder<V> holder, int position) {
     }
 
     public T getItem(int position) {
@@ -75,7 +78,7 @@ public abstract class AbstractDataboundAdapter<T, V extends ViewDataBinding>
         diffResult.dispatchUpdatesTo(this);
     }
 
-    protected abstract void bind(V binding, T item);
+    protected abstract void bind(V binding, T item, List<Object> payloads);
 
     protected abstract boolean areItemsTheSame(T oldItem, T newItem);
 
