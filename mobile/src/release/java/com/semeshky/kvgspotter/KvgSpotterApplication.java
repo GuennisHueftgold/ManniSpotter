@@ -2,7 +2,7 @@ package com.semeshky.kvgspotter;
 
 import android.app.Application;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
+import com.github.guennishueftgold.trapezeapi.KvgApiClient;
 
 import timber.log.Timber;
 
