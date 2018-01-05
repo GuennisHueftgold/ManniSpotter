@@ -49,14 +49,14 @@ cache:
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
 before_install:
+  - $ANDROID_HOME/tools/bin/sdkmanager "build-tools;27.0.3" "platforms;android-27"
+  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
 #  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
   - cp ./mobile/example.secrets ./mobile/debug.secrets
   - cp ./mobile/example.secrets ./mobile/release.secrets
   - chmod +x gradlew
   - export QEMU_AUDIO_DRV=none
 after_install:
-  - $ANDROID_HOME/tools/bin/sdkmanager "build-tools;27.0.3" "platforms;android-27"
-  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
   - ./gradlew dependencies || true
 before_script:
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI --tag google_apis
