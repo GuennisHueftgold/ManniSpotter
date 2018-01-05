@@ -45,7 +45,7 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
     }
 
     @Override
-    protected void bind(VhStationDepartureBinding binding, Departure item) {
+    protected void bind(VhStationDepartureBinding binding, Departure item, List<Object> payloads) {
         binding.setVariable(BR.departure, item);
         final Resources resources = binding.getRoot().getContext().getResources();
         if ((item.getActualRelativeTime() < 0 || item.getStatus() == DepartureStatus.STATUS_DEPARTED)

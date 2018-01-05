@@ -11,6 +11,8 @@ import com.semeshky.kvgspotter.databinding.ListitemSimpleDepartureBinding;
 
 import org.joda.time.LocalTime;
 
+import java.util.List;
+
 
 public class SimpleDepartureAdapter extends AbstractDataboundAdapter<Departure, ListitemSimpleDepartureBinding> {
     @Override
@@ -22,7 +24,7 @@ public class SimpleDepartureAdapter extends AbstractDataboundAdapter<Departure, 
     }
 
     @Override
-    protected void bind(ListitemSimpleDepartureBinding binding, Departure item) {
+    protected void bind(ListitemSimpleDepartureBinding binding, Departure item, List<Object> payloads) {
         binding.setVariable(BR.departure, item);
     }
 

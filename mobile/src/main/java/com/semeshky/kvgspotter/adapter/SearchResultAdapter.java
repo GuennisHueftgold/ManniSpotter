@@ -10,6 +10,8 @@ import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhSearchResultBinding;
 import com.semeshky.kvgspotter.viewmodel.SearchActivityViewModel;
 
+import java.util.List;
+
 
 public final class SearchResultAdapter extends AbstractDataboundAdapter<FulltextSearchResult, VhSearchResultBinding> {
 
@@ -29,7 +31,7 @@ public final class SearchResultAdapter extends AbstractDataboundAdapter<Fulltext
     }
 
     @Override
-    protected void bind(VhSearchResultBinding binding, FulltextSearchResult item) {
+    protected void bind(VhSearchResultBinding binding, FulltextSearchResult item, List<Object> payloads) {
         binding.setVariable(BR.searchResultTitle, item.getName());
         binding.setVariable(BR.searchResult, item);
         binding.setVariable(BR.clickListener, this.mOnSearchResultClickListener);

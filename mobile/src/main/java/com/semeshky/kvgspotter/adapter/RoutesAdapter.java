@@ -9,6 +9,8 @@ import com.github.guennishueftgold.trapezeapi.Station;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhStationRouteBinding;
 
+import java.util.List;
+
 public class RoutesAdapter extends AbstractDataboundAdapter<Route, VhStationRouteBinding> {
 
     public RoutesAdapter() {
@@ -24,7 +26,7 @@ public class RoutesAdapter extends AbstractDataboundAdapter<Route, VhStationRout
     }
 
     @Override
-    protected void bind(VhStationRouteBinding binding, Route item) {
+    protected void bind(VhStationRouteBinding binding, Route item, List<Object> payloads) {
         binding.setRoute(item);
         binding.setCompoundIcon(R.drawable.ic_directions_bus_black_24dp);
     }

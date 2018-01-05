@@ -12,6 +12,8 @@ import com.semeshky.kvgspotter.databinding.VhTripPassageStopBinding;
 import com.semeshky.kvgspotter.presenter.TripPassagesPresenter;
 import com.semeshky.kvgspotter.util.JodaUtil;
 
+import java.util.List;
+
 public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPassageStop, VhTripPassageStopBinding> {
 
 
@@ -48,7 +50,7 @@ public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPass
     }
 
     @Override
-    protected void bind(VhTripPassageStopBinding binding, TripPassageStop item) {
+    protected void bind(VhTripPassageStopBinding binding, TripPassageStop item, List<Object> payloads) {
         binding.setTripPassageStop(item);
         if (binding.getPresenter() == null) {
             final TripPassagesPresenter tripPassagesPresenter = new TripPassagesPresenter();
