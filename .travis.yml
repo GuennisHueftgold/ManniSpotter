@@ -12,8 +12,8 @@ jdk:
   - oraclejdk8
   
 android:
-  - update_sdk: true
-  - components:
+  #update_sdk: true
+  components:
     - platform-tools
     - tools
     # The BuildTools version used by your project
