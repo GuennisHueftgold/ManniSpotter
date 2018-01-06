@@ -43,4 +43,7 @@
     <item name="bottomSheetToolbar" type="id"/>
     <item name="action_details" type="id"/>
     <item name="detailsFragment" type="id"/>
+    <item name="stationDeparturesFragment" type="id"/>
+    <item name="stationDetailsFragment" type="id"/>
+    <item name="ivIcon" type="id"/>
 </resources>

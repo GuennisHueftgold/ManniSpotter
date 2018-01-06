@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="title"
+            type="Integer"/>
+
+        <variable
+            name="primaryColor"
+            type="boolean"/>
+
+    </data>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_single_line_tile_height"
+        android:fontFamily="sans-serif-medium"
+        android:gravity="start|center_vertical"
+        android:lines="1"
+        android:paddingEnd="@dimen/list_single_line_horizontal_padding"
+        android:paddingStart="@dimen/list_single_line_horizontal_padding"
+        android:text="@{title, default=PLACEHOLDER}"
+        android:textSize="@dimen/list_section_title_text_size"
+        app:sectionTitleColorPrimary="@{primaryColor}"/>
+
+</layout>

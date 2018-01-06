@@ -2,10 +2,10 @@ package com.semeshky.kvgspotter.database;
 
 import android.content.Context;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
-import com.semeshky.kvg.kvgapi.StationLocation;
-import com.semeshky.kvg.kvgapi.StationLocations;
-import com.semeshky.kvg.kvgapi.StopPoints;
+import com.github.guennishueftgold.trapezeapi.StationLocation;
+import com.github.guennishueftgold.trapezeapi.StationLocations;
+import com.github.guennishueftgold.trapezeapi.StopPoints;
+import com.semeshky.kvgspotter.api.KvgApiClient;
 
 import java.io.IOException;
 
@@ -32,7 +32,6 @@ public class DatabaseSynchronizer {
             public void subscribe(SingleEmitter<Integer> emitter) throws Exception {
                 try {
                     final Response<StationLocations> response = KvgApiClient
-                            .getInstance()
                             .getService()
                             .getStationLocations()
                             .execute();
@@ -109,7 +108,6 @@ public class DatabaseSynchronizer {
             public void subscribe(SingleEmitter<Integer> emitter) throws Exception {
                 try {
                     final Response<StopPoints> response = KvgApiClient
-                            .getInstance()
                             .getService()
                             .getStopPoints()
                             .execute();
@@ -117,7 +115,7 @@ public class DatabaseSynchronizer {
                         emitter.onError(new Exception("Couldnt reach server with error:" + response.code()));
                         return;
                     }
-                    for (com.semeshky.kvg.kvgapi.StopPoint stop : response.body().getStopPoints()) {
+                    for (com.github.guennishueftgold.trapezeapi.StopPoint stop : response.body().getStopPoints()) {
                         AppDatabase
                                 .getInstance()
                                 .stopPointDao()

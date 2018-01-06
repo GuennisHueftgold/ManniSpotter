@@ -7,12 +7,13 @@
 
         <variable
             name="tripPassageStop"
-            type="com.semeshky.kvg.kvgapi.TripPassageStop"/>
+            type="com.github.guennishueftgold.trapezeapi.TripPassageStop"/>
 
         <variable
             name="presenter"
             type="com.semeshky.kvgspotter.presenter.TripPassagesPresenter"/>
-        <import type="com.semeshky.kvgspotter.util.FontBindingAdapter"/>
+
+        <import type="com.semeshky.kvgspotter.util.BindingUtil"/>
         <import type="android.view.View"/>
 
     </data>

@@ -45,7 +45,7 @@ public class DepartureWidgetProvider extends AppWidgetProvider {
             stopIntent.setAction(ACTION_OPEN_FAVORITE);
             stopIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
             stopIntent.setData(Uri.parse(stopIntent.toUri(Intent.URI_INTENT_SCHEME)));
-            Timber.d("uri: " + Uri.parse(stopIntent.toUri(Intent.URI_INTENT_SCHEME)).toString());
+            Timber.d("uri: %s", Uri.parse(stopIntent.toUri(Intent.URI_INTENT_SCHEME)).toString());
             PendingIntent stopPendingIntent = PendingIntent.getActivity(context,
                     appWidgetId,
                     stopIntent,

@@ -9,8 +9,8 @@ import android.databinding.ObservableBoolean;
 import android.databinding.ObservableField;
 import android.support.annotation.Nullable;
 
-import com.semeshky.kvg.kvgapi.KvgApiClient;
-import com.semeshky.kvg.kvgapi.Station;
+import com.github.guennishueftgold.trapezeapi.Station;
+import com.semeshky.kvgspotter.api.KvgApiClient;
 import com.semeshky.kvgspotter.database.AppDatabase;
 import com.semeshky.kvgspotter.database.FavoriteStation;
 import com.semeshky.kvgspotter.database.Stop;
@@ -62,6 +62,7 @@ public final class StationDetailActivityViewModel extends ViewModel {
     public void setStation(final Station station) {
         this.isRefreshing.set(false);
         if (station != null) {
+            this.mFavoritedLiveData.setValue(false);
             this.lastUpdateTimestamp.set(LocalTime.now().toString(DateTimeFormat.shortTime()));
             this.stationShortName.set(station.getStopShortName());
             this.stationName.set(station.getStopName());
@@ -74,7 +75,6 @@ public final class StationDetailActivityViewModel extends ViewModel {
             this.mFavoritedLiveData.addSource(this.mFavoriteDatabaseLiveData, new Observer<Boolean>() {
                 @Override
                 public void onChanged(@Nullable Boolean aBoolean) {
-                    Timber.d("onchanged:" + aBoolean);
                     mFavoritedLiveData.setValue(aBoolean);
                 }
             });
@@ -202,8 +202,7 @@ public final class StationDetailActivityViewModel extends ViewModel {
         if (stationShortName.get() == null) {
             return null;
         }
-        Response<Station> resp = KvgApiClient.getInstance()
-                .getService()
+        Response<Station> resp = KvgApiClient.getService()
                 .getStation(stationShortName.get(), "departure")
                 .execute();
         if (resp.code() == 200) {

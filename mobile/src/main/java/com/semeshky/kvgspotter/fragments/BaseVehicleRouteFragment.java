@@ -6,8 +6,8 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
-import com.semeshky.kvg.kvgapi.VehicleLocation;
-import com.semeshky.kvg.kvgapi.VehiclePathInfo;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
+import com.github.guennishueftgold.trapezeapi.VehiclePathInfo;
 import com.semeshky.kvgspotter.viewmodel.TripPassagesViewModel;
 
 abstract class BaseVehicleRouteFragment extends MapFragment {

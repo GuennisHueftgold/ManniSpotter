@@ -8,6 +8,8 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+
 @Dao
 public interface FavoriteStationDao {
     String QUERY_GET_ALL = "SELECT * FROM favoriteStations";
@@ -39,9 +41,14 @@ public interface FavoriteStationDao {
     @Query("DELETE FROM favoriteStations WHERE shortName == :shortName")
     int delete(String shortName);
 
-    @Query("SELECT favoriteStations.*,stops.name FROM favoriteStations LEFT JOIN stops ON favoriteStations.shortName = stops.shortName")
+    @Query("SELECT favoriteStations.*,stops.name, stops.longitude, stops.latitude FROM favoriteStations LEFT JOIN stops ON favoriteStations.shortName = stops.shortName")
     LiveData<List<FavoriteStationWithName>> getAllWithNameSync();
 
-    @Query("SELECT favoriteStations.*,stops.name FROM favoriteStations LEFT JOIN stops ON favoriteStations.shortName = stops.shortName")
+    @Query("SELECT favoriteStations.*,stops.name, stops.longitude, stops.latitude FROM favoriteStations LEFT JOIN stops ON favoriteStations.shortName = stops.shortName")
+    Flowable<List<FavoriteStationWithName>> getAllWithNameFlow();
+
+    @Query("SELECT favoriteStations.*,stops.name, stops.longitude, stops.latitude FROM favoriteStations LEFT JOIN stops ON favoriteStations.shortName = stops.shortName")
     List<FavoriteStationWithName> getAllWithName();
+
+
 }

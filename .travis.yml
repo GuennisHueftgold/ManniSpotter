@@ -1,64 +1,72 @@
 language: android
-jdk: oraclejdk8
-sudo: false
-
 env:
-    matrix:
-        - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a
-        - ANDROID_TARGET=android-22 ANDROID_ABI=armeabi-v7a
-    global:
-        - ADB_INSTALL_TIMEOUT=10    #Time out to 10 mins
+  global:
+    - ANDROID_BUILD_TOOLS=27.0.3
+    - ADB_INSTALL_TIMEOUT=10
+  matrix:
+    - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a ANDROID_VERSION=21
+    #- ANDROID_TARGET=android-24 ANDROID_ABI=arm64-v8a ANDROID_VERSION=24
+    - ANDROID_TARGET=android-25 ANDROID_ABI=arm64-v8a ANDROID_VERSION=25
 
-before_cache:
-    - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
-
-cache:
-  directories:      #Cache all dirs under .gradle folder
-    - $HOME/.gradle/daemon      #Cache daemon logs
-    - $HOME/.gradle/native      #Cache library downloaded from the gradle dependency
-    - $HOME/.gradle/wrapper     #Cache the gradle
-
+jdk:
+  - oraclejdk8
+  
 android:
-    update_sdk: true
-    components:
-        - platform-tools
-        - tools
-        - build-tools-25.0.0
-        - android-25
-        - android-27
+  #update_sdk: true
+  components:
+    - platform-tools
+    - tools
+    # The BuildTools version used by your project
+    - build-tools-$ANDROID_BUILD_TOOLS
 
-        # Additional components
-        - extra-google-google_play_services
-        - extra-google-m2repository
-        - extra-android-m2repository
+    # The SDK version used to compile your project
+    - $ANDROID_TARGET
 
-        #system images
-        - sys-img-armeabi-v7a-android-21
-        - sys-img-armeabi-v7a-android-22
+    # Additional components
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+    - addon-google_apis-google-27
 
-licenses:
-    - 'android-sdk-preview-license-52d11cd2'
-    - 'android-sdk-license-.+'
-    - 'google-gdk-license-.+'
-
-before_script:
-    - chmod +x gradlew      #Grand permissions
-    - android list targets
-    - echo no | android create avd --force --name test --target $ANDROID_TARGET --abi $ANDROID_ABI    #Create AVD for given api
-    - emulator -avd test -no-skin -no-audio -no-window &    #Start emulator
-
-script:
-    - echo "Travis branch is $TRAVIS_BRANCH"
-    - echo "Travis branch is in pull request $TRAVIS_PULL+REQUEST"
-    - android-wait-for-emulator
-    - adb devices   #Display list of devices
-    - adb shell input keyevent 82 &
-    - ./gradlew connectedCheck -PdisablePreDex --stacktrace
-
+    # Specify at least one system image,
+    # if you need to run emulator(s) during your tests
+    - sys-img-$ANDROID_ABI-google_apis-$ANDROID_VERSION
+    - add-on
+    - extra
+  licenses:
+    - android-sdk-license-.+
+    - '.+'
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+    - $HOME/.android/build-cache
 before_install:
-    - pip install --user codecov    #Install codecov
-
+  #- $ANDROID_HOME/tools/bin/sdkmanager "build-tools;27.0.3" "platforms;android-27"
+  #- yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+  - mkdir "$ANDROID_HOME/licenses" || true;
+  - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license";
+  - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license";
+  - echo "84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license";
+#  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+  - cp ./mobile/example.secrets ./mobile/debug.secrets
+  - cp ./mobile/example.secrets ./mobile/release.secrets
+  - chmod +x gradlew
+  - export QEMU_AUDIO_DRV=none
+after_install:
+  - ./gradlew dependencies || true
+before_script:
+  - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI --tag google_apis
+  - emulator -avd test -no-window &
+  - android-wait-for-emulator
+  - adb shell input keyevent 82 &
+script:
+  - ./gradlew build
+  - ./gradlew connectedCheck
 after_success:
-    - codecov                       #Run codecov
-
-after_failure: "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
+  - bash <(curl -s https://codecov.io/bash)
+after_failure:
+  - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"

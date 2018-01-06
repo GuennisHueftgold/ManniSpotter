@@ -21,8 +21,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.semeshky.kvg.kvgapi.FulltextSearchResult;
-import com.semeshky.kvg.kvgapi.TripPassageStop;
+import com.github.guennishueftgold.trapezeapi.FulltextSearchResult;
+import com.github.guennishueftgold.trapezeapi.TripPassageStop;
 import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.database.Stop;
@@ -86,24 +86,23 @@ public final class StationDetailActivity extends AppCompatActivity {
         this.mViewModel = ViewModelProviders.of(this)
                 .get(StationDetailActivityViewModel.class);
         final Bundle extras = this.getIntent().getExtras();
-        for (String key : extras.keySet()) {
-            Timber.d(key + " value: " + extras.get(key));
-        }
         this.mViewModel.stationName.set(extras.getString(EXTRA_STATION_NAME, getString(R.string.station_name)));
         this.mViewModel.stationShortName.set(extras.getString(EXTRA_STATION_SHORT_NAME, ""));
         this.setSupportActionBar(this.mBinding.toolbar);
         this.mBinding.setVariable(BR.viewModel, this.mViewModel);
-        this.mBinding.viewPager.setAdapter(new StationDetailActivity.PagerAdapter(getSupportFragmentManager()));
-        this.mBinding.tabLayout.setupWithViewPager(this.mBinding.viewPager);
-        this.mViewModel.isStationFavorited()
-                .observe(this,
-                        new Observer<Boolean>() {
-                            @Override
-                            public void onChanged(@Nullable Boolean aBoolean) {
-                                StationDetailActivity.this
-                                        .setFavoriteDrawable(aBoolean);
-                            }
-                        });
+        if (this.mBinding.viewPager != null) {
+            this.mBinding.viewPager.setAdapter(new StationDetailActivity.PagerAdapter(getSupportFragmentManager()));
+            this.mBinding.tabLayout.setupWithViewPager(this.mBinding.viewPager);
+            this.mViewModel.isStationFavorited()
+                    .observe(this,
+                            new Observer<Boolean>() {
+                                @Override
+                                public void onChanged(@Nullable Boolean aBoolean) {
+                                    StationDetailActivity.this
+                                            .setFavoriteDrawable(aBoolean);
+                                }
+                            });
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             final TextView toolbarTitle = this.getToolbarTitleTextView(this.mBinding.toolbar);
             if (toolbarTitle != null)
@@ -160,12 +159,6 @@ public final class StationDetailActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.station_detail, menu);
         this.mFavoriteMenuItem = menu.findItem(R.id.action_favorize);
-        /*SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        final SearchView searchView = (SearchView) searchItem.getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-        searchView.setIconifiedByDefault(false);
-        searchView.setSubmitButtonEnabled(true);*/
         return true;
     }
 
@@ -190,7 +183,7 @@ public final class StationDetailActivity extends AppCompatActivity {
                 .subscribe(new DisposableSingleObserver<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
-                        Timber.d("Successfully liked: " + aBoolean);
+                        Timber.d("Successfully liked: %s", aBoolean);
                     }
 
                     @Override
@@ -214,7 +207,7 @@ public final class StationDetailActivity extends AppCompatActivity {
 
     private class PagerAdapter extends FragmentPagerAdapter {
 
-        public PagerAdapter(FragmentManager fm) {
+        PagerAdapter(FragmentManager fm) {
             super(fm);
         }
 

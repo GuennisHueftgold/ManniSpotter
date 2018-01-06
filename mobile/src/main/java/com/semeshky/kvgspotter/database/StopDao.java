@@ -9,6 +9,8 @@ import android.arch.persistence.room.Query;
 
 import java.util.List;
 
+import io.reactivex.Flowable;
+
 @Dao
 public interface StopDao {
     String QUERY_GET_ALL = "SELECT * FROM stops";
@@ -18,6 +20,9 @@ public interface StopDao {
 
     @Query(QUERY_GET_ALL)
     LiveData<List<Stop>> getAllSync();
+
+    @Query(QUERY_GET_ALL)
+    Flowable<List<Stop>> getAllFlow();
 
     @Query("SELECT * FROM stops WHERE shortName == :shortName")
     Stop getStopByShortName(final String shortName);
@@ -32,7 +37,7 @@ public interface StopDao {
     int countStops();
 
     @Query("SELECT COUNT(*) from stops")
-    public LiveData<Integer> countStopsSync();
+    LiveData<Integer> countStopsSync();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insertAll(Stop... users);

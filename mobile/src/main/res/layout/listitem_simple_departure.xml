@@ -6,7 +6,7 @@
 
         <variable
             name="departure"
-            type="com.semeshky.kvg.kvgapi.Departure"/>
+            type="com.github.guennishueftgold.trapezeapi.Departure"/>
         <import type="com.semeshky.kvgspotter.util.JodaUtil"/>
 
     </data>

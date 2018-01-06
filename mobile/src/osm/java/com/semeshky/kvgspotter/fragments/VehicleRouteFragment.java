@@ -4,10 +4,10 @@ package com.semeshky.kvgspotter.fragments;
 import android.graphics.Color;
 import android.view.ViewTreeObserver;
 
-import com.semeshky.kvg.kvgapi.VehicleLocation;
-import com.semeshky.kvg.kvgapi.VehiclePath;
-import com.semeshky.kvg.kvgapi.VehiclePathInfo;
-import com.semeshky.kvg.kvgapi.VehiclePathPoint;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
+import com.github.guennishueftgold.trapezeapi.VehiclePath;
+import com.github.guennishueftgold.trapezeapi.VehiclePathInfo;
+import com.github.guennishueftgold.trapezeapi.VehiclePathPoint;
 import com.semeshky.kvgspotter.map.CoordinateUtil;
 
 import org.osmdroid.util.BoundingBox;
@@ -22,7 +22,6 @@ import java.util.List;
 public class VehicleRouteFragment extends BaseVehicleRouteFragment {
 
     private Polyline mRoutePolyline;
-    private Marker mVehicleMarker;
     private final ViewTreeObserver.OnGlobalLayoutListener mGlobalLayoutListener=new ViewTreeObserver.OnGlobalLayoutListener() {
         @Override
         public void onGlobalLayout() {
@@ -30,7 +29,7 @@ public class VehicleRouteFragment extends BaseVehicleRouteFragment {
                     .updateCamera();
         }
     };
-
+    private Marker mVehicleMarker;
 
     @Override
     public void onMapReady(final MapView mapView) {

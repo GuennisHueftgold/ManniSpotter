@@ -7,7 +7,7 @@
 
         <variable
             name="tripPassages"
-            type="com.semeshky.kvg.kvgapi.TripPassages"/>
+            type="com.github.guennishueftgold.trapezeapi.TripPassages"/>
     </data>
 
     <android.support.v4.widget.SwipeRefreshLayout

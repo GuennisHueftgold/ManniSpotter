@@ -4,10 +4,12 @@ import android.databinding.DataBindingUtil;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
-import com.semeshky.kvg.kvgapi.Route;
-import com.semeshky.kvg.kvgapi.Station;
+import com.github.guennishueftgold.trapezeapi.Route;
+import com.github.guennishueftgold.trapezeapi.Station;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhStationRouteBinding;
+
+import java.util.List;
 
 public class RoutesAdapter extends AbstractDataboundAdapter<Route, VhStationRouteBinding> {
 
@@ -24,7 +26,7 @@ public class RoutesAdapter extends AbstractDataboundAdapter<Route, VhStationRout
     }
 
     @Override
-    protected void bind(VhStationRouteBinding binding, Route item) {
+    protected void bind(VhStationRouteBinding binding, Route item, List<Object> payloads) {
         binding.setRoute(item);
         binding.setCompoundIcon(R.drawable.ic_directions_bus_black_24dp);
     }

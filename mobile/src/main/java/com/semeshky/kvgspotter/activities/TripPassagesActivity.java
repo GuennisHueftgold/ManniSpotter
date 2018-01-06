@@ -17,8 +17,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.semeshky.kvg.kvgapi.Departure;
-import com.semeshky.kvg.kvgapi.TripPassages;
+import com.github.guennishueftgold.trapezeapi.Departure;
+import com.github.guennishueftgold.trapezeapi.TripPassages;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.TripPassagesAdapter;
 import com.semeshky.kvgspotter.databinding.ActivityTripPassagesBinding;
@@ -103,6 +104,17 @@ public final class TripPassagesActivity extends AppCompatActivity {
         intent.putExtra(EXTRA_ROUTE_NAME, routeName);
         intent.putExtra(EXTRA_DIRECTION, direction);
         return intent;
+    }
+
+    public static Intent createIntent(@NonNull Context context,
+                                      @NonNull VehicleLocation vehicleLocation) {
+        return TripPassagesActivity
+                .createIntent(context,
+                        vehicleLocation.getTripId(),
+                        Long.toString(vehicleLocation.getId()),
+                        "departure",
+                        vehicleLocation.getName(),
+                        null);
     }
 
     @Override

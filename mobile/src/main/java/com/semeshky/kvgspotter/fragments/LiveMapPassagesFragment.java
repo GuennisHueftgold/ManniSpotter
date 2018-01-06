@@ -2,6 +2,7 @@ package com.semeshky.kvgspotter.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,11 +14,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.semeshky.kvg.kvgapi.TripPassageStop;
-import com.semeshky.kvg.kvgapi.TripPassages;
-import com.semeshky.kvg.kvgapi.VehicleLocation;
+import com.github.guennishueftgold.trapezeapi.TripPassageStop;
+import com.github.guennishueftgold.trapezeapi.TripPassages;
+import com.github.guennishueftgold.trapezeapi.VehicleLocation;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.activities.StationDetailActivity;
+import com.semeshky.kvgspotter.activities.TripPassagesActivity;
 import com.semeshky.kvgspotter.adapter.TripPassagesAdapter;
 import com.semeshky.kvgspotter.databinding.FragmentLiveMapDeparturesBinding;
 import com.semeshky.kvgspotter.viewmodel.ActivityLiveMapViewModel;
@@ -32,19 +34,27 @@ import timber.log.Timber;
 
 public class LiveMapPassagesFragment extends Fragment {
 
+    private ActivityLiveMapViewModel mViewModel;
     private final Toolbar.OnMenuItemClickListener mToolbarMenuItemClickListener = new Toolbar.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(MenuItem item) {
             switch (item.getItemId()) {
                 case R.id.action_details:
-                    //TODO
+                    final VehicleLocation vehicleLocation = LiveMapPassagesFragment.this
+                            .mViewModel
+                            .getSelectedVehicle()
+                            .getValue();
+                    final Intent intent = TripPassagesActivity
+                            .createIntent(LiveMapPassagesFragment.this.getContext(), vehicleLocation);
+                    LiveMapPassagesFragment
+                            .this
+                            .startActivity(intent);
                     return true;
                 default:
                     return false;
             }
         }
     };
-    private ActivityLiveMapViewModel mViewModel;
     private FragmentLiveMapDeparturesBinding mBinding;
     private TripPassagesAdapter mAdapter;
     private Toolbar mToolbar;
