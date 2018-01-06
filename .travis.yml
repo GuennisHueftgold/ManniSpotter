@@ -12,12 +12,10 @@ jdk:
   - oraclejdk8
   
 android:
-  components:
-    # Uncomment the lines below if you want to
-    # use the latest revision of Android SDK Tools
-    - tools
+  - update_sdk: true
+  - components:
     - platform-tools
-
+    - tools
     # The BuildTools version used by your project
     - build-tools-$ANDROID_BUILD_TOOLS
 
@@ -70,5 +68,5 @@ script:
   - ./gradlew connectedCheck
 after_success:
   - bash <(curl -s https://codecov.io/bash)
-#after_success:
-#  - ./gradlew jacocoRootReport coveralls
+after_failure:
+  - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
