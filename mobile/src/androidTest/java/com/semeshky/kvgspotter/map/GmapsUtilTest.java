@@ -4,12 +4,14 @@ package com.semeshky.kvgspotter.map;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.support.test.runner.AndroidJUnit4;
 import android.test.mock.MockContext;
 
 import com.github.guennishueftgold.trapezeapi.LatLngInterface;
 import com.github.guennishueftgold.trapezeapi.TrapezeApiClient;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
 
@@ -21,6 +23,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@RunWith(AndroidJUnit4.class)
 public class GmapsUtilTest {
 
     @Test()

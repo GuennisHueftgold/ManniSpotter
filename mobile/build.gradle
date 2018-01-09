@@ -36,11 +36,11 @@ android {
     flavorDimensions "mapType", "gplayserivces"
 
     productFlavors {
-        playServices{
+        playServices {
             dimension "gplayserivces"
             versionNameSuffix "-ps"
         }
-        noPlayServices{
+        noPlayServices {
             dimension "gplayserivces"
             versionNameSuffix "-nops"
         }
@@ -55,17 +55,18 @@ android {
             versionNameSuffix "-gmaps"
         }
     }
-    lintOptions{
+    lintOptions {
         abortOnError true
     }
 }
+
 task mergeJacocoReport(type: JacocoMerge) {
     group "Jacoco Report"
     description "Merge Jacoco Code Coverage Report"
 
     def executionFiles = fileTree(dir: "${buildDir}/outputs/code-coverage/connected/flavors",
-        includes : ['**/*.exec','**/*.ec'],
-        excludes : ['mergeJacocoReport.exec']
+            includes: ['**/*.exec', '**/*.ec'],
+            excludes: ['mergeJacocoReport.exec']
     )
     setExecutionData(executionFiles)
 }
@@ -76,14 +77,14 @@ jacoco {
 
 android.variantFilter { variant ->
     // Filter variants for impossible combinations
-    int excludeMatches=0
-    for(int i=0;i<variant.getFlavors().size();i++){
-        final String name=variant.getFlavors().get(i).name
-        if(name.equals("gmaps")|| name.equals("noPlayServices")){
+    int excludeMatches = 0
+    for (int i = 0; i < variant.getFlavors().size(); i++) {
+        final String name = variant.getFlavors().get(i).name
+        if (name.equals("gmaps") || name.equals("noPlayServices")) {
             excludeMatches++
         }
     }
-    if(excludeMatches==2){
+    if (excludeMatches == 2) {
         variant.setIgnore(true)
     }
 }
@@ -91,23 +92,24 @@ android.variantFilter { variant ->
 android.applicationVariants.all { variant ->
     //ADDING SEVERAL BUILD VARIANT DEPENDEND CONSTANTS TO THE RESOURCE FILES
     variant.resValue "string", "SEARCH_SUGGEST_AUTHORITY", variant.applicationId + ".providers.search"
-    variant.buildConfigField("String", "SEARCH_SUGGEST_AUTHORITY", "\"" + variant.applicationId +".providers.search\"")
-    variant.resValue "string", "SEARCH_SUGGEST_CONTENT_URI", "content://"+ variant.applicationId +"/stop"
-    variant.buildConfigField("String", "SEARCH_SUGGEST_CONTENT_URI", "\"content://" + variant.applicationId +"/stop\"")
+    variant.buildConfigField("String", "SEARCH_SUGGEST_AUTHORITY", "\"" + variant.applicationId + ".providers.search\"")
+    variant.resValue "string", "SEARCH_SUGGEST_CONTENT_URI", "content://" + variant.applicationId + "/stop"
+    variant.buildConfigField("String", "SEARCH_SUGGEST_CONTENT_URI", "\"content://" + variant.applicationId + "/stop\"")
     variant.resValue "string", "PACKAGE_NAME", variant.applicationId
-    if( variant.name.contains("gmaps")) {
-        if(variant.buildType.name.equals("debug")){
+    if (variant.name.contains("gmaps")) {
+        if (variant.buildType.name.equals("debug")) {
             resValue "string", "GMAPS_API_KEY", getGoogleMapsApiKey(false)
-        }else{
+        } else {
             resValue "string", "GMAPS_API_KEY", getGoogleMapsApiKey(true)
         }
     }
 }
-def getGoogleMapsApiKey(release){
+
+def getGoogleMapsApiKey(release) {
     Properties props = new Properties()
-    if(release){
+    if (release) {
         props.load(new FileInputStream(new File('mobile/release.secrets')))
-    }else{
+    } else {
         props.load(new FileInputStream(new File('mobile/debug.secrets')))
     }
     return props['GMAPS_API_KEY']

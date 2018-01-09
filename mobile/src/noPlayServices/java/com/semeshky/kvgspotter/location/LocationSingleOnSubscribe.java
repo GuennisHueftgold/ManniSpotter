@@ -24,9 +24,11 @@ class LocationSingleOnSubscribe implements SingleOnSubscribe<Location> {
             if (location == null)
                 location = this.mClient
                         .getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            if (location == null)
-                throw new Exception("No location could be acquired!");
-            emitter.onSuccess(location);
+            if (location == null) {
+                emitter.onError(new Exception("No location could be acquired!"));
+            } else {
+                emitter.onSuccess(location);
+            }
         } catch (SecurityException exception) {
             emitter.onError(exception);
         }
