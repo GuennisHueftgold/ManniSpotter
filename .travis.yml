@@ -3,6 +3,7 @@ env:
   global:
     - ANDROID_BUILD_TOOLS=27.0.3
     - ADB_INSTALL_TIMEOUT=10
+    - CC_TEST_REPORTER_ID=787a2f89b15c637323c7340d65ec17e898ac44480706b4b4122ea040c2a88f1d
   matrix:
     - ANDROID_TARGET=android-21 ANDROID_ABI=armeabi-v7a ANDROID_VERSION=21
     #- ANDROID_TARGET=android-24 ANDROID_ABI=arm64-v8a ANDROID_VERSION=24
@@ -59,6 +60,9 @@ before_install:
 after_install:
   - ./gradlew dependencies || true
 before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
   - echo no | android create avd --force -n test -t $ANDROID_TARGET --abi $ANDROID_ABI --tag google_apis
   - emulator -avd test -no-window &
   - android-wait-for-emulator
@@ -68,5 +72,6 @@ script:
   - ./gradlew connectedCheck
 after_success:
   - bash <(curl -s https://codecov.io/bash)
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
 after_failure:
   - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
