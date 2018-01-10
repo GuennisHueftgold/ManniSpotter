@@ -1,7 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.oss.licenses.plugin'
 //apply plugin: 'com.github.kt3k.coveralls'
-apply plugin: 'jacoco'
 
 android {
     compileSdkVersion 27
@@ -58,17 +57,129 @@ android {
     lintOptions {
         abortOnError true
     }
+    testOptions {
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
+        }
+    }
 }
 
+task jacocoTestReport3(type: JacocoReport) {
+
+    group "Jacoco Report"
+    reports {
+        html.enabled = true
+        html.setDestination(new File("${buildDir}/outputs/code-coverage/mergeJacocoReport"))
+        xml.enabled = true
+        xml.setDestination(new File("${buildDir}/outputs/code-coverage/mergeJacocoReport.xml"))
+    }
+
+    def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*']
+    def debugTree = fileTree(dir: "$project.buildDir/intermediates/classes", excludes: fileFilter)
+    def mainSrc = "$project.projectDir/src/main/java"
+
+    sourceDirectories = files([mainSrc])
+    classDirectories = files([debugTree])
+    executionData = fileTree(dir: project.buildDir, includes: [
+            'jacoco/**/*.exec', 'outputs/code-coverage/connected/**/*coverage.ec'
+    ])
+}
 task mergeJacocoReport(type: JacocoMerge) {
     group "Jacoco Report"
     description "Merge Jacoco Code Coverage Report"
 
-    def executionFiles = fileTree(dir: "${buildDir}/outputs/code-coverage/connected/flavors",
+    def executionFiles = fileTree(dir: "${buildDir}",
             includes: ['**/*.exec', '**/*.ec'],
             excludes: ['mergeJacocoReport.exec']
     )
     setExecutionData(executionFiles)
+    setDestinationFile(new File("${buildDir}/outputs/code-coverage/mergeJacocoReport.exec"))
+}
+
+def srcDirs3 = android.applicationVariants.collect{ variant ->
+    println variant.name
+    variant.sourceSets.java.srcDirs.collect { dir -> dir.path }.flatten()
+}.flatten()
+
+task jacocoTestReport(type: JacocoReport) {
+
+    group "Jacoco Report"
+    reports {
+        html.enabled = true
+        html.setDestination(new File("${buildDir}/outputs/code-coverage/mergeJacocoReport"))
+        xml.enabled = true
+        xml.setDestination(new File("${buildDir}/outputs/code-coverage/mergeJacocoReport.xml"))
+    }
+    FileFilter srcDirFilter=new FileFilter() {
+        @Override
+        boolean accept(File file) {
+            if(!file.isDirectory()){
+                return false
+            }
+            if(!file.parent.endsWith("java")){
+                return false
+            }
+            return true
+        }
+    }
+    FileFilter classDirFilter=new FileFilter() {
+        @Override
+        boolean accept(File file) {
+            if(!file.isDirectory()){
+                return false
+            }
+            if(!file.parent.endsWith("debug")||!file.parent.endsWith("release")){
+                return false
+            }
+            return true
+        }
+    }
+    def srcDirs=files(new File("${project.projectDir}/src")
+        .listFiles(srcDirFilter))
+    def classDirs=files(new File("${buildDir}/intermediates/classes/")
+            .listFiles(classDirFilter))
+    def fileFilter = ['**/R.class',
+                      '**/BR.class',
+                      '**/R$*.class',
+                      '**/BR$*.class',
+                      '**/BuildConfig.*',
+                      '**/*databinding/**/*.*',
+                      '**/Manifest*.*',
+                      '**/*Test*.*',
+                      "**/services/**/model/**",
+                      'android/**/*.*']
+    //variant.sourceSets.java.srcDirs.collect { it.path }.flatten()
+    def srcDirs2 = fileTree(dir: "${project.projectDir}/src", includes: ["*/java/**/*.*"])
+    def debugTree = fileTree(dir: "${buildDir}/intermediates/classes", excludes: fileFilter)
+    dependsOn mergeJacocoReport
+
+    def executionFiles1 = fileTree(dir: "${buildDir}/jacoco",
+            includes: ['**/*.exec', '**/*.ec']
+    )
+    def executionFiles2 = fileTree(dir: "${buildDir}/outputs/code-coverage/connected/flavors",
+            includes: ['**/*.exec', '**/*.ec']
+    )
+    sourceDirectories = files(srcDirs2)
+    println sourceDirectories.asList()
+    classDirectories = files(debugTree)
+    executionData = files(executionFiles2)//files(new File("${buildDir}/outputs/code-coverage/mergeJacocoReport.exec"))
+}
+
+subprojects.each { $project ->
+    def tasks = $project.tasks.withType(JacocoReport)
+
+    if (tasks != null) {
+        mergeJacocoReport.dependsOn << tasks
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true // coveralls plugin depends on xml format report
+        html.enabled = true
+    }
 }
 
 jacoco {

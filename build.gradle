@@ -18,9 +18,30 @@ buildscript {
 }
 
 allprojects {
+    apply plugin: 'jacoco'
     repositories {
         google()
         jcenter()
+    }
+}
+
+task jacocoTestReport2(type: JacocoReport) {
+
+    group "Jacoco Report"
+    executionData fileTree(project.rootDir.absolutePath)
+            .include("**/jacoco/**/*.ec",
+            "**/jacoco/**/*.exec",
+            "**/outputs/code-coverage/connected/flavors/**/*.exec",
+            "**/outputs/code-coverage/connected/flavors/**/*.ec")
+    sourceDirectories = files(fileTree(project.rootDir.absolutePath)
+            .include("**/src/*/java/**/*.java"))
+    classDirectories = files(fileTree(project.rootDir.absolutePath)
+            .include("**/build/intermediates/classes/**/*.class"))
+    reports {
+        html.enabled = true
+        html.setDestination(new File("${buildDir}/outputs/code-coverage/mergeJacocoReport"))
+        xml.enabled = true
+        xml.setDestination(new File("${buildDir}/outputs/code-coverage/mergeJacocoReport.xml"))
     }
 }
 
