@@ -44,9 +44,7 @@ public abstract class AbstractDataboundAdapter<T, V extends ViewDataBinding>
 
     public void setItems(final List<T> items) {
         if (this.mItems == null) {
-            this.mItems = items;
-            notifyDataSetChanged();
-            return;
+            this.mItems = new ArrayList<>();
         }
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
             @Override
@@ -73,7 +71,6 @@ public abstract class AbstractDataboundAdapter<T, V extends ViewDataBinding>
                 return AbstractDataboundAdapter.this.areContentsTheSame(oldItem, newItem);
             }
         });
-        this.mItems.clear();
         this.mItems.addAll(items);
         diffResult.dispatchUpdatesTo(this);
     }
