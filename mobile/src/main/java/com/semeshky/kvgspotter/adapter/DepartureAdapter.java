@@ -17,13 +17,13 @@ import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, VhStationDepartureBinding> {
 
 
     final static int FIVE_MINUTES_IN_SECONDS = 300;
+    private final static DepartureComparator DEPARTURE_COMPARATOR = new DepartureComparator();
     private final Presenter mPresenter;
 
     public DepartureAdapter(@NonNull Presenter presenter) {
@@ -96,41 +96,12 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
 
     @Override
     protected boolean areContentsTheSame(Departure oldItem, Departure newItem) {
-        return oldItem.getTripId().equals(newItem.getTripId()) &&
-                oldItem.getRouteId().equals(newItem.getRouteId()) &&
-                compareLocalTime(oldItem.getActualTime(), newItem.getActualTime()) &&
-                compareLocalTime(oldItem.getPlannedTime(), newItem.getPlannedTime());
-    }
-
-    private final boolean compareLocalTime(LocalTime a, LocalTime b) {
-        if (a == null && b == null) {
-            return true;
-        } else if (a == null) {
-            return false;
-        } else if (b == null) {
-            return false;
-        } else {
-            return a.equals(b);
-        }
+        return oldItem.equals(newItem);
     }
 
     @Override
     public void setItems(List<Departure> departures) {
-        Collections.sort(departures,
-                new Comparator<Departure>() {
-                    @Override
-                    public int compare(Departure d1, Departure d2) {
-                        LocalTime t1 = d1.getActualTime();
-                        LocalTime t2 = d2.getActualTime();
-                        if (t1 == null)
-                            t1 = d1.getPlannedTime();
-                        if (t2 == null)
-                            t2 = d2.getPlannedTime();
-                        if (t1 == null || t2 == null)
-                            return d1.getActualRelativeTime() - d2.getActualRelativeTime();
-                        return Minutes.minutesBetween(t2, t1).getMinutes();
-                    }
-                });
+        Collections.sort(departures, DEPARTURE_COMPARATOR);
         super.setItems(departures);
     }
 

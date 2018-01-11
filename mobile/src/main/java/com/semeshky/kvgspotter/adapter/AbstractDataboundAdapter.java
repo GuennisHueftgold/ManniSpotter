@@ -71,6 +71,7 @@ public abstract class AbstractDataboundAdapter<T, V extends ViewDataBinding>
                 return AbstractDataboundAdapter.this.areContentsTheSame(oldItem, newItem);
             }
         });
+        this.mItems.clear();
         this.mItems.addAll(items);
         diffResult.dispatchUpdatesTo(this);
     }
