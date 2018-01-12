@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricTestRunner.class)
@@ -71,5 +73,31 @@ public class DepartureAdapterTest {
         for (int i = 0; i < departureList.size(); i++) {
             assertEquals(Long.parseLong(adapter.getItem(i).getTripId()), adapter.getItemId(i));
         }
+    }
+
+    @Test
+    public void areItemsTheSame_should_return_correct_values() {
+        DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
+        DepartureAdapter adapter = new DepartureAdapter(presenter);
+        Departure dep1 = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route1")
+                .build();
+        Departure dep2 = new Departure.Builder()
+                .setTripId("trip2")
+                .setRouteId("route1")
+                .build();
+        Departure dep3 = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route2")
+                .build();
+        Departure dep4 = new Departure.Builder()
+                .setTripId("trip2")
+                .setRouteId("route2")
+                .build();
+        assertTrue(adapter.areItemsTheSame(dep1, dep1));
+        assertFalse(adapter.areItemsTheSame(dep1, dep2));
+        assertFalse(adapter.areItemsTheSame(dep1, dep3));
+        assertFalse(adapter.areItemsTheSame(dep1, dep4));
     }
 }
