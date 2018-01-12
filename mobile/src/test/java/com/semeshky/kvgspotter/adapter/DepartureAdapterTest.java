@@ -1,8 +1,6 @@
 package com.semeshky.kvgspotter.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 
 import com.github.guennishueftgold.trapezeapi.Departure;
 import com.github.guennishueftgold.trapezeapi.DepartureStatus;
@@ -37,9 +35,10 @@ public class DepartureAdapterTest {
         DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
         DepartureAdapter adapter = new DepartureAdapter(presenter);
 
-        RecyclerView rvParent = new RecyclerView(context);
+/*        RecyclerView rvParent = new RecyclerView(context);
         rvParent.setLayoutManager(new LinearLayoutManager(context));
         rvParent.setAdapter(adapter);
+  */
         final List<Departure> departureList = new ArrayList<>();
         Departure dep1 = DepartureComparatorTest
                 .createDeparture(DepartureStatus.STATUS_PLANNED, null, null);
@@ -55,5 +54,22 @@ public class DepartureAdapterTest {
         assertEquals(dep3, adapter.getItem(0));
         assertEquals(dep2, adapter.getItem(1));
         assertEquals(dep1, adapter.getItem(2));
+    }
+
+    @Test
+    public void getItemId_should_return_the_correct_id() {
+        DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
+        DepartureAdapter adapter = new DepartureAdapter(presenter);
+        final List<Departure> departureList = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            departureList.add(new Departure.Builder()
+                    .setTripId("" + i)
+                    .setActualRelativeTime(i)
+                    .build());
+        }
+        adapter.setItems(departureList);
+        for (int i = 0; i < departureList.size(); i++) {
+            assertEquals(Long.parseLong(adapter.getItem(i).getTripId()), adapter.getItemId(i));
+        }
     }
 }
