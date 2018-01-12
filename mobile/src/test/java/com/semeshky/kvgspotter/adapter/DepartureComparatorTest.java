@@ -1,6 +1,5 @@
 package com.semeshky.kvgspotter.adapter;
 
-import android.support.test.runner.AndroidJUnit4;
 
 import com.github.guennishueftgold.trapezeapi.Departure;
 import com.github.guennishueftgold.trapezeapi.DepartureStatus;
@@ -8,13 +7,14 @@ import com.github.guennishueftgold.trapezeapi.DepartureStatus;
 import org.joda.time.LocalTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(JUnit4.class)
 public class DepartureComparatorTest {
 
     final static DepartureComparator DEPARTURE_COMPARATOR = new DepartureComparator();

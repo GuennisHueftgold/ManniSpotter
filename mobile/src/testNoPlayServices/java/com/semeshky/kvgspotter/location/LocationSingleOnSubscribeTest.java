@@ -3,15 +3,18 @@ package com.semeshky.kvgspotter.location;
 import android.content.Context;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
 import android.test.mock.MockContext;
+
+import com.semeshky.kvgspotter.BuildConfig;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.ArgumentMatchers;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
 
 import io.reactivex.SingleEmitter;
 
@@ -22,14 +25,19 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(AndroidJUnit4.class)
+@RunWith(RobolectricTestRunner.class)
+@Config(constants = BuildConfig.class)
 public class LocationSingleOnSubscribeTest {
 
     MockContext mockContext = mock(MockContext.class);
     LocationManager mockLocationManager = mock(LocationManager.class);
-    Context context = InstrumentationRegistry.getTargetContext();
+    private Context context;
 
-    //final MockLocationHelper mockLocationHelper=new MockLocationHelper(context);
+    @Before
+    public void setup() {
+        context = RuntimeEnvironment.application;
+    }
+
     @Before
     public void createInstance() {
         when(mockContext.getApplicationContext()).thenReturn(mockContext);

@@ -23,14 +23,15 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
 
 
     final static int FIVE_MINUTES_IN_SECONDS = 300;
-    private final static DepartureComparator DEPARTURE_COMPARATOR = new DepartureComparator();
     private final Presenter mPresenter;
+    DepartureComparator mDepartureComparator = new DepartureComparator();
 
     public DepartureAdapter(@NonNull Presenter presenter) {
         this.mPresenter = presenter;
         this.setHasStableIds(true);
     }
 
+    @Override
     public long getItemId(int position) {
         return Long.parseLong(this.getItem(position).getTripId());
     }
@@ -101,7 +102,7 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
 
     @Override
     public void setItems(List<Departure> departures) {
-        Collections.sort(departures, DEPARTURE_COMPARATOR);
+        Collections.sort(departures, this.mDepartureComparator);
         super.setItems(departures);
     }
 

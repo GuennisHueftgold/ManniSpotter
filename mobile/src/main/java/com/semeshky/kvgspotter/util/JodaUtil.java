@@ -29,7 +29,7 @@ public final class JodaUtil {
         }
         final int delta = Minutes.minutesBetween(LocalTime.now(), localTime).getMinutes();
         if (delta < 20) {
-            return context.getResources().getQuantityText(R.plurals.minutes, delta).toString();
+            return context.getResources().getQuantityString(R.plurals.minutes, delta);
         } else {
             return localTime.toString(DateTimeFormat.shortDateTime());
         }
