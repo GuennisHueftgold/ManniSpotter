@@ -61,6 +61,6 @@ after_install:
 script:
   - ./gradlew build test combineAllCoverageReports
 after_success:
-  - bash <(curl -s https://codecov.io/bash) -f "./mobile/build/reports/jacoco/testGmapsPlayServicesReleaseUnitTestCoverage/testGmapsPlayServicesReleaseUnitTestCoverage.xml" -d -v
+  - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesReleaseUnitTestCoverage/testGmapsPlayServicesReleaseUnitTestCoverage.xml" -d -v
 after_failure:
   - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
