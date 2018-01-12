@@ -14,9 +14,15 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     testOptions {
         unitTests {
             includeAndroidResources = true
+        }
+        unitTests.all {
+            jacoco {
+                includeNoLocationClasses = true
+            }
         }
     }
     dataBinding {
@@ -76,8 +82,10 @@ task mergeJacocoReport(type: JacocoMerge) {
     setExecutionData(executionFiles)
 }
 
+apply from: "./jacoco.gradle"
+
 jacoco {
-    toolVersion = "0.7.8"
+    toolVersion = "0.8.0"
 }
 
 android.variantFilter { variant ->
@@ -110,6 +118,24 @@ android.applicationVariants.all { variant ->
     }
 }
 
+task summarizeTests{
+    group "custom manni"
+
+}
+/*
+android.applicationVariants.all { variant ->
+    println "==================="
+    println variant.name
+    println variant.baseName
+    println variant.productFlavors.collect { flavor -> flavor.name }
+    println variant.mergedFlavor.name
+    println android.buildTypes.collect { type -> type.name }
+    //def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
+    variant.sourceSets.forEach{sSet ->
+        println sSet.name
+        println sSet.javaDirectories.flatten()
+    }
+}*/
 def getGoogleMapsApiKey(release) {
     Properties props = new Properties()
     if (release) {

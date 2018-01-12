@@ -1,0 +1,54 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = "0.8.0"
+}
+
+project.afterEvaluate {
+    // Grab all build types and product flavors
+    def buildTypes = android.buildTypes.collect { type -> type.name }
+    def productFlavors = android.productFlavors.collect { flavor -> flavor.name }
+
+    // When no product flavors defined, use empty
+    if (!productFlavors) productFlavors.add('')
+    task combineAllCoverageReports{
+        group "Reporting"
+
+    }
+    android.applicationVariants.all { variant ->
+        def testTaskName = "test${variant.name.capitalize()}UnitTest"
+        // Create coverage task of form 'testFlavorTypeCoverage' depending on 'testFlavorTypeUnitTest'
+        //println variant.name
+        //println variant.buildType.name
+        //println variant.buildType.debuggable
+        task "${testTaskName}Coverage"(type: JacocoReport, dependsOn: "test") {
+            group = "Reporting"
+            description = "Generate Jacoco coverage reports on the ${variant.name.capitalize()} build."
+            def classDir = variant.name.substring(0,variant.name.length()-variant.buildType.name.length())
+            def buildTypeDir = variant.buildType.name
+            //println classDir
+            classDirectories = fileTree(
+                    dir: "${project.buildDir}/intermediates/classes/${classDir}/${buildTypeDir}",
+                    excludes: ['**/R.class',
+                               '**/R$*.class',
+                               '**/*$ViewInjector*.*',
+                               '**/*$ViewBinder*.*',
+                               '**/BuildConfig.*',
+                               '**/Manifest*.*']
+            )
+            def coverageSourceDirs = variant.sourceSets.collect{ sourceSet ->
+                sourceSet.javaDirectories.flatten()
+            }.flatten()
+            additionalSourceDirs = files(coverageSourceDirs)
+            sourceDirectories = files(coverageSourceDirs)
+            executionData = files("${project.buildDir}/jacoco/${testTaskName}.exec")
+
+            reports {
+                xml.enabled = true
+                html.enabled = true
+            }
+        }
+        combineAllCoverageReports.dependsOn "${testTaskName}Coverage"
+
+    }
+}
