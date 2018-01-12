@@ -22,6 +22,7 @@ public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPass
     public TripPassagesAdapter(OnStationClickListener stationClickListener) {
         this.mOnStationClickListener = stationClickListener;
     }
+
     public static String formatStatus(Context context, TripPassageStop tripPassageStop) {
         if (tripPassageStop == null)
             return "";
@@ -43,10 +44,9 @@ public final class TripPassagesAdapter extends AbstractDataboundAdapter<TripPass
 
     @Override
     protected VhTripPassageStopBinding createBinding(ViewGroup parent, int type) {
-        final VhTripPassageStopBinding binding = DataBindingUtil
+        return DataBindingUtil
                 .inflate(LayoutInflater.from(parent.getContext()), R.layout.vh_trip_passage_stop,
                         parent, false);
-        return binding;
     }
 
     @Override

@@ -26,7 +26,7 @@ public class GMapsUtil {
             context.startActivity(mapIntent);
         } else {
             StringBuilder builder = new StringBuilder();
-            builder.append("https://www.google.com/maps/dir/?api=1&destination")
+            builder.append("https://www.google.com/maps/dir/?api=1&destination=")
                     .append(latitude)
                     .append(",")
                     .append(longitude);
@@ -36,7 +36,7 @@ public class GMapsUtil {
         }
     }
 
-    private static boolean isPackageInstalled(String packagename, PackageManager packageManager) {
+    static boolean isPackageInstalled(String packagename, PackageManager packageManager) {
         try {
             packageManager.getPackageInfo(packagename, 0);
             return true;
