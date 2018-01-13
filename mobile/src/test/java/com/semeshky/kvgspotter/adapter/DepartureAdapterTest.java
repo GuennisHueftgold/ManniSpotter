@@ -23,6 +23,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -109,7 +110,7 @@ public class DepartureAdapterTest {
     }
 
     @Test
-    public void bind_should_work_properly() {
+    public void bind_should_set_departed_correctly() {
         DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
         VhStationDepartureBinding mockBinding = mock(VhStationDepartureBinding.class);
         View mockView = mock(View.class);
@@ -130,5 +131,47 @@ public class DepartureAdapterTest {
                 .setActive(false);
         verify(mockBinding, times(1))
                 .setSecondaryText(context.getResources().getString(R.string.departed));
+        //Check callcount
+        verify(mockBinding, times(1))
+                .setActive(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryTextAlert(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryText(any(String.class));
+    }
+
+    @Test
+    public void bind_should_set_stopping_correctly() {
+        DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
+        VhStationDepartureBinding mockBinding = mock(VhStationDepartureBinding.class);
+        View mockView = mock(View.class);
+        when(mockView.getContext()).thenReturn(context);
+        when(mockBinding.getRoot()).thenReturn(mockView);
+        DepartureAdapter adapter = new DepartureAdapter(presenter);
+        Departure departure = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route1")
+                .setStatus(DepartureStatus.STATUS_STOPPING)
+                .build();
+        adapter.bind(mockBinding, departure, Collections.emptyList());
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(true);
+        verify(mockBinding, times(1))
+                .setSecondaryTextAlert(false);
+        verify(mockBinding, times(1))
+                .setActive(true);
+        verify(mockBinding, times(1))
+                .setSecondaryText(context.getResources().getString(R.string.stopping));
+        //Check callcount
+        verify(mockBinding, times(1))
+                .setActive(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryTextAlert(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryText(any(String.class));
     }
 }

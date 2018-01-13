@@ -8,7 +8,6 @@ import android.view.ViewGroup;
 
 import com.github.guennishueftgold.trapezeapi.Departure;
 import com.github.guennishueftgold.trapezeapi.DepartureStatus;
-import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhStationDepartureBinding;
 
@@ -47,16 +46,14 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
 
     @Override
     protected void bind(VhStationDepartureBinding binding, Departure item, List<Object> payloads) {
-        binding.setVariable(BR.departure, item);
+        binding.setVariable(com.semeshky.kvgspotter.BR.departure, item);
         final Resources resources = binding.getRoot().getContext().getResources();
-        if ((item.getActualRelativeTime() < 0 || item.getStatus() == DepartureStatus.STATUS_DEPARTED)
-                && item.getStatus() != DepartureStatus.STATUS_STOPPING) {
+        if (item.getStatus() == DepartureStatus.STATUS_DEPARTED) {
             // IF Bus has left
             binding.setActive(false);
             binding.setSecondaryText(resources.getString(R.string.departed));
             binding.setSecondaryTextAlert(false);
             binding.setSecondaryTextVisible(true);
-
         } else {
             binding.setActive(true);
             if (item.getStatus() == DepartureStatus.STATUS_STOPPING) {
