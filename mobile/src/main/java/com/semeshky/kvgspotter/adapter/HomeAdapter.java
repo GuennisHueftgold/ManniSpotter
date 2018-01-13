@@ -24,17 +24,18 @@ import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
 
-    private final static int TYPE_TITLE = 1, TYPE_STOP = 2, TYPE_FAVORITE_INFO = 3, TYPE_NEARBY_STOP_INFO = 5;
+    final static int TYPE_TITLE = 1, TYPE_STOP = 2, TYPE_FAVORITE_INFO = 3, TYPE_NEARBY_STOP_INFO = 5;
     private final WeakReference<HomeAdapterEventListener> mOnFavoriteClickListener;
-    private List<DistanceStop> mFavoriteStationList = new ArrayList<>();
-    private List<DistanceStop> mNearbyStopList = new ArrayList<>();
-    private List<ListItem> mListItems = new ArrayList<>();
+    private final List<DistanceStop> mFavoriteStationList = new ArrayList<>();
+    private final List<DistanceStop> mNearbyStopList = new ArrayList<>();
+    private final List<ListItem> mListItems = new ArrayList<>();
     private boolean mHasLocationpermission = false;
 
     public HomeAdapter(HomeAdapterEventListener onFavoriteSelectListener) {
         super();
         this.mOnFavoriteClickListener = new WeakReference<>(onFavoriteSelectListener);
         this.setHasStableIds(true);
+        this.updateIndex();
     }
 
     @Override
@@ -55,6 +56,11 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
 
     @Override
     public void onBindViewHolder(DataboundViewHolder holder, int position) {
+        //Stub as required
+    }
+
+    @Override
+    public void onBindViewHolder(DataboundViewHolder holder, int position, List<Object> payloads) {
         switch (this.getItemViewType(position)) {
             case TYPE_STOP:
                 final DistanceStop distanceStop = (DistanceStop) this.mListItems.get(position).tag;
@@ -162,7 +168,7 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         void onRequestPermission();
     }
 
-    private static final class AdapterDiffCallback extends DiffUtil.Callback {
+    static final class AdapterDiffCallback extends DiffUtil.Callback {
 
         private final List<ListItem> mNewList;
         private final List<ListItem> mOldList;
@@ -242,12 +248,12 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         }
     }
 
-    private static class ListItem {
+    static class ListItem {
         public final int type;
         public final Object tag;
         public final long id;
 
-        public ListItem(long id, int type, Object tag) {
+        ListItem(long id, int type, Object tag) {
             this.type = type;
             this.tag = tag;
             this.id = id * 10 + type;
