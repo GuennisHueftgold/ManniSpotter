@@ -46,7 +46,7 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
 
     @Override
     protected void bind(VhStationDepartureBinding binding, Departure item, List<Object> payloads) {
-        binding.setVariable(com.semeshky.kvgspotter.BR.departure, item);
+        binding.setDeparture(item);
         final Resources resources = binding.getRoot().getContext().getResources();
         if (item.getStatus() == DepartureStatus.STATUS_DEPARTED) {
             // IF Bus has left

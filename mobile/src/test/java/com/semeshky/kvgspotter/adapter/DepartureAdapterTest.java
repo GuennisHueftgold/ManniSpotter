@@ -9,6 +9,7 @@ import com.semeshky.kvgspotter.BuildConfig;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhStationDepartureBinding;
 
+import org.joda.time.LocalTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -131,6 +132,8 @@ public class DepartureAdapterTest {
                 .setActive(false);
         verify(mockBinding, times(1))
                 .setSecondaryText(context.getResources().getString(R.string.departed));
+        verify(mockBinding, times(1))
+                .setDeparture(departure);
         //Check callcount
         verify(mockBinding, times(1))
                 .setActive(any(Boolean.class));
@@ -140,6 +143,8 @@ public class DepartureAdapterTest {
                 .setSecondaryTextAlert(any(Boolean.class));
         verify(mockBinding, times(1))
                 .setSecondaryText(any(String.class));
+        verify(mockBinding, times(1))
+                .setDeparture(any(Departure.class));
     }
 
     @Test
@@ -164,6 +169,8 @@ public class DepartureAdapterTest {
                 .setActive(true);
         verify(mockBinding, times(1))
                 .setSecondaryText(context.getResources().getString(R.string.stopping));
+        verify(mockBinding, times(1))
+                .setDeparture(departure);
         //Check callcount
         verify(mockBinding, times(1))
                 .setActive(any(Boolean.class));
@@ -173,5 +180,117 @@ public class DepartureAdapterTest {
                 .setSecondaryTextAlert(any(Boolean.class));
         verify(mockBinding, times(1))
                 .setSecondaryText(any(String.class));
+        verify(mockBinding, times(1))
+                .setDeparture(any(Departure.class));
+    }
+
+    @Test
+    public void bind_should_set_planned_correctly() {
+        DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
+        VhStationDepartureBinding mockBinding = mock(VhStationDepartureBinding.class);
+        View mockView = mock(View.class);
+        when(mockView.getContext()).thenReturn(context);
+        when(mockBinding.getRoot()).thenReturn(mockView);
+        DepartureAdapter adapter = new DepartureAdapter(presenter);
+        Departure departure = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route1")
+                .setActualTime(LocalTime.fromMillisOfDay(200000))
+                .setPlannedTime(LocalTime.fromMillisOfDay(200000))
+                .setStatus(DepartureStatus.STATUS_PLANNED)
+                .build();
+        adapter.bind(mockBinding, departure, Collections.emptyList());
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(false);
+        verify(mockBinding, times(1))
+                .setActive(true);
+        verify(mockBinding, times(1))
+                .setDeparture(departure);
+        //Check callcount
+        verify(mockBinding, times(1))
+                .setActive(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(any(Boolean.class));
+        verify(mockBinding, times(0))
+                .setSecondaryTextAlert(any(Boolean.class));
+        verify(mockBinding, times(0))
+                .setSecondaryText(any(String.class));
+        verify(mockBinding, times(1))
+                .setDeparture(any(Departure.class));
+    }
+
+    @Test
+    public void bind_should_set_predicted_correctly() {
+        DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
+        VhStationDepartureBinding mockBinding = mock(VhStationDepartureBinding.class);
+        View mockView = mock(View.class);
+        when(mockView.getContext()).thenReturn(context);
+        when(mockBinding.getRoot()).thenReturn(mockView);
+        DepartureAdapter adapter = new DepartureAdapter(presenter);
+        Departure departure = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route1")
+                .setActualTime(LocalTime.fromMillisOfDay(200000))
+                .setPlannedTime(LocalTime.fromMillisOfDay(200000))
+                .setStatus(DepartureStatus.STATUS_PREDICTED)
+                .build();
+        adapter.bind(mockBinding, departure, Collections.emptyList());
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(false);
+        verify(mockBinding, times(1))
+                .setActive(true);
+        verify(mockBinding, times(1))
+                .setDeparture(departure);
+        //Check callcount
+        verify(mockBinding, times(1))
+                .setActive(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(any(Boolean.class));
+        verify(mockBinding, times(0))
+                .setSecondaryTextAlert(any(Boolean.class));
+        verify(mockBinding, times(0))
+                .setSecondaryText(any(String.class));
+        verify(mockBinding, times(1))
+                .setDeparture(any(Departure.class));
+    }
+
+    @Test
+    public void bind_should_display_departure_as_delayed() {
+        DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
+        VhStationDepartureBinding mockBinding = mock(VhStationDepartureBinding.class);
+        View mockView = mock(View.class);
+        when(mockView.getContext()).thenReturn(context);
+        when(mockBinding.getRoot()).thenReturn(mockView);
+        DepartureAdapter adapter = new DepartureAdapter(presenter);
+        final LocalTime plannedTime = LocalTime.fromMillisOfDay(200000);
+        Departure departure = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route1")
+                .setActualTime(plannedTime.plusMinutes(2))
+                .setPlannedTime(plannedTime)
+                .setStatus(DepartureStatus.STATUS_PLANNED)
+                .build();
+        adapter.bind(mockBinding, departure, Collections.emptyList());
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(true);
+        verify(mockBinding, times(1))
+                .setSecondaryTextAlert(true);
+        verify(mockBinding, times(1))
+                .setActive(true);
+        verify(mockBinding, times(1))
+                .setSecondaryText(context.getResources().getQuantityString(R.plurals.minutes_delayed, 2, 2));
+        verify(mockBinding, times(1))
+                .setDeparture(departure);
+        //Check callcount
+        verify(mockBinding, times(1))
+                .setActive(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryTextAlert(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryText(any(String.class));
+        verify(mockBinding, times(1))
+                .setDeparture(any(Departure.class));
     }
 }
