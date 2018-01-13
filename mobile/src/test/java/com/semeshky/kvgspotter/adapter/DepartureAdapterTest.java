@@ -1,10 +1,13 @@
 package com.semeshky.kvgspotter.adapter;
 
 import android.content.Context;
+import android.view.View;
 
 import com.github.guennishueftgold.trapezeapi.Departure;
 import com.github.guennishueftgold.trapezeapi.DepartureStatus;
 import com.semeshky.kvgspotter.BuildConfig;
+import com.semeshky.kvgspotter.R;
+import com.semeshky.kvgspotter.databinding.VhStationDepartureBinding;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,12 +17,16 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class)
@@ -99,5 +106,29 @@ public class DepartureAdapterTest {
         assertFalse(adapter.areItemsTheSame(dep1, dep2));
         assertFalse(adapter.areItemsTheSame(dep1, dep3));
         assertFalse(adapter.areItemsTheSame(dep1, dep4));
+    }
+
+    @Test
+    public void bind_should_work_properly() {
+        DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
+        VhStationDepartureBinding mockBinding = mock(VhStationDepartureBinding.class);
+        View mockView = mock(View.class);
+        when(mockView.getContext()).thenReturn(context);
+        when(mockBinding.getRoot()).thenReturn(mockView);
+        DepartureAdapter adapter = new DepartureAdapter(presenter);
+        Departure departure = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route1")
+                .setStatus(DepartureStatus.STATUS_DEPARTED)
+                .build();
+        adapter.bind(mockBinding, departure, Collections.emptyList());
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(true);
+        verify(mockBinding, times(1))
+                .setSecondaryTextAlert(false);
+        verify(mockBinding, times(1))
+                .setActive(false);
+        verify(mockBinding, times(1))
+                .setSecondaryText(context.getResources().getString(R.string.departed));
     }
 }
