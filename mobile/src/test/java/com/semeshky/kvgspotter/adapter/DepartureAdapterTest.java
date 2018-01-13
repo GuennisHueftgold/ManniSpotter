@@ -10,6 +10,7 @@ import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhStationDepartureBinding;
 
 import org.joda.time.LocalTime;
+import org.joda.time.format.DateTimeFormat;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +27,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -145,6 +147,8 @@ public class DepartureAdapterTest {
                 .setSecondaryText(any(String.class));
         verify(mockBinding, times(1))
                 .setDeparture(any(Departure.class));
+        verify(mockBinding, times(1))
+                .setDepartureTime(any(String.class));
     }
 
     @Test
@@ -182,6 +186,8 @@ public class DepartureAdapterTest {
                 .setSecondaryText(any(String.class));
         verify(mockBinding, times(1))
                 .setDeparture(any(Departure.class));
+        verify(mockBinding, times(1))
+                .setDepartureTime(any(String.class));
     }
 
     @Test
@@ -217,6 +223,8 @@ public class DepartureAdapterTest {
                 .setSecondaryText(any(String.class));
         verify(mockBinding, times(1))
                 .setDeparture(any(Departure.class));
+        verify(mockBinding, times(1))
+                .setDepartureTime(any(String.class));
     }
 
     @Test
@@ -252,6 +260,8 @@ public class DepartureAdapterTest {
                 .setSecondaryText(any(String.class));
         verify(mockBinding, times(1))
                 .setDeparture(any(Departure.class));
+        verify(mockBinding, times(1))
+                .setDepartureTime(any(String.class));
     }
 
     @Test
@@ -292,5 +302,124 @@ public class DepartureAdapterTest {
                 .setSecondaryText(any(String.class));
         verify(mockBinding, times(1))
                 .setDeparture(any(Departure.class));
+        verify(mockBinding, times(1))
+                .setDepartureTime(any(String.class));
+    }
+
+    @Test
+    public void bind_should_display_time_delta() {
+        DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
+        VhStationDepartureBinding mockBinding = mock(VhStationDepartureBinding.class);
+        View mockView = mock(View.class);
+        when(mockView.getContext()).thenReturn(context);
+        when(mockBinding.getRoot()).thenReturn(mockView);
+        DepartureAdapter adapter = new DepartureAdapter(presenter);
+        final int actualRelativeTime = 156;
+        Departure departure = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route1")
+                .setActualRelativeTime(actualRelativeTime)
+                .setStatus(DepartureStatus.STATUS_PREDICTED)
+                .build();
+        adapter.bind(mockBinding, departure, Collections.emptyList());
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(false);
+        verify(mockBinding, times(1))
+                .setActive(true);
+        verify(mockBinding, times(1))
+                .setDeparture(departure);
+        final int relativeTime = actualRelativeTime / 60;
+        verify(mockBinding, times(1))
+                .setDepartureTime(context.getResources().getQuantityString(R.plurals.minutes, relativeTime, relativeTime));
+        //Check callcount
+        verify(mockBinding, times(1))
+                .setActive(any(Boolean.class));
+        verify(mockBinding, times(1))
+                .setSecondaryTextVisible(any(Boolean.class));
+        verify(mockBinding, times(0))
+                .setSecondaryTextAlert(any(Boolean.class));
+        verify(mockBinding, times(0))
+                .setSecondaryText(any(String.class));
+        verify(mockBinding, times(1))
+                .setDeparture(any(Departure.class));
+        verify(mockBinding, times(1))
+                .setDepartureTime(any(String.class));
+    }
+
+    @Test
+    public void bind_should_call_setDepartureTime_correctly() {
+        DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
+        VhStationDepartureBinding mockBinding = mock(VhStationDepartureBinding.class);
+        View mockView = mock(View.class);
+        when(mockView.getContext()).thenReturn(context);
+        when(mockBinding.getRoot()).thenReturn(mockView);
+        DepartureAdapter adapter = new DepartureAdapter(presenter);
+        final Departure departure1 = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route1")
+                .setActualRelativeTime(0)
+                .setActualTime(null)
+                .setPlannedTime(null)
+                .setStatus(DepartureStatus.STATUS_PREDICTED)
+                .build();
+        adapter.bind(mockBinding, departure1, Collections.emptyList());
+        verify(mockBinding, times(1))
+                .setDepartureTime("--:--");
+        //Check callcount
+        verify(mockBinding, times(1))
+                .setDepartureTime(any(String.class));
+        reset(mockBinding);
+        when(mockBinding.getRoot()).thenReturn(mockView);
+        //
+        final LocalTime testTime = LocalTime.fromMillisOfDay(2030939);
+        final Departure departure2 = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route1")
+                .setActualRelativeTime(0)
+                .setActualTime(testTime)
+                .setPlannedTime(null)
+                .setStatus(DepartureStatus.STATUS_PREDICTED)
+                .build();
+        adapter.bind(mockBinding, departure2, Collections.emptyList());
+        verify(mockBinding, times(1))
+                .setDepartureTime(testTime.toString(DateTimeFormat.shortTime()));
+        //Check callcount
+        verify(mockBinding, times(1))
+                .setDepartureTime(any(String.class));
+        reset(mockBinding);
+        when(mockBinding.getRoot()).thenReturn(mockView);
+        //
+        final Departure departure3 = new Departure.Builder()
+                .setTripId("trip1")
+                .setRouteId("route1")
+                .setActualRelativeTime(DepartureAdapter.FIVE_MINUTES_IN_SECONDS * 2) // Over 5 minutes
+                .setActualTime(null)
+                .setPlannedTime(testTime)
+                .setStatus(DepartureStatus.STATUS_PREDICTED)
+                .build();
+        adapter.bind(mockBinding, departure3, Collections.emptyList());
+        verify(mockBinding, times(1))
+                .setDepartureTime(testTime.toString(DateTimeFormat.shortTime()));
+        //Check callcount
+        verify(mockBinding, times(1))
+                .setDepartureTime(any(String.class));
+    }
+
+    @Test
+    public void areContentsTheSame_should_call_the_equal_method() {
+        DepartureAdapter.Presenter presenter = mock(DepartureAdapter.Presenter.class);
+        DepartureAdapter adapter = new DepartureAdapter(presenter);
+        final Departure departure1 = new Departure.Builder()
+                .setRouteId("id1")
+                .build();
+        final Departure departure2 = new Departure.Builder()
+                .setRouteId("id1")
+                .build();
+        final Departure departure3 = new Departure.Builder()
+                .setRouteId("id2")
+                .build();
+        assertTrue(adapter.areContentsTheSame(departure1, departure1));
+        assertTrue(adapter.areContentsTheSame(departure1, departure2));
+        assertFalse(adapter.areContentsTheSame(departure1, departure3));
     }
 }
