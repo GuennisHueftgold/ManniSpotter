@@ -150,7 +150,7 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         } else {
             itemList.add(new ListItem(1, TYPE_NEARBY_STOP_INFO, null));
         }
-        final AdapterDiffCallback diffCallback = new AdapterDiffCallback(this.mListItems, itemList);
+        final HomeAdapterDiffUtilCallback diffCallback = new HomeAdapterDiffUtilCallback(this.mListItems, itemList);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback, true);
         this.mListItems.clear();
         this.mListItems.addAll(itemList);
@@ -168,46 +168,6 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         void onRequestPermission();
     }
 
-    static final class AdapterDiffCallback extends DiffUtil.Callback {
-
-        private final List<ListItem> mNewList;
-        private final List<ListItem> mOldList;
-
-        public AdapterDiffCallback(List<ListItem> oldList, List<ListItem> newList) {
-            this.mOldList = oldList;
-            this.mNewList = newList;
-        }
-
-        @Override
-        public int getOldListSize() {
-            return this.mOldList.size();
-        }
-
-        @Override
-        public int getNewListSize() {
-            return this.mNewList.size();
-        }
-
-        @Override
-        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return this.mOldList.get(oldItemPosition).id ==
-                    this.mNewList.get(newItemPosition).id;
-        }
-
-        @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            final Object oldItem = this.mOldList.get(oldItemPosition);
-            final Object newItem = this.mNewList.get(newItemPosition);
-            if (oldItem == null || newItem == null)
-                return false;
-            return oldItem.equals(newItem);
-        }
-
-        @Nullable
-        public Object getChangePayload(int oldItemPosition, int newItemPosition) {
-            return null;
-        }
-    }
 
     public final static class DistanceStop {
         public final String shortName;
