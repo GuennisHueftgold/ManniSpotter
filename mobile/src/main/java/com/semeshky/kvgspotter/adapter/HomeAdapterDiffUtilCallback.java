@@ -8,8 +8,8 @@ import java.util.List;
 
 final class HomeAdapterDiffUtilCallback extends DiffUtil.Callback {
 
-    private final List<HomeAdapter.ListItem> mNewList;
-    private final List<HomeAdapter.ListItem> mOldList;
+    final List<HomeAdapter.ListItem> mNewList;
+    final List<HomeAdapter.ListItem> mOldList;
 
     HomeAdapterDiffUtilCallback(List<HomeAdapter.ListItem> oldList, List<HomeAdapter.ListItem> newList) {
         this.mOldList = oldList;
@@ -36,8 +36,6 @@ final class HomeAdapterDiffUtilCallback extends DiffUtil.Callback {
     public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
         final Object oldItem = this.mOldList.get(oldItemPosition);
         final Object newItem = this.mNewList.get(newItemPosition);
-        if (oldItem == null || newItem == null)
-            return false;
         return oldItem.equals(newItem);
     }
 
