@@ -24,17 +24,18 @@ import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
 
-    private final static int TYPE_TITLE = 1, TYPE_STOP = 2, TYPE_FAVORITE_INFO = 3, TYPE_NEARBY_STOP_INFO = 5;
+    final static int TYPE_TITLE = 1, TYPE_STOP = 2, TYPE_FAVORITE_INFO = 3, TYPE_NEARBY_STOP_INFO = 5;
     private final WeakReference<HomeAdapterEventListener> mOnFavoriteClickListener;
-    private List<DistanceStop> mFavoriteStationList = new ArrayList<>();
-    private List<DistanceStop> mNearbyStopList = new ArrayList<>();
-    private List<ListItem> mListItems = new ArrayList<>();
+    private final List<DistanceStop> mFavoriteStationList = new ArrayList<>();
+    private final List<DistanceStop> mNearbyStopList = new ArrayList<>();
+    private final List<ListItem> mListItems = new ArrayList<>();
     private boolean mHasLocationpermission = false;
 
     public HomeAdapter(HomeAdapterEventListener onFavoriteSelectListener) {
         super();
         this.mOnFavoriteClickListener = new WeakReference<>(onFavoriteSelectListener);
         this.setHasStableIds(true);
+        this.updateIndex();
     }
 
     @Override
@@ -55,6 +56,11 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
 
     @Override
     public void onBindViewHolder(DataboundViewHolder holder, int position) {
+        //Stub as required
+    }
+
+    @Override
+    public void onBindViewHolder(DataboundViewHolder holder, int position, List<Object> payloads) {
         switch (this.getItemViewType(position)) {
             case TYPE_STOP:
                 final DistanceStop distanceStop = (DistanceStop) this.mListItems.get(position).tag;
@@ -144,7 +150,7 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         } else {
             itemList.add(new ListItem(1, TYPE_NEARBY_STOP_INFO, null));
         }
-        final AdapterDiffCallback diffCallback = new AdapterDiffCallback(this.mListItems, itemList);
+        final HomeAdapterDiffUtilCallback diffCallback = new HomeAdapterDiffUtilCallback(this.mListItems, itemList);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback, true);
         this.mListItems.clear();
         this.mListItems.addAll(itemList);
@@ -162,46 +168,6 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         void onRequestPermission();
     }
 
-    private static final class AdapterDiffCallback extends DiffUtil.Callback {
-
-        private final List<ListItem> mNewList;
-        private final List<ListItem> mOldList;
-
-        public AdapterDiffCallback(List<ListItem> oldList, List<ListItem> newList) {
-            this.mOldList = oldList;
-            this.mNewList = newList;
-        }
-
-        @Override
-        public int getOldListSize() {
-            return this.mOldList.size();
-        }
-
-        @Override
-        public int getNewListSize() {
-            return this.mNewList.size();
-        }
-
-        @Override
-        public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-            return this.mOldList.get(oldItemPosition).id ==
-                    this.mNewList.get(newItemPosition).id;
-        }
-
-        @Override
-        public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-            final Object oldItem = this.mOldList.get(oldItemPosition);
-            final Object newItem = this.mNewList.get(newItemPosition);
-            if (oldItem == null || newItem == null)
-                return false;
-            return oldItem.equals(newItem);
-        }
-
-        @Nullable
-        public Object getChangePayload(int oldItemPosition, int newItemPosition) {
-            return null;
-        }
-    }
 
     public final static class DistanceStop {
         public final String shortName;
@@ -242,12 +208,12 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         }
     }
 
-    private static class ListItem {
+    static class ListItem {
         public final int type;
         public final Object tag;
         public final long id;
 
-        public ListItem(long id, int type, Object tag) {
+        ListItem(long id, int type, Object tag) {
             this.type = type;
             this.tag = tag;
             this.id = id * 10 + type;
