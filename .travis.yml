@@ -51,27 +51,29 @@ before_install:
   - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license";
   - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license";
   - echo "84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license";
-  #  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+#  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
   - cp ./mobile/example.secrets ./mobile/debug.secrets
   - cp ./mobile/example.secrets ./mobile/release.secrets
   - chmod +x gradlew
   - export QEMU_AUDIO_DRV=none
 after_install:
   - ./gradlew dependencies || true
+script:
+  - ./gradlew build test combineAllCoverageReports
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesDebugUnitTestCoverage/testGmapsPlayServicesDebugUnitTestCoverage.xml" -F "GmapsPlayServicesDebug" -n "GmapsPlayServicesDebug"
+  - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesReleaseUnitTestCoverage/testGmapsPlayServicesReleaseUnitTestCoverage.xml" -F "GmapsPlayServicesRelease" -n "GmapsPlayServicesRelease"
+  - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmNoPlayServicesDebugUnitTestCoverage/testOsmNoPlayServicesDebugUnitTestCoverage.xml" -F "OsmNoPlayServicesDebug" -n "OsmNoPlayServicesDebug"
+  - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmNoPlayServicesReleaseUnitTestCoverage/testOsmNoPlayServicesReleaseUnitTestCoverage.xml" -F "OsmNoPlayServicesRelease" -n "OsmNoPlayServicesRelease"
+  - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmPlayServicesDebugUnitTestCoverage/testOsmPlayServicesDebugUnitTestCoverage.xml" -F "OsmPlayServicesDebug" -n "OsmPlayServicesDebug"
+  - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmPlayServicesReleaseUnitTestCoverage/testOsmPlayServicesReleaseUnitTestCoverage.xml" -F "OsmPlayServicesRelease" -n "OsmPlayServicesRelease"
+after_failure:
+  - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
 jobs:
   include:
     - stage: tests
       - script:
         - ./gradlew build test combineAllCoverageReports
-      - after_success:
-        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesDebugUnitTestCoverage/testGmapsPlayServicesDebugUnitTestCoverage.xml" -F "GmapsPlayServicesDebug" -n "GmapsPlayServicesDebug"
-        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesReleaseUnitTestCoverage/testGmapsPlayServicesReleaseUnitTestCoverage.xml" -F "GmapsPlayServicesRelease" -n "GmapsPlayServicesRelease"
-        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmNoPlayServicesDebugUnitTestCoverage/testOsmNoPlayServicesDebugUnitTestCoverage.xml" -F "OsmNoPlayServicesDebug" -n "OsmNoPlayServicesDebug"
-        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmNoPlayServicesReleaseUnitTestCoverage/testOsmNoPlayServicesReleaseUnitTestCoverage.xml" -F "OsmNoPlayServicesRelease" -n "OsmNoPlayServicesRelease"
-        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmPlayServicesDebugUnitTestCoverage/testOsmPlayServicesDebugUnitTestCoverage.xml" -F "OsmPlayServicesDebug" -n "OsmPlayServicesDebug"
-        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmPlayServicesReleaseUnitTestCoverage/testOsmPlayServicesReleaseUnitTestCoverage.xml" -F "OsmPlayServicesRelease" -n "OsmPlayServicesRelease"
-      - after_failure:
-        - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
     - stage: deploy
       - script: skip
       - deploy:
