@@ -81,4 +81,5 @@ jobs:
         skip_cleanup: true
         on:
           repo: GuennisHueftgold/ManniSpotter
+          all_branches: true
 #          - tags: true
