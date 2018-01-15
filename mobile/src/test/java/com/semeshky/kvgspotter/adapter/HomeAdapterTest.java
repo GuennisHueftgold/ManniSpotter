@@ -105,6 +105,7 @@ public class HomeAdapterTest {
         verify(homeAdapterSpy, times(1)).setFavorites(stops, false);
         verify(homeAdapterSpy, never()).updateIndex();
     }
+    
     @Test
     public void setNearby_should_add_items_correctly() {
         final HomeAdapter.HomeAdapterEventListener mockListener = mock(HomeAdapter.HomeAdapterEventListener.class);
