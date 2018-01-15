@@ -58,11 +58,11 @@ before_install:
   - export QEMU_AUDIO_DRV=none
 after_install:
   - ./gradlew dependencies || true
-script:
-  - ./gradlew build test combineAllCoverageReports
 jobs:
   include:
     - stage: test
+      script:
+        - ./gradlew build test combineAllCoverageReports
       after_success:
         - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesDebugUnitTestCoverage/testGmapsPlayServicesDebugUnitTestCoverage.xml" -F "GmapsPlayServicesDebug" -n "GmapsPlayServicesDebug"
         - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesReleaseUnitTestCoverage/testGmapsPlayServicesReleaseUnitTestCoverage.xml" -F "GmapsPlayServicesRelease" -n "GmapsPlayServicesRelease"
