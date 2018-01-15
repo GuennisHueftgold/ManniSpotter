@@ -72,7 +72,9 @@ after_failure:
 jobs:
   include:
     - stage: deploy
-      script: ./gradlew assembleRelease
+      script:
+        - ./gradlew assembleRelease
+        - find -L
       after_success: skip
       after_failure: skip
       deploy:
