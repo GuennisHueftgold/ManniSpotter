@@ -44,7 +44,7 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
-- before_install:
+before_install:
   #- $ANDROID_HOME/tools/bin/sdkmanager "build-tools;27.0.3" "platforms;android-27"
   #- yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
   - mkdir "$ANDROID_HOME/licenses" || true;
@@ -56,7 +56,7 @@ cache:
   - cp ./mobile/example.secrets ./mobile/release.secrets
   - chmod +x gradlew
   - export QEMU_AUDIO_DRV=none
-- after_install:
+after_install:
   - ./gradlew dependencies || true
 jobs:
   include:
