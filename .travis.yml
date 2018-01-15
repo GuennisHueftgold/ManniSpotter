@@ -73,6 +73,8 @@ jobs:
   include:
     - stage: deploy
       script: ./gradlew assembleRelease
+      after_success: skip
+      after_failure: skip
       deploy:
         provider: releases
         api_key:
