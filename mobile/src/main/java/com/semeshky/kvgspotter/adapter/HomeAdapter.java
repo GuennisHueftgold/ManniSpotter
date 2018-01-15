@@ -25,11 +25,11 @@ import java.util.List;
 public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
 
     final static int TYPE_TITLE = 1, TYPE_STOP = 2, TYPE_FAVORITE_INFO = 3, TYPE_NEARBY_STOP_INFO = 5;
-    private final WeakReference<HomeAdapterEventListener> mOnFavoriteClickListener;
-    private final List<DistanceStop> mFavoriteStationList = new ArrayList<>();
-    private final List<DistanceStop> mNearbyStopList = new ArrayList<>();
-    private final List<ListItem> mListItems = new ArrayList<>();
-    private boolean mHasLocationpermission = false;
+    final WeakReference<HomeAdapterEventListener> mOnFavoriteClickListener;
+    final List<DistanceStop> mFavoriteStationList = new ArrayList<>();
+    final List<DistanceStop> mNearbyStopList = new ArrayList<>();
+    final List<ListItem> mListItems = new ArrayList<>();
+    boolean mHasLocationpermission = false;
 
     public HomeAdapter(HomeAdapterEventListener onFavoriteSelectListener) {
         super();
@@ -108,24 +108,69 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         return this.mListItems.get(position).type;
     }
 
-    public void addFavorite(DistanceStop favoriteStation) {
-        this.mFavoriteStationList.add(favoriteStation);
-        this.updateIndex();
+    /**
+     * @param favoriteStation
+     * @see HomeAdapter#addFavorite(DistanceStop, boolean)
+     */
+    public void addFavorite(@NonNull DistanceStop favoriteStation) {
+        this.addFavorite(favoriteStation, true);
     }
 
-    public void setFavorites(List<DistanceStop> items) {
+    public void addFavorite(@NonNull DistanceStop favoriteStation, boolean updateIndex) {
+        this.mFavoriteStationList.add(favoriteStation);
+        if (updateIndex) {
+            this.updateIndex();
+        }
+    }
+
+    /**
+     * @param items the favorites
+     * @see HomeAdapter#setFavorites(List, boolean)
+     */
+    public void setFavorites(@NonNull List<DistanceStop> items) {
+        this.setFavorites(items, true);
+    }
+
+    public void setFavorites(@NonNull List<DistanceStop> items, boolean updateIndex) {
         this.mFavoriteStationList.clear();
         this.mFavoriteStationList.addAll(items);
-        this.updateIndex();
+        if (updateIndex) {
+            this.updateIndex();
+        }
     }
 
-    public void setNearby(List<DistanceStop> stops) {
+    /**
+     * @param stop stop to add
+     * @see HomeAdapter#addNearby(DistanceStop, boolean)
+     */
+    public void addNearby(@NonNull DistanceStop stop) {
+        this.addNearby(stop, true);
+    }
+
+    public void addNearby(@NonNull DistanceStop stop, boolean updateIndex) {
+        this.addNearby(stop);
+        if (updateIndex) {
+            this.updateIndex();
+        }
+    }
+
+    /**
+     * @param stops stops do add
+     * @see HomeAdapter#setNearby(List, boolean)
+     */
+    public void setNearby(@NonNull List<DistanceStop> stops) {
+        this.setNearby(stops, true);
+    }
+
+    public void setNearby(@NonNull List<DistanceStop> stops, boolean updateIndex) {
         this.mNearbyStopList.clear();
         this.mNearbyStopList.addAll(stops);
-        this.updateIndex();
+        if (updateIndex) {
+            this.updateIndex();
+        }
     }
 
-    private void updateIndex() {
+    void updateIndex() {
         final List<ListItem> itemList = new ArrayList<>();
         itemList.add(new ListItem(1, TYPE_TITLE, R.string.favorites));
         if (this.mFavoriteStationList.size() == 0) {
@@ -187,6 +232,16 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         }
 
         @Override
+        public String toString() {
+            return "DistanceStop{" +
+                    "shortName='" + shortName + '\'' +
+                    ", name='" + name + '\'' +
+                    ", distance=" + distance +
+                    ", id=" + id +
+                    '}';
+        }
+
+        @Override
         public boolean equals(Object o) {
             if (this == o) return true;
             if (o == null || getClass() != o.getClass()) return false;
@@ -194,6 +249,7 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
             DistanceStop that = (DistanceStop) o;
 
             if (Float.compare(that.distance, distance) != 0) return false;
+            if (id != that.id) return false;
             if (shortName != null ? !shortName.equals(that.shortName) : that.shortName != null)
                 return false;
             return name != null ? name.equals(that.name) : that.name == null;
@@ -204,6 +260,7 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
             int result = shortName != null ? shortName.hashCode() : 0;
             result = 31 * result + (name != null ? name.hashCode() : 0);
             result = 31 * result + (distance != +0.0f ? Float.floatToIntBits(distance) : 0);
+            result = 31 * result + (int) (id ^ (id >>> 32));
             return result;
         }
     }
