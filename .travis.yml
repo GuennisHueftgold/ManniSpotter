@@ -44,23 +44,23 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
     - $HOME/.android/build-cache
+- before_install:
+  #- $ANDROID_HOME/tools/bin/sdkmanager "build-tools;27.0.3" "platforms;android-27"
+  #- yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+  - mkdir "$ANDROID_HOME/licenses" || true;
+  - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license";
+  - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license";
+  - echo "84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license";
+  #  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
+  - cp ./mobile/example.secrets ./mobile/debug.secrets
+  - cp ./mobile/example.secrets ./mobile/release.secrets
+  - chmod +x gradlew
+  - export QEMU_AUDIO_DRV=none
+- after_install:
+  - ./gradlew dependencies || true
 jobs:
   include:
     - stage: tests
-      - before_install:
-        #- $ANDROID_HOME/tools/bin/sdkmanager "build-tools;27.0.3" "platforms;android-27"
-        #- yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
-        - mkdir "$ANDROID_HOME/licenses" || true;
-        - echo "8933bad161af4178b1185d1a37fbf41ea5269c55" > "$ANDROID_HOME/licenses/android-sdk-license";
-        - echo "d56f5187479451eabf01fb78af6dfcb131a6481e" > "$ANDROID_HOME/licenses/android-sdk-license";
-        - echo "84831b9409646a918e30573bab4c9c91346d8abd" > "$ANDROID_HOME/licenses/android-sdk-preview-license";
-      #  - yes | $ANDROID_HOME/tools/bin/sdkmanager --licenses
-        - cp ./mobile/example.secrets ./mobile/debug.secrets
-        - cp ./mobile/example.secrets ./mobile/release.secrets
-        - chmod +x gradlew
-        - export QEMU_AUDIO_DRV=none
-      - after_install:
-        - ./gradlew dependencies || true
       - script:
         - ./gradlew build test combineAllCoverageReports
       - after_success:
