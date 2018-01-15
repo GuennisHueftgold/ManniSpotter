@@ -71,8 +71,6 @@ after_failure:
   - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
 jobs:
   include:
-    - stage: tests
-      script: ./gradlew build test combineAllCoverageReports
     - stage: deploy
       script: skip
       deploy:
