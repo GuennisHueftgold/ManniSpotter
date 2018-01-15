@@ -64,14 +64,14 @@ jobs:
       - script:
         - ./gradlew build test combineAllCoverageReports
       - after_success:
-          - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesDebugUnitTestCoverage/testGmapsPlayServicesDebugUnitTestCoverage.xml" -F "GmapsPlayServicesDebug" -n "GmapsPlayServicesDebug"
-          - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesReleaseUnitTestCoverage/testGmapsPlayServicesReleaseUnitTestCoverage.xml" -F "GmapsPlayServicesRelease" -n "GmapsPlayServicesRelease"
-          - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmNoPlayServicesDebugUnitTestCoverage/testOsmNoPlayServicesDebugUnitTestCoverage.xml" -F "OsmNoPlayServicesDebug" -n "OsmNoPlayServicesDebug"
-          - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmNoPlayServicesReleaseUnitTestCoverage/testOsmNoPlayServicesReleaseUnitTestCoverage.xml" -F "OsmNoPlayServicesRelease" -n "OsmNoPlayServicesRelease"
-          - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmPlayServicesDebugUnitTestCoverage/testOsmPlayServicesDebugUnitTestCoverage.xml" -F "OsmPlayServicesDebug" -n "OsmPlayServicesDebug"
-          - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmPlayServicesReleaseUnitTestCoverage/testOsmPlayServicesReleaseUnitTestCoverage.xml" -F "OsmPlayServicesRelease" -n "OsmPlayServicesRelease"
+        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesDebugUnitTestCoverage/testGmapsPlayServicesDebugUnitTestCoverage.xml" -F "GmapsPlayServicesDebug" -n "GmapsPlayServicesDebug"
+        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testGmapsPlayServicesReleaseUnitTestCoverage/testGmapsPlayServicesReleaseUnitTestCoverage.xml" -F "GmapsPlayServicesRelease" -n "GmapsPlayServicesRelease"
+        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmNoPlayServicesDebugUnitTestCoverage/testOsmNoPlayServicesDebugUnitTestCoverage.xml" -F "OsmNoPlayServicesDebug" -n "OsmNoPlayServicesDebug"
+        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmNoPlayServicesReleaseUnitTestCoverage/testOsmNoPlayServicesReleaseUnitTestCoverage.xml" -F "OsmNoPlayServicesRelease" -n "OsmNoPlayServicesRelease"
+        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmPlayServicesDebugUnitTestCoverage/testOsmPlayServicesDebugUnitTestCoverage.xml" -F "OsmPlayServicesDebug" -n "OsmPlayServicesDebug"
+        - bash <(curl -s https://codecov.io/bash) -f "mobile/build/reports/jacoco/testOsmPlayServicesReleaseUnitTestCoverage/testOsmPlayServicesReleaseUnitTestCoverage.xml" -F "OsmPlayServicesRelease" -n "OsmPlayServicesRelease"
       - after_failure:
-          - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
+        - "cat $TRAVIS_BUILD_DIR/app/build/outputs/lint-results-debug.xml"
     - stage: deploy
       - script: skip
       - deploy:
