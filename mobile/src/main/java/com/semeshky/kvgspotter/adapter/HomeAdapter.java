@@ -11,10 +11,12 @@ import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.databinding.VhHomeRequestPermissionBinding;
 import com.semeshky.kvgspotter.databinding.VhListSectionTitleBinding;
+import com.semeshky.kvgspotter.databinding.VhListSingleLineBinding;
 import com.semeshky.kvgspotter.databinding.VhStopDistanceBinding;
 import com.semeshky.kvgspotter.viewholder.DataboundViewHolder;
 import com.semeshky.kvgspotter.viewholder.HomeRequestPermissionViewHolder;
 import com.semeshky.kvgspotter.viewholder.ListSectionTitleViewHolder;
+import com.semeshky.kvgspotter.viewholder.ListSingleLineViewHolder;
 import com.semeshky.kvgspotter.viewholder.NoFavoriteViewHolder;
 import com.semeshky.kvgspotter.viewholder.StopDistanceViewHolder;
 
@@ -24,7 +26,11 @@ import java.util.List;
 
 public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
 
-    final static int TYPE_TITLE = 1, TYPE_STOP = 2, TYPE_FAVORITE_INFO = 3, TYPE_NEARBY_STOP_INFO = 5;
+    final static int TYPE_TITLE = 1,
+            TYPE_STOP = 2,
+            TYPE_FAVORITE_INFO = 3,
+            TYPE_TEXT_SINGLE_LINE = 4,
+            TYPE_NEARBY_STOP_INFO = 5;
     final WeakReference<HomeAdapterEventListener> mOnFavoriteClickListener;
     final List<DistanceStop> mFavoriteStationList = new ArrayList<>();
     final List<DistanceStop> mNearbyStopList = new ArrayList<>();
@@ -49,6 +55,8 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
                 return new HomeRequestPermissionViewHolder(parent);
             case TYPE_FAVORITE_INFO:
                 return new NoFavoriteViewHolder(parent);
+            case TYPE_TEXT_SINGLE_LINE:
+                return new ListSingleLineViewHolder(parent);
             default:
                 throw new RuntimeException("Unkown viewType: " + viewType);
         }
@@ -81,6 +89,10 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
                 final VhListSectionTitleBinding bindingTitle = (VhListSectionTitleBinding) holder.getBinding();
                 bindingTitle.setTitle((int) this.mListItems.get(position).tag);
                 bindingTitle.setPrimaryColor(true);
+                break;
+            case TYPE_TEXT_SINGLE_LINE:
+                final VhListSingleLineBinding binding = (VhListSingleLineBinding) holder.getBinding();
+                binding.setTitle((int) this.mListItems.get(position).tag);
                 break;
         }
     }
@@ -148,7 +160,7 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
     }
 
     public void addNearby(@NonNull DistanceStop stop, boolean updateIndex) {
-        this.addNearby(stop);
+        this.mNearbyStopList.add(stop);
         if (updateIndex) {
             this.updateIndex();
         }
@@ -185,15 +197,17 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
         }
         itemList.add(new ListItem(2,
                 TYPE_TITLE, R.string.nearby));
-        if (this.mHasLocationpermission) {
+        if (this.mHasLocationpermission && this.mNearbyStopList.size() > 0) {
             for (DistanceStop stop : this.mNearbyStopList) {
                 ListItem favoriteItem = new ListItem(stop.id,
                         TYPE_STOP,
                         stop);
                 itemList.add(favoriteItem);
             }
-        } else {
+        } else if (!this.mHasLocationpermission) {
             itemList.add(new ListItem(1, TYPE_NEARBY_STOP_INFO, null));
+        } else {
+            itemList.add(new ListItem(0, TYPE_TEXT_SINGLE_LINE, R.string.no_nearby_stops_found_yet));
         }
         final HomeAdapterDiffUtilCallback diffCallback = new HomeAdapterDiffUtilCallback(this.mListItems, itemList);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffCallback, true);

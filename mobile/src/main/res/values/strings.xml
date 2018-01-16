@@ -46,4 +46,5 @@
     <string name="request_location_permission_description">In order to provide you with nearby stops you must allow access to Location Information</string>
     <string name="menu">Menu</string>
     <string name="requesting_location_permission">Requesting location permission</string>
+    <string name="no_nearby_stops_found_yet">No nearby stops found yet</string>
 </resources>

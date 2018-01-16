@@ -3,9 +3,9 @@ apply plugin: 'com.google.gms.oss.licenses.plugin'
 //apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'jacoco'
 
-def signingPropertiesFile=new File("./mobile/release_signing.properties")
+def signingPropertiesFile=new File("${project.projectDir}/release_signing.properties")
 if(signingPropertiesFile.exists()) {
-
+    println "properties found and exist"
     Properties props = new Properties()
     props.load(new FileInputStream(signingPropertiesFile))
 
@@ -24,6 +24,8 @@ if(signingPropertiesFile.exists()) {
             }
         }
     }
+}else{
+    println "properties not found"
 }
 
 android {
