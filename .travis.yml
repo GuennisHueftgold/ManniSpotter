@@ -56,6 +56,8 @@ before_install:
   - cp ./mobile/example.secrets ./mobile/release.secrets
   - chmod +x gradlew
   - export QEMU_AUDIO_DRV=none
+  - openssl aes-256-cbc -K $encrypted_cfe0f79285a1_key -iv $encrypted_cfe0f79285a1_iv -in ./mobile/release_signing.tar.enc -out ./mobile/release_signing.tar -d
+  - tar xvf ./mobile/release_signing.tar
 after_install:
   - ./gradlew dependencies || true
 script:
@@ -79,8 +81,8 @@ jobs:
       after_failure: skip
       before_deploy:
         - mkdir github_release_dir
-        - cp ./mobile/build/outputs/apk/osmPlayServices/release/mobile-osm-playServices-release-unsigned.apk ./github_release_dir/mobile-osm-playServices-release-unsigned.apk
-        - cp ./mobile/build/outputs/apk/osmNoPlayServices/release/mobile-osm-noPlayServices-release-unsigned.apk ./github_release_dir/mobile-osm-noPlayServices-release-unsigned.apk
+        - cp ./mobile/build/outputs/apk/osmPlayServices/release/mobile-osm-playServices-release.apk ./github_release_dir/mobile-osm-playServices-release.apk
+        - cp ./mobile/build/outputs/apk/osmNoPlayServices/release/mobile-osm-noPlayServices-release.apk ./github_release_dir/mobile-osm-noPlayServices-release.apk
         - cp ./mobile/build/outputs/mapping/osmPlayServices/release/mapping.txt ./github_release_dir/mobile-osm-playServices-release-unsigned.txt
         - cp ./mobile/build/outputs/mapping/osmNoPlayServices/release/mapping.txt ./github_release_dir/mobile-osm-noPlayServices-release-unsigned.txt
       deploy:

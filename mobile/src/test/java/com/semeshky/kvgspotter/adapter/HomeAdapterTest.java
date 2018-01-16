@@ -17,8 +17,16 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricTestRunner.class)
@@ -26,6 +34,14 @@ import static org.mockito.Mockito.when;
 public class HomeAdapterTest {
 
     private Context context;
+
+    public static List<HomeAdapter.DistanceStop> createStopList(int items) {
+        final List<HomeAdapter.DistanceStop> stopList = new ArrayList<>();
+        for (int i = 0; i < items; i++) {
+            stopList.add(new HomeAdapter.DistanceStop(i, "shortName" + i, "name" + i, i));
+        }
+        return stopList;
+    }
 
     @Before
     public void setup() {
@@ -63,5 +79,55 @@ public class HomeAdapterTest {
         ViewGroup vg = mock(ViewGroup.class);
         when(vg.getContext()).thenReturn(context);
         homeAdapter.onCreateViewHolder(vg, -1249);
+    }
+
+    @Test
+    public void setFavorites_should_add_items_correctly() {
+        final HomeAdapter.HomeAdapterEventListener mockListener = mock(HomeAdapter.HomeAdapterEventListener.class);
+        final HomeAdapter homeAdapter = new HomeAdapter(mockListener);
+        final HomeAdapter homeAdapterSpy = spy(homeAdapter);
+        final int testItems = 10;
+        List<HomeAdapter.DistanceStop> stops = createStopList(testItems);
+        homeAdapterSpy.setFavorites(stops, true);
+        assertEquals(stops, homeAdapter.mFavoriteStationList);
+        verify(homeAdapterSpy, times(1)).setFavorites(stops, true);
+        verify(homeAdapterSpy, times(1)).updateIndex();
+        reset(homeAdapterSpy);
+        homeAdapter.mFavoriteStationList.clear();
+        homeAdapterSpy.setFavorites(stops);
+        assertEquals(stops, homeAdapterSpy.mFavoriteStationList);
+        verify(homeAdapterSpy, times(1)).setFavorites(stops, true);
+        verify(homeAdapterSpy, times(1)).updateIndex();
+        reset(homeAdapterSpy);
+        homeAdapter.mFavoriteStationList.clear();
+        homeAdapterSpy.setFavorites(stops, false);
+        assertEquals(stops, homeAdapterSpy.mFavoriteStationList);
+        verify(homeAdapterSpy, times(1)).setFavorites(stops, false);
+        verify(homeAdapterSpy, never()).updateIndex();
+    }
+    
+    @Test
+    public void setNearby_should_add_items_correctly() {
+        final HomeAdapter.HomeAdapterEventListener mockListener = mock(HomeAdapter.HomeAdapterEventListener.class);
+        final HomeAdapter homeAdapter = new HomeAdapter(mockListener);
+        final HomeAdapter homeAdapterSpy = spy(homeAdapter);
+        final int testItems = 10;
+        List<HomeAdapter.DistanceStop> stops = createStopList(testItems);
+        homeAdapterSpy.setNearby(stops, true);
+        assertEquals(stops, homeAdapter.mNearbyStopList);
+        verify(homeAdapterSpy, times(1)).setNearby(stops, true);
+        verify(homeAdapterSpy, times(1)).updateIndex();
+        reset(homeAdapterSpy);
+        homeAdapter.mNearbyStopList.clear();
+        homeAdapterSpy.setNearby(stops);
+        assertEquals(stops, homeAdapterSpy.mNearbyStopList);
+        verify(homeAdapterSpy, times(1)).setNearby(stops, true);
+        verify(homeAdapterSpy, times(1)).updateIndex();
+        reset(homeAdapterSpy);
+        homeAdapter.mNearbyStopList.clear();
+        homeAdapterSpy.setNearby(stops, false);
+        assertEquals(stops, homeAdapterSpy.mNearbyStopList);
+        verify(homeAdapterSpy, times(1)).setNearby(stops, false);
+        verify(homeAdapterSpy, never()).updateIndex();
     }
 }
