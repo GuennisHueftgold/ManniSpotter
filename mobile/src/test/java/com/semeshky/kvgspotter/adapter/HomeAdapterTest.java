@@ -4,8 +4,11 @@ import android.content.Context;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.BuildConfig;
 import com.semeshky.kvgspotter.R;
+import com.semeshky.kvgspotter.databinding.VhListSectionTitleBinding;
+import com.semeshky.kvgspotter.databinding.VhStopDistanceBinding;
 import com.semeshky.kvgspotter.viewholder.HomeRequestPermissionViewHolder;
 import com.semeshky.kvgspotter.viewholder.ListSectionTitleViewHolder;
 import com.semeshky.kvgspotter.viewholder.ListSingleLineViewHolder;
@@ -21,6 +24,8 @@ import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -280,5 +285,50 @@ public class HomeAdapterTest {
             assertEquals("expected " + i + " to be of type STOP", HomeAdapter.TYPE_STOP, homeAdapter.mListItems.get(i + 12).type);
             assertEquals(itemList2.get(i), homeAdapter.mListItems.get(i + 12).tag);
         }
+    }
+
+    @Test
+    public void onBindViewHolder_should_bind_correctly_type_stop() {
+        final int testPosition = 2;
+        final HomeAdapter.HomeAdapterEventListener mockListener = mock(HomeAdapter.HomeAdapterEventListener.class);
+        final HomeAdapter homeAdapter = new HomeAdapter(mockListener);
+        final HomeAdapter homeAdapterSpy = spy(homeAdapter);
+        final HomeAdapter.DistanceStop distanceStop = createStop(21);
+        final StopDistanceViewHolder mockViewHolder = mock(StopDistanceViewHolder.class);
+        final VhStopDistanceBinding mockBinding = mock(VhStopDistanceBinding.class);
+        final HomeAdapter.ListItem listItem = new HomeAdapter.ListItem(testPosition, HomeAdapter.TYPE_STOP, distanceStop);
+        //homeAdapterSpy.mListItems.set(testPosition, listItem);
+        when(homeAdapterSpy.getItemViewType(testPosition)).thenReturn(HomeAdapter.TYPE_STOP);
+        when(homeAdapterSpy.getItem(testPosition)).thenReturn(listItem);
+        when(mockViewHolder.getBinding()).thenReturn(mockBinding);
+        homeAdapterSpy.onBindViewHolder(mockViewHolder, testPosition, Collections.<Object>emptyList());
+        verify(mockBinding, times(1)).setShortName(distanceStop.shortName);
+        verify(mockBinding, times(1)).setTitle(distanceStop.name);
+        verify(mockBinding, times(1)).setVariable(BR.clickListener, mockListener);
+        verify(mockBinding, times(1)).setStopIcon(R.drawable.ic_directions_bus_black_24dp);
+        verify(mockBinding, times(1)).setDistance(distanceStop.distance);
+        verify(homeAdapterSpy, times(1)).getItemViewType(testPosition);
+        verify(homeAdapterSpy, times(1)).getItem(testPosition);
+    }
+
+    @Test
+    public void onBindViewHolder_should_bind_correctly_type_title() {
+        final int testPosition = 2;
+        final int stringResourceId = 239239;
+        final HomeAdapter.HomeAdapterEventListener mockListener = mock(HomeAdapter.HomeAdapterEventListener.class);
+        final HomeAdapter homeAdapter = new HomeAdapter(mockListener);
+        final HomeAdapter homeAdapterSpy = spy(homeAdapter);
+        final ListSectionTitleViewHolder mockViewHolder = mock(ListSectionTitleViewHolder.class);
+        final VhListSectionTitleBinding mockBinding = mock(VhListSectionTitleBinding.class);
+        final HomeAdapter.ListItem listItem = new HomeAdapter.ListItem(testPosition, HomeAdapter.TYPE_TITLE, stringResourceId);
+        //homeAdapterSpy.mListItems.set(testPosition, listItem);
+        when(homeAdapterSpy.getItemViewType(testPosition)).thenReturn(HomeAdapter.TYPE_TITLE);
+        when(homeAdapterSpy.getItem(testPosition)).thenReturn(listItem);
+        when(mockViewHolder.getBinding()).thenReturn(mockBinding);
+        homeAdapterSpy.onBindViewHolder(mockViewHolder, testPosition, Collections.<Object>emptyList());
+        verify(mockBinding, times(1)).setTitle(stringResourceId);
+        verify(mockBinding, times(1)).setPrimaryColor(true);
+        verify(homeAdapterSpy, times(1)).getItemViewType(testPosition);
+        verify(homeAdapterSpy, times(1)).getItem(testPosition);
     }
 }
