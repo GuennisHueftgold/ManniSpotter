@@ -9,3 +9,4 @@
 .externalNativeBuild
 /mobile/release_keystore.jks
 /mobile/release_signing.properties
+/mobile/release_signing.tar
