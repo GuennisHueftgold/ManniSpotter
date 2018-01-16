@@ -8,6 +8,7 @@ import com.semeshky.kvgspotter.BuildConfig;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.viewholder.HomeRequestPermissionViewHolder;
 import com.semeshky.kvgspotter.viewholder.ListSectionTitleViewHolder;
+import com.semeshky.kvgspotter.viewholder.ListSingleLineViewHolder;
 import com.semeshky.kvgspotter.viewholder.NoFavoriteViewHolder;
 import com.semeshky.kvgspotter.viewholder.StopDistanceViewHolder;
 
@@ -78,6 +79,7 @@ public class HomeAdapterTest {
         assertEquals(ListSectionTitleViewHolder.class, homeAdapter.onCreateViewHolder(vg, HomeAdapter.TYPE_TITLE).getClass());
         assertEquals(HomeRequestPermissionViewHolder.class, homeAdapter.onCreateViewHolder(vg, HomeAdapter.TYPE_NEARBY_STOP_INFO).getClass());
         assertEquals(NoFavoriteViewHolder.class, homeAdapter.onCreateViewHolder(vg, HomeAdapter.TYPE_FAVORITE_INFO).getClass());
+        assertEquals(ListSingleLineViewHolder.class, homeAdapter.onCreateViewHolder(vg, HomeAdapter.TYPE_TEXT_SINGLE_LINE).getClass());
     }
 
     @Test(expected = RuntimeException.class)
