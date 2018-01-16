@@ -76,7 +76,7 @@ jobs:
     - stage: deploy
       script:
         - ./gradlew assembleRelease
-        #- find -L
+        - find -L
       #after_success: skip
       after_failure: skip
       before_deploy:
