@@ -38,9 +38,13 @@ public class HomeAdapterTest {
     public static List<HomeAdapter.DistanceStop> createStopList(int items) {
         final List<HomeAdapter.DistanceStop> stopList = new ArrayList<>();
         for (int i = 0; i < items; i++) {
-            stopList.add(new HomeAdapter.DistanceStop(i, "shortName" + i, "name" + i, i));
+            stopList.add(createStop(i));
         }
         return stopList;
+    }
+
+    public static HomeAdapter.DistanceStop createStop(int idx) {
+        return new HomeAdapter.DistanceStop(idx, "shortName" + idx, "name" + idx, idx);
     }
 
     @Before
@@ -105,7 +109,7 @@ public class HomeAdapterTest {
         verify(homeAdapterSpy, times(1)).setFavorites(stops, false);
         verify(homeAdapterSpy, never()).updateIndex();
     }
-    
+
     @Test
     public void setNearby_should_add_items_correctly() {
         final HomeAdapter.HomeAdapterEventListener mockListener = mock(HomeAdapter.HomeAdapterEventListener.class);
@@ -129,5 +133,67 @@ public class HomeAdapterTest {
         assertEquals(stops, homeAdapterSpy.mNearbyStopList);
         verify(homeAdapterSpy, times(1)).setNearby(stops, false);
         verify(homeAdapterSpy, never()).updateIndex();
+    }
+
+    @Test
+    public void addNearby_should_add_items_correctly() {
+        final HomeAdapter.HomeAdapterEventListener mockListener = mock(HomeAdapter.HomeAdapterEventListener.class);
+        final HomeAdapter homeAdapter = new HomeAdapter(mockListener);
+        final HomeAdapter homeAdapterSpy = spy(homeAdapter);
+        final HomeAdapter.DistanceStop distanceStop = createStop(29);
+        //
+        assertEquals(0, homeAdapter.mNearbyStopList.size());
+        homeAdapterSpy.addNearby(distanceStop, true);
+        assertEquals(distanceStop, homeAdapter.mNearbyStopList.get(0));
+        assertEquals(1, homeAdapter.mNearbyStopList.size());
+        verify(homeAdapterSpy, times(1)).updateIndex();
+        //
+        reset(homeAdapterSpy);
+        homeAdapter.mNearbyStopList.clear();
+        assertEquals(0, homeAdapter.mNearbyStopList.size());
+        homeAdapterSpy.addNearby(distanceStop, false);
+        assertEquals(distanceStop, homeAdapter.mNearbyStopList.get(0));
+        assertEquals(1, homeAdapter.mNearbyStopList.size());
+        verify(homeAdapterSpy, never()).updateIndex();
+        //
+        reset(homeAdapterSpy);
+        homeAdapter.mNearbyStopList.clear();
+        assertEquals(0, homeAdapter.mNearbyStopList.size());
+        homeAdapterSpy.addNearby(distanceStop);
+        assertEquals(distanceStop, homeAdapter.mNearbyStopList.get(0));
+        assertEquals(1, homeAdapter.mNearbyStopList.size());
+        verify(homeAdapterSpy, times(1)).addNearby(distanceStop, true);
+        verify(homeAdapterSpy, times(1)).updateIndex();
+    }
+
+    @Test
+    public void addFavorite_should_add_items_correctly() {
+        final HomeAdapter.HomeAdapterEventListener mockListener = mock(HomeAdapter.HomeAdapterEventListener.class);
+        final HomeAdapter homeAdapter = new HomeAdapter(mockListener);
+        final HomeAdapter homeAdapterSpy = spy(homeAdapter);
+        final HomeAdapter.DistanceStop distanceStop = createStop(29);
+        //
+        assertEquals(0, homeAdapter.mFavoriteStationList.size());
+        homeAdapterSpy.addFavorite(distanceStop, true);
+        assertEquals(distanceStop, homeAdapter.mFavoriteStationList.get(0));
+        assertEquals(1, homeAdapter.mFavoriteStationList.size());
+        verify(homeAdapterSpy, times(1)).updateIndex();
+        //
+        reset(homeAdapterSpy);
+        homeAdapter.mFavoriteStationList.clear();
+        assertEquals(0, homeAdapter.mFavoriteStationList.size());
+        homeAdapterSpy.addFavorite(distanceStop, false);
+        assertEquals(distanceStop, homeAdapter.mFavoriteStationList.get(0));
+        assertEquals(1, homeAdapter.mFavoriteStationList.size());
+        verify(homeAdapterSpy, never()).updateIndex();
+        //
+        reset(homeAdapterSpy);
+        homeAdapter.mFavoriteStationList.clear();
+        assertEquals(0, homeAdapter.mFavoriteStationList.size());
+        homeAdapterSpy.addFavorite(distanceStop);
+        assertEquals(distanceStop, homeAdapter.mFavoriteStationList.get(0));
+        assertEquals(1, homeAdapter.mFavoriteStationList.size());
+        verify(homeAdapterSpy, times(1)).addFavorite(distanceStop, true);
+        verify(homeAdapterSpy, times(1)).updateIndex();
     }
 }

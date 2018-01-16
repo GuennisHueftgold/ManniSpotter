@@ -148,7 +148,7 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
     }
 
     public void addNearby(@NonNull DistanceStop stop, boolean updateIndex) {
-        this.addNearby(stop);
+        this.mNearbyStopList.add(stop);
         if (updateIndex) {
             this.updateIndex();
         }
