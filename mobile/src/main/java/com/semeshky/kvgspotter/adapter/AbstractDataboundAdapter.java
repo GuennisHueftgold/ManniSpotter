@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import com.semeshky.kvgspotter.viewholder.DataboundViewHolder;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -56,16 +57,14 @@ public abstract class AbstractDataboundAdapter<T, V extends ViewDataBinding>
         }
         final Comparator<T> comparator = getComparator();
         DiffUtil.Callback diffUtilCallback;
+        final List<T> newItems = new ArrayList<>(items);
         if (comparator != null) {
-            final List<T> newItems = new ArrayList<>(items);
-            newItems.addAll(items);
-            diffUtilCallback = new AbstractDataboundAdapterDiffUtilCallback<>(this, newItems);
-        } else {
-            diffUtilCallback = new AbstractDataboundAdapterDiffUtilCallback<>(this, items);
+            Collections.sort(newItems, comparator);
         }
+        diffUtilCallback = new AbstractDataboundAdapterDiffUtilCallback<>(this, newItems);
         final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
         this.mItems.clear();
-        this.mItems.addAll(items);
+        this.mItems.addAll(newItems);
         diffResult.dispatchUpdatesTo(this);
     }
 
@@ -78,12 +77,5 @@ public abstract class AbstractDataboundAdapter<T, V extends ViewDataBinding>
     @Override
     public int getItemCount() {
         return mItems == null ? 0 : mItems.size();
-    }
-
-    public void addItem(T t) {
-        if (this.mItems == null) {
-            this.mItems = new ArrayList<>();
-        }
-        this.mItems.add(t);
     }
 }
