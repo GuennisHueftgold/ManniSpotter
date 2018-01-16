@@ -3,6 +3,29 @@ apply plugin: 'com.google.gms.oss.licenses.plugin'
 //apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'jacoco'
 
+def signingPropertiesFile=new File("./mobile/release_signing.properties")
+if(signingPropertiesFile.exists()) {
+
+    Properties props = new Properties()
+    props.load(new FileInputStream(signingPropertiesFile))
+
+    android {
+        signingConfigs {
+            release {
+                storeFile file(props['STORE_FILE'])
+                storePassword props['STORE_PASSWORD']
+                keyAlias props['KEY_ALIAS']
+                keyPassword props['KEY_PASSWORD']
+            }
+        }
+        buildTypes {
+            release {
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+}
+
 android {
     compileSdkVersion 27
     buildToolsVersion rootProject.buildToolsVersion
@@ -120,8 +143,8 @@ android.applicationVariants.all { variant ->
 
 task summarizeTests{
     group "custom manni"
-
 }
+
 /*
 android.applicationVariants.all { variant ->
     println "==================="
