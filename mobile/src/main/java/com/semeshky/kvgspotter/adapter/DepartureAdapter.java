@@ -15,7 +15,7 @@ import org.joda.time.LocalTime;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, VhStationDepartureBinding> {
@@ -98,9 +98,8 @@ public final class DepartureAdapter extends AbstractDataboundAdapter<Departure, 
     }
 
     @Override
-    public void setItems(List<Departure> departures) {
-        Collections.sort(departures, this.mDepartureComparator);
-        super.setItems(departures);
+    public Comparator<Departure> getComparator() {
+        return this.mDepartureComparator;
     }
 
     public interface Presenter {

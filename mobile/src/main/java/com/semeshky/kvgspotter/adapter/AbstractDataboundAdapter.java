@@ -1,6 +1,8 @@
 package com.semeshky.kvgspotter.adapter;
 
 import android.databinding.ViewDataBinding;
+import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +11,7 @@ import android.view.ViewGroup;
 import com.semeshky.kvgspotter.viewholder.DataboundViewHolder;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public abstract class AbstractDataboundAdapter<T, V extends ViewDataBinding>
@@ -42,35 +45,25 @@ public abstract class AbstractDataboundAdapter<T, V extends ViewDataBinding>
         return this.mItems.get(position);
     }
 
-    public void setItems(final List<T> items) {
+    public Comparator<T> getComparator() {
+        return null;
+    }
+
+    @CallSuper
+    public void setItems(@NonNull final List<T> items) {
         if (this.mItems == null) {
             this.mItems = new ArrayList<>();
         }
-        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(new DiffUtil.Callback() {
-            @Override
-            public int getOldListSize() {
-                return (AbstractDataboundAdapter.this.mItems == null) ? 0 : AbstractDataboundAdapter.this.mItems.size();
-            }
-
-            @Override
-            public int getNewListSize() {
-                return (items == null) ? 0 : items.size();
-            }
-
-            @Override
-            public boolean areItemsTheSame(int oldItemPosition, int newItemPosition) {
-                final T oldItem = AbstractDataboundAdapter.this.mItems.get(oldItemPosition);
-                final T newItem = items.get(newItemPosition);
-                return AbstractDataboundAdapter.this.areItemsTheSame(oldItem, newItem);
-            }
-
-            @Override
-            public boolean areContentsTheSame(int oldItemPosition, int newItemPosition) {
-                final T oldItem = AbstractDataboundAdapter.this.mItems.get(oldItemPosition);
-                final T newItem = items.get(newItemPosition);
-                return AbstractDataboundAdapter.this.areContentsTheSame(oldItem, newItem);
-            }
-        });
+        final Comparator<T> comparator = getComparator();
+        DiffUtil.Callback diffUtilCallback;
+        if (comparator != null) {
+            final List<T> newItems = new ArrayList<>(items);
+            newItems.addAll(items);
+            diffUtilCallback = new AbstractDataboundAdapterDiffUtilCallback<>(this, newItems);
+        } else {
+            diffUtilCallback = new AbstractDataboundAdapterDiffUtilCallback<>(this, items);
+        }
+        final DiffUtil.DiffResult diffResult = DiffUtil.calculateDiff(diffUtilCallback);
         this.mItems.clear();
         this.mItems.addAll(items);
         diffResult.dispatchUpdatesTo(this);
