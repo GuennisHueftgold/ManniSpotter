@@ -57,7 +57,7 @@ before_install:
   - chmod +x gradlew
   - export QEMU_AUDIO_DRV=none
   - openssl aes-256-cbc -K $encrypted_cfe0f79285a1_key -iv $encrypted_cfe0f79285a1_iv -in ./mobile/release_signing.tar.enc -out ./mobile/release_signing.tar -d
-  - tar xvf ./mobile/release_signing.tar
+  - tar xvf ./mobile/release_signing.tar -C ./mobile
 after_install:
   - ./gradlew dependencies || true
 script:
