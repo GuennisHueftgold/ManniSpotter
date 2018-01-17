@@ -1,6 +1,7 @@
 package com.semeshky.kvgspotter.adapter;
 
 
+import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.util.DiffUtil;
@@ -71,7 +72,7 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
     public void onBindViewHolder(DataboundViewHolder holder, int position, List<Object> payloads) {
         switch (this.getItemViewType(position)) {
             case TYPE_STOP:
-                final DistanceStop distanceStop = (DistanceStop) this.mListItems.get(position).tag;
+                final DistanceStop distanceStop = (DistanceStop) this.getItem(position).tag;
                 final VhStopDistanceBinding bindingFavorite = (VhStopDistanceBinding) holder.getBinding();
                 bindingFavorite.setShortName(distanceStop.shortName);
                 bindingFavorite.setTitle(distanceStop.name);
@@ -87,12 +88,12 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
                 break;
             case TYPE_TITLE:
                 final VhListSectionTitleBinding bindingTitle = (VhListSectionTitleBinding) holder.getBinding();
-                bindingTitle.setTitle((int) this.mListItems.get(position).tag);
+                bindingTitle.setTitle((int) this.getItem(position).tag);
                 bindingTitle.setPrimaryColor(true);
                 break;
             case TYPE_TEXT_SINGLE_LINE:
                 final VhListSingleLineBinding binding = (VhListSingleLineBinding) holder.getBinding();
-                binding.setTitle((int) this.mListItems.get(position).tag);
+                binding.setTitle((int) this.getItem(position).tag);
                 break;
         }
     }
@@ -111,13 +112,17 @@ public class HomeAdapter extends RecyclerView.Adapter<DataboundViewHolder> {
     }
 
     @Override
-    public long getItemId(int position) {
+    public long getItemId(@IntRange(from = 0) int position) {
         return this.mListItems.get(position).id;
     }
 
     @Override
-    public int getItemViewType(int position) {
+    public int getItemViewType(@IntRange(from = 0) int position) {
         return this.mListItems.get(position).type;
+    }
+
+    public ListItem getItem(@IntRange(from = 0) int position) {
+        return this.mListItems.get(position);
     }
 
     /**
