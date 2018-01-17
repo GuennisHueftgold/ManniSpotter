@@ -42,7 +42,7 @@ public class ActivityLiveMapViewModel extends ViewModel {
     private MutableLiveData<VehicleLocations> mVehicleLocationsMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Stop> mStopSelectedLiveData = new MutableLiveData<>();
     private MutableLiveData<VehicleLocation> mVehicleSelectedLiveData = new MutableLiveData<>();
-    private DisposableSubscriber<VehicleLocations> mVehicleLocationUpdater;
+    private DisposableSubscriber<VehicleLocations> mVehicleLocationUpdateSubscriber;
 
     public ActivityLiveMapViewModel() {
         this.mDetailsStatusLiveData.setValue(DETAILS_STATUS_CLOSED);
@@ -110,9 +110,9 @@ public class ActivityLiveMapViewModel extends ViewModel {
     }
 
     public void startVehicleLocationUpdater() {
-        if (this.mVehicleLocationUpdater != null)
+        if (this.mVehicleLocationUpdateSubscriber != null)
             return;
-        this.mVehicleLocationUpdater = new DisposableSubscriber<VehicleLocations>() {
+        this.mVehicleLocationUpdateSubscriber = new DisposableSubscriber<VehicleLocations>() {
             @Override
             public void onNext(VehicleLocations vehicleLocations) {
                 ActivityLiveMapViewModel.this
@@ -129,16 +129,20 @@ public class ActivityLiveMapViewModel extends ViewModel {
                 Timber.d("Station subscription completed");
                 ActivityLiveMapViewModel
                         .this
-                        .mVehicleLocationUpdater = null;
+                        .mVehicleLocationUpdateSubscriber = null;
             }
         };
-        createVehicleUpdater().subscribe(this.mVehicleLocationUpdater);
+        createVehicleUpdater().subscribe(this.mVehicleLocationUpdateSubscriber);
+    }
+
+    public boolean isVehicleLocationUpdating() {
+        return mVehicleLocationUpdateSubscriber != null;
     }
 
     public void stopVehicleLocationUpdater() {
-        if (this.mVehicleLocationUpdater != null) {
-            this.mVehicleLocationUpdater.dispose();
-            this.mVehicleLocationUpdater = null;
+        if (this.mVehicleLocationUpdateSubscriber != null) {
+            this.mVehicleLocationUpdateSubscriber.dispose();
+            this.mVehicleLocationUpdateSubscriber = null;
         }
     }
 

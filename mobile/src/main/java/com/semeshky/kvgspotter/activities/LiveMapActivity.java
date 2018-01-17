@@ -33,7 +33,7 @@ public class LiveMapActivity extends AppCompatActivity {
 
     protected ActivityLiveMapBinding mBinding;
     protected ActivityLiveMapViewModel mViewModel;
-    private BottomSheetBehavior<FrameLayout> mBottomSheetBehavior;
+    protected BottomSheetBehavior<FrameLayout> mBottomSheetBehavior;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
