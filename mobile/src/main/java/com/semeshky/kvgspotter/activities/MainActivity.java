@@ -59,12 +59,12 @@ public class MainActivity extends AppCompatActivity {
             Timber.e(throwable);
         }
     };
-    private ActivityMainBinding mBinding;
-    private MainActivityViewModel mViewModel;
-    private HomeAdapter mHomeAdapter;
-    private Disposable mFavoriteDisposable;
-    private LocationHelper mLocationHelper;
-    private Disposable mNearbyDisposable;
+    protected ActivityMainBinding mBinding;
+    protected MainActivityViewModel mViewModel;
+    protected HomeAdapter mHomeAdapter;
+    protected Disposable mFavoriteDisposable;
+    protected LocationHelper mLocationHelper;
+    protected Disposable mNearbyDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
