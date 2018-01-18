@@ -54,6 +54,48 @@ public final class Release {
         return mHtmlUrl;
     }
 
+    @Override
+    public String toString() {
+        return "Release{" +
+                "mUrl='" + mUrl + '\'' +
+                ", mId=" + mId +
+                ", mTagName='" + mTagName + '\'' +
+                ", mName='" + mName + '\'' +
+                ", mDraft=" + mDraft +
+                ", mPreRelease=" + mPreRelease +
+                ", mHtmlUrl='" + mHtmlUrl + '\'' +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Release release = (Release) o;
+
+        if (mId != release.mId) return false;
+        if (mDraft != release.mDraft) return false;
+        if (mPreRelease != release.mPreRelease) return false;
+        if (mUrl != null ? !mUrl.equals(release.mUrl) : release.mUrl != null) return false;
+        if (mTagName != null ? !mTagName.equals(release.mTagName) : release.mTagName != null)
+            return false;
+        if (mName != null ? !mName.equals(release.mName) : release.mName != null) return false;
+        return mHtmlUrl != null ? mHtmlUrl.equals(release.mHtmlUrl) : release.mHtmlUrl == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = mUrl != null ? mUrl.hashCode() : 0;
+        result = 31 * result + (int) (mId ^ (mId >>> 32));
+        result = 31 * result + (mTagName != null ? mTagName.hashCode() : 0);
+        result = 31 * result + (mName != null ? mName.hashCode() : 0);
+        result = 31 * result + (mDraft ? 1 : 0);
+        result = 31 * result + (mPreRelease ? 1 : 0);
+        result = 31 * result + (mHtmlUrl != null ? mHtmlUrl.hashCode() : 0);
+        return result;
+    }
+
     public final static class Builder {
         private String mUrl;
         private long mId;
