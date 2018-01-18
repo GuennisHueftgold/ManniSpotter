@@ -9,6 +9,10 @@ public final class SemVer {
     private final int mPatch;
     private final String mAppendix;
 
+    public SemVer(int major, int minor, int patch) {
+        this(major, minor, patch, null);
+    }
+
     public SemVer(int major, int minor, int patch, @Nullable String appendix) {
         this.mMajor = major;
         this.mMinor = minor;
@@ -57,9 +61,14 @@ public final class SemVer {
     public boolean isNewer(SemVer other) {
         if (this.equals(other))
             return false;
-        return this.mMajor >= other.mMajor &&
+        if (this.mMajor > other.mMajor) {
+            return true;
+        } else if (this.mMajor >= other.mMajor &&
+                this.mMinor > other.mMinor) {
+            return true;
+        } else return this.mMajor >= other.mMajor &&
                 this.mMinor >= other.mMinor &&
-                this.mPatch >= other.mPatch;
+                this.mPatch > other.mPatch;
     }
 
     @Override
