@@ -13,6 +13,7 @@ import okhttp3.Cache;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public final class UpdateApiClient {
@@ -48,6 +49,7 @@ public final class UpdateApiClient {
                 .client(this.mOkHttpClient)
                 .baseUrl(this.mBaseUrl)
                 .addConverterFactory(GsonConverterFactory.create(this.mGson))
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
     }
 
