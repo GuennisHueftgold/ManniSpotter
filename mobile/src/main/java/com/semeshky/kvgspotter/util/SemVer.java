@@ -51,11 +51,20 @@ public final class SemVer {
 
     @Override
     public String toString() {
-        return "SemVer{" + mMajor +
-                "." + mMinor +
-                "." + mPatch +
-                "-" + mAppendix +
-                '}';
+        StringBuilder stringBuilder = new StringBuilder("SemVer{")
+                .append(mMajor)
+                .append(".")
+                .append(mMinor)
+                .append(".")
+                .append(mPatch);
+        if (this.mAppendix != null) {
+            stringBuilder
+                    .append("-")
+                    .append(mAppendix);
+        }
+        return stringBuilder
+                .append("}")
+                .toString();
     }
 
     public boolean isNewer(SemVer other) {

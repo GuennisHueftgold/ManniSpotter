@@ -2,9 +2,11 @@ package com.semeshky.kvgspotter.util;
 
 import org.junit.Test;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 public class SemVerTest {
@@ -82,6 +84,8 @@ public class SemVerTest {
         assertFalse(semVer.equals(new SemVer(2, 1, 4)));
         assertFalse(semVer.equals(new SemVer(2, 3, 1)));
         assertFalse(semVer.equals(new SemVer(2, 3, 4, "appendix")));
+        assertFalse(semVer.equals(null));
+        assertFalse(semVer.equals(new Object()));
     }
 
     @Test
@@ -99,5 +103,16 @@ public class SemVerTest {
         assertNotEquals(semVer.hashCode(), new SemVer(2, 1, 4).hashCode());
         assertNotEquals(semVer.hashCode(), new SemVer(1, 3, 4).hashCode());
         assertNotEquals(semVer.hashCode(), new SemVer(2, 3, 4, "appe").hashCode());
+    }
+
+    @Test
+    public void toString_should_not_return_null() {
+        final SemVer semVer1 = new SemVer(2, 3, 4);
+        assertThat(semVer1.toString(), instanceOf(String.class));
+        assertEquals("SemVer{2.3.4}", semVer1.toString());
+        final SemVer semVer2 = new SemVer(2, 3, 4, "appendix");
+        assertThat(semVer2.toString(), instanceOf(String.class));
+        assertEquals("SemVer{2.3.4-appendix}", semVer2.toString());
+
     }
 }
