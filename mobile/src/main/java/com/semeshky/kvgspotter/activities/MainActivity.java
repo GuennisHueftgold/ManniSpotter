@@ -8,9 +8,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -19,19 +21,27 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
+import com.semeshky.kvgspotter.BuildConfig;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.HomeAdapter;
+import com.semeshky.kvgspotter.api.KvgApiClient;
+import com.semeshky.kvgspotter.api.Release;
 import com.semeshky.kvgspotter.databinding.ActivityMainBinding;
 import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
 import com.semeshky.kvgspotter.location.LocationHelper;
+import com.semeshky.kvgspotter.util.SemVer;
 import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
 
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
@@ -130,6 +140,46 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    protected void checkForUpdates() {
+        KvgApiClient
+                .getUpdateService()
+                .getLatestReleaseSingle()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new DisposableSingleObserver<Release>() {
+                    @Override
+                    public void onSuccess(Release release) {
+                        final SemVer current = SemVer.parse(BuildConfig.VERSION_NAME);
+                        final SemVer onlineVersion = SemVer.parse(release.getTagName());
+                        if (onlineVersion != null &&
+                                current != null &&
+                                onlineVersion.isNewer(current)) {
+                            showUpdateNotice(release);
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Timber.e(e);
+                    }
+                });
+    }
+
+    protected void showUpdateNotice(@NonNull final Release release) {
+        Snackbar updateSnackbar = Snackbar
+                .make(this.mBinding.coordinatorLayout,
+                        R.string.update_available,
+                        Snackbar.LENGTH_LONG);
+        updateSnackbar.setAction(R.string.update, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(release.getHtmlUrl()));
+                startActivity(browserIntent);
+            }
+        });
+        updateSnackbar.show();
+    }
+
     private void requestLocationPermission() {
         this.requestLocationPermission(true);
     }
@@ -175,6 +225,7 @@ public class MainActivity extends AppCompatActivity {
                         mHomeAdapter.setFavorites(distanceStops);
                     }
                 }, LOCATION_THROWABLE_CONSUMER);
+        this.checkForUpdates();
     }
 
     @Override
