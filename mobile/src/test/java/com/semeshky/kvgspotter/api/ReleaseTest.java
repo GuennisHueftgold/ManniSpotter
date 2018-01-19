@@ -10,8 +10,11 @@ import org.junit.Test;
 import java.io.IOException;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -64,5 +67,88 @@ public class ReleaseTest {
         when(jsonReader.nextName()).thenReturn("random_name");
         assertNotNull(adapter.read(jsonReader));
         verify(jsonReader, times(1)).skipValue();
+    }
+
+    @Test
+    public void equals_should_return_true() {
+        Release release1 = createBuilder(29).build();
+        Release release2 = createBuilder(29).build();
+        assertTrue(release1.equals(release1));
+        assertTrue(release1.equals(release2));
+    }
+
+    @Test
+    public void equals_should_return_false() {
+        Release release1 = createBuilder(29).build();
+        assertFalse(release1.equals(null));
+        assertFalse(release1.equals(new Object()));
+        Release release2 = createBuilder(29)
+                .setUrl("other_url")
+                .build();
+        assertFalse(release1.equals(release2));
+        release2 = createBuilder(29)
+                .setId(-2999)
+                .build();
+        assertFalse(release1.equals(release2));
+        release2 = createBuilder(29)
+                .setTagName("other_url")
+                .build();
+        assertFalse(release1.equals(release2));
+        release2 = createBuilder(29)
+                .setName("other_url")
+                .build();
+        assertFalse(release1.equals(release2));
+        release2 = createBuilder(29)
+                .setDraft(!release1.isDraft())
+                .build();
+        assertFalse(release1.equals(release2));
+        release2 = createBuilder(29)
+                .setPreRelease(!release1.isPreRelease())
+                .build();
+        assertFalse(release1.equals(release2));
+        release2 = createBuilder(29)
+                .setHtmlUrl("other_url")
+                .build();
+        assertFalse(release1.equals(release2));
+    }
+
+    @Test
+    public void hashCode_should_return_equal_values() {
+        Release release1 = createBuilder(29).build();
+        Release release2 = createBuilder(29).build();
+        assertEquals(release1.hashCode(), release2.hashCode());
+    }
+
+    @Test
+    public void hashCode_should_return_no_equal_values() {
+        Release release1 = createBuilder(29).build();
+        Release release2 = createBuilder(29)
+                .setUrl("other_url")
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
+        release2 = createBuilder(29)
+                .setId(-219)
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
+        release2 = createBuilder(29)
+                .setTagName("other_url")
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
+        release2 = createBuilder(29)
+                .setName("other_url")
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
+        release2 = createBuilder(29)
+                .setDraft(!release1.isDraft())
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
+        release2 = createBuilder(29)
+                .setPreRelease(!release1.isPreRelease())
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
+        release2 = createBuilder(29)
+                .setHtmlUrl("other_url")
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
     }
 }
