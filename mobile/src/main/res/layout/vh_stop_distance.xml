@@ -18,7 +18,7 @@
 
         <variable
             name="distance"
-            type="Float"/>
+            type="float"/>
 
         <import type="android.view.View"/>
 

@@ -1,0 +1,216 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 1,
+    "identityHash": "d4236771e4b1b997635e3de7e0c358dc",
+    "entities": [
+      {
+        "tableName": "favoriteStations",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `shortName` TEXT, `created` TEXT, FOREIGN KEY(`shortName`) REFERENCES `stops`(`shortName`) ON UPDATE NO ACTION ON DELETE NO ACTION )",
+        "fields": [
+          {
+            "fieldPath": "mId",
+            "columnName": "id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mShortName",
+            "columnName": "shortName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mCreated",
+            "columnName": "created",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "id"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_favoriteStations_shortName",
+            "unique": true,
+            "columnNames": [
+              "shortName"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_favoriteStations_shortName` ON `${TABLE_NAME}` (`shortName`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "stops",
+            "onDelete": "NO ACTION",
+            "onUpdate": "NO ACTION",
+            "columns": [
+              "shortName"
+            ],
+            "referencedColumns": [
+              "shortName"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "stops",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `category` TEXT, `id` TEXT, `latitude` INTEGER NOT NULL, `longitude` INTEGER NOT NULL, `name` TEXT, `shortName` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "mUid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mCategory",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mId",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mLatitude",
+            "columnName": "latitude",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mLongitude",
+            "columnName": "longitude",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mName",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mShortName",
+            "columnName": "shortName",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_stops_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_stops_id` ON `${TABLE_NAME}` (`id`)"
+          },
+          {
+            "name": "index_stops_shortName",
+            "unique": true,
+            "columnNames": [
+              "shortName"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_stops_shortName` ON `${TABLE_NAME}` (`shortName`)"
+          }
+        ],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "stopPoints",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`mUid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `category` TEXT, `id` TEXT, `latitude` INTEGER NOT NULL, `longitude` INTEGER NOT NULL, `name` TEXT, `shortName` TEXT, `label` TEXT, `stopPoint` TEXT)",
+        "fields": [
+          {
+            "fieldPath": "mUid",
+            "columnName": "mUid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mCategory",
+            "columnName": "category",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mId",
+            "columnName": "id",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mLatitude",
+            "columnName": "latitude",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mLongitude",
+            "columnName": "longitude",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "mName",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mShortName",
+            "columnName": "shortName",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mLabel",
+            "columnName": "label",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "mStopPoint",
+            "columnName": "stopPoint",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "mUid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_stopPoints_id",
+            "unique": true,
+            "columnNames": [
+              "id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_stopPoints_id` ON `${TABLE_NAME}` (`id`)"
+          }
+        ],
+        "foreignKeys": []
+      }
+    ],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d4236771e4b1b997635e3de7e0c358dc\")"
+    ]
+  }
+}

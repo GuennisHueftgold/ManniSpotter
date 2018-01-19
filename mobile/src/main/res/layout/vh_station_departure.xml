@@ -14,7 +14,7 @@
 
         <variable
             name="active"
-            type="Boolean"/>
+            type="boolean"/>
 
         <variable
             name="secondaryText"
@@ -22,11 +22,11 @@
 
         <variable
             name="secondaryTextVisible"
-            type="Boolean"/>
+            type="boolean"/>
 
         <variable
             name="secondaryTextAlert"
-            type="Boolean"/>
+            type="boolean"/>
 
         <variable
             name="departureTime"

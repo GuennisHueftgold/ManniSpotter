@@ -47,4 +47,6 @@
     <string name="menu">Menu</string>
     <string name="requesting_location_permission">Requesting location permission</string>
     <string name="no_nearby_stops_found_yet">No nearby stops found yet</string>
+    <string name="update">Update</string>
+    <string name="update_available">Update available</string>
 </resources>
