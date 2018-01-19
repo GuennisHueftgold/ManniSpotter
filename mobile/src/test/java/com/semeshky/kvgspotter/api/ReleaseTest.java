@@ -110,6 +110,22 @@ public class ReleaseTest {
                 .setHtmlUrl("other_url")
                 .build();
         assertFalse(release1.equals(release2));
+        release2 = createBuilder(29)
+                .setHtmlUrl(null)
+                .build();
+        assertFalse(release1.equals(release2));
+        release2 = createBuilder(29)
+                .setTagName(null)
+                .build();
+        assertFalse(release1.equals(release2));
+        release2 = createBuilder(29)
+                .setName(null)
+                .build();
+        assertFalse(release1.equals(release2));
+        release2 = createBuilder(29)
+                .setUrl(null)
+                .build();
+        assertFalse(release1.equals(release2));
     }
 
     @Test
@@ -150,5 +166,26 @@ public class ReleaseTest {
                 .setHtmlUrl("other_url")
                 .build();
         assertNotEquals(release1.hashCode(), release2.hashCode());
+        release2 = createBuilder(29)
+                .setHtmlUrl(null)
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
+        release2 = createBuilder(29)
+                .setUrl(null)
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
+        release2 = createBuilder(29)
+                .setName(null)
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
+        release2 = createBuilder(29)
+                .setTagName(null)
+                .build();
+        assertNotEquals(release1.hashCode(), release2.hashCode());
+    }
+
+    @Test
+    public void toString_should_not_return_null() {
+        assertNotNull(createBuilder(29).build().toString());
     }
 }
