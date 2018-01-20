@@ -215,4 +215,5 @@ dependencies {
     implementation 'com.jakewharton.timber:timber:' + rootProject.timberVersion
     implementation 'com.squareup.retrofit2:adapter-rxjava2:' + rootProject.retrofitVersion
     testImplementation "org.robolectric:robolectric:3.6.1"
+    testImplementation 'org.robolectric:shadows-support-v4:3.3.2'
 }

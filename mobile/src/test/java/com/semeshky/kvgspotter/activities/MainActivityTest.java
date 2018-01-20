@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import com.semeshky.kvgspotter.BuildConfig;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.api.Release;
+import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
 import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
 
 import org.junit.Before;
@@ -39,7 +40,8 @@ import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class,
-        shadows = {ShadowSnackbar.class})
+        shadows = {ShadowSnackbar.class,
+                ShadowRequestLocationPermissionDialogFragment.class})
 public class MainActivityTest {
     private Context context;
 
@@ -142,5 +144,31 @@ public class MainActivityTest {
         Intent startedIntent = shadowOf(mainActivity).getNextStartedActivity();
         assertEquals(Intent.ACTION_VIEW, startedIntent.getAction());
         assertEquals(Uri.parse(testUrl), startedIntent.getData());
+    }
+
+    @Test
+    @Config(shadows = {ShadowActivityCompat.class})
+    public void showRequestPermissionDialog_should_work_properly() {
+        ActivityController activityController = Robolectric.buildActivity(MainActivity.class);
+        activityController.create();
+        MainActivity mainActivity = (MainActivity) activityController.get();
+        activityController.resume();
+        activityController.visible();
+        mainActivity.showRequestPermissionDialog();
+        assertEquals(1, ShadowRequestLocationPermissionDialogFragment.getCreatedInstancesCount());
+        RequestLocationPermissionDialogFragment fragment =
+                ShadowRequestLocationPermissionDialogFragment.getLatestFragment();
+        ShadowRequestLocationPermissionDialogFragment shadowFragment =
+                ShadowRequestLocationPermissionDialogFragment.shadowOf(fragment);
+        assertEquals(mainActivity.getSupportFragmentManager(),
+                fragment.getFragmentManager());
+        assertEquals(MainActivity.TAG_ASK_FOR_LOCATION,
+                fragment.getTag());
+        assertNotNull(shadowFragment.mListener);
+        assertEquals(0, ShadowActivityCompat.getRequestPermissionCallCount());
+        shadowFragment.mListener.onApproveRequest(false);
+        assertEquals(0, ShadowActivityCompat.getRequestPermissionCallCount());
+        shadowFragment.mListener.onApproveRequest(true);
+        assertEquals(1, ShadowActivityCompat.getRequestPermissionCallCount());
     }
 }

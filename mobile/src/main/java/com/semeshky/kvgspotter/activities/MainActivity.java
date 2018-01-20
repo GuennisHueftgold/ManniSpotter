@@ -46,6 +46,7 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
+    protected final static String TAG_ASK_FOR_LOCATION = "ask_for_location";
     private static final int REQUEST_CODE_ACCESS_LOCATION = 2928;
     private final HomeAdapter.HomeAdapterEventListener mFavoriteSelectedListener = new HomeAdapter.HomeAdapterEventListener() {
         @Override
@@ -180,11 +181,11 @@ public class MainActivity extends AppCompatActivity {
         updateSnackbar.show();
     }
 
-    private void requestLocationPermission() {
+    protected void requestLocationPermission() {
         this.requestLocationPermission(true);
     }
 
-    private void requestLocationPermission(boolean showDialog) {
+    protected void requestLocationPermission(boolean showDialog) {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
@@ -237,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
             this.mNearbyDisposable.dispose();
     }
 
-    private void showRequestPermissionDialog() {
+    protected void showRequestPermissionDialog() {
         RequestLocationPermissionDialogFragment dialog = new RequestLocationPermissionDialogFragment();
         dialog.setOnLocationRequestDialogListener(new RequestLocationPermissionDialogFragment.OnLocationRequestDialogListener() {
             @Override
@@ -249,6 +250,6 @@ public class MainActivity extends AppCompatActivity {
                         .requestLocationPermission(false);
             }
         });
-        dialog.show(this.getSupportFragmentManager(), "ask_for_location");
+        dialog.show(this.getSupportFragmentManager(), TAG_ASK_FOR_LOCATION);
     }
 }
