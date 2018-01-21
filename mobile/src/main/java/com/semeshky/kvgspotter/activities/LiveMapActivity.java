@@ -130,7 +130,7 @@ public class LiveMapActivity extends AppCompatActivity {
                                         .commit();
                                 LiveMapActivity
                                         .this
-                                        .setDetailsVisible(false);
+                                        .setDetailsVisible(true);
                                 break;
                             default:
                                 LiveMapActivity

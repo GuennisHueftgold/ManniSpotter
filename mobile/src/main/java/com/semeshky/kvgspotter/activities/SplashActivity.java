@@ -25,25 +25,7 @@ public final class SplashActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        super.onResume();/*
-        this.mViewModel
-                .isSynchronized()
-                .subscribe(new SingleObserver<Boolean>(){
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(Boolean aBoolean) {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });*/
+        super.onResume();
     }
 
     @Override
