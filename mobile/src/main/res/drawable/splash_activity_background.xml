@@ -2,10 +2,10 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:drawable="@android:color/darker_gray"/>
+        android:drawable="#4a8bc3"/>
 
     <item
-        android:gravity="center"
-        android:drawable="@drawable/ic_launcher_108dp"/>
+        android:drawable="@drawable/ic_launcher"
+        android:gravity="center"/>
 
 </layer-list>

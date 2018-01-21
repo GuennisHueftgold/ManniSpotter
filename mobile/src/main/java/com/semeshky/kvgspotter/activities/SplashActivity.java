@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.semeshky.kvgspotter.viewmodel.SplashActivityViewModel;
 
+/**
+ * Activity to be used as splashscreen on app start to display app logo
+ */
 public final class SplashActivity extends AppCompatActivity {
     private SplashActivityViewModel mViewModel;
 
