@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
-        android:drawable="#4a8bc3"/>
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#4a8bc3"/>
+            // CHANGE THIS COLOR
+        </shape>
+    </item>
 
     <item
         android:drawable="@drawable/ic_launcher"
