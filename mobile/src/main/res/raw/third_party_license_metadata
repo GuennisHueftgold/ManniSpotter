@@ -13,7 +13,7 @@
 576:46 support-core-ui
 624:46 support-vector-drawable
 672:46 support-compat
-2162:46 runtime
+2065:46 runtime
 1299:46 common
 1484:46 support-annotations
 960:49 reactive-streams
@@ -28,32 +28,30 @@
 1580:46 adapters
 1628:46 library
 1676:46 design
-1724:47 play-services-maps
-1773:47 play-services-oss-licenses
-1822:47 play-services-location
-1871:47 play-services-base
-1920:47 play-services-tasks
-1969:47 play-services-basement
-2018:46 rxjava2
-2066:46 android-maps-utils
-2114:46 transition
-2210:46 cardview-v7
-2258:46 timber
-2306:11358 safeparcel
-13666:243 tz database
-13911:11358 CCTZ
-25271:731 UTF
-26004:1732 Protobuf Nano
-27738:19442 ICU4C
-47182:1484 DynamicAnnotations
-48668:3182 PCRE
-51852:2500 zlib
-54354:1481 darts_clone
-55837:1558 RE2
-57397:680 STL
-58079:1602 JSR 305
-59683:46 db-framework
-59731:46 db
-59779:46 joda-time
-59827:46 jsr305
-59875:31 osmdroid-android
+1724:47 play-services-oss-licenses
+1773:47 play-services-location
+1822:47 play-services-base
+1871:47 play-services-tasks
+1920:47 play-services-basement
+1969:46 rxjava2
+2017:46 transition
+2113:46 cardview-v7
+2161:46 timber
+2209:31 osmdroid-android
+2242:46 db-framework
+2290:46 db
+2338:46 joda-time
+2386:46 jsr305
+2434:19442 ICU4C
+21878:11358 safeparcel
+33238:1602 JSR 305
+34842:3182 PCRE
+38026:680 STL
+38708:243 tz database
+38953:1484 DynamicAnnotations
+40439:731 UTF
+41172:2500 zlib
+43674:11358 CCTZ
+55034:1558 RE2
+56594:1732 Protobuf Nano
+58328:1481 darts_clone
