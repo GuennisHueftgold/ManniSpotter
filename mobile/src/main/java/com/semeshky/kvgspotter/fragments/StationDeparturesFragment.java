@@ -65,20 +65,30 @@ public final class StationDeparturesFragment extends Fragment {
         this.mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         this.mBinding.recyclerView.setAdapter(this.mDepartureAdapter);
         this.mBinding.swipeRefreshLayout.setOnRefreshListener(this.mSwipeRefreshListener);
-        this.mViewModel.getStation().observe(this,
+        this.mViewModel
+                .getStation()
+                .observe(this,
                 new Observer<Station>() {
                     @Override
                     public void onChanged(@Nullable Station station) {
-                        if (station == null)
-                            return;
-                        List<Departure> departureList = new ArrayList<Departure>();
-                        departureList.addAll(station.getActual());
-                        departureList.addAll(station.getOld());
                         StationDeparturesFragment
                                 .this
-                                .mDepartureAdapter
-                                .setItems(departureList);
+                                .updateViews(station);
                     }
                 });
+    }
+
+    protected void updateViews(Station station) {
+        if (station == null)
+            return;
+        List<Departure> departureList = new ArrayList<>();
+        departureList.addAll(station.getActual());
+        departureList.addAll(station.getOld());
+        StationDeparturesFragment
+                .this
+                .mDepartureAdapter
+                .setItems(departureList);
+        this.mBinding.setDepartureCount(departureList.size());
+        this.mBinding.executePendingBindings();
     }
 }

@@ -49,4 +49,7 @@
     <string name="no_nearby_stops_found_yet">No nearby stops found yet</string>
     <string name="update">Update</string>
     <string name="update_available">Update available</string>
+    <string name="loading_departures">Loading departures</string>
+    <string name="retry">Retry</string>
+    <string name="error_loading_departures">An error occured while loading departures</string>
 </resources>

@@ -9,17 +9,79 @@
         <variable
             name="viewModel"
             type="com.semeshky.kvgspotter.viewmodel.StationDetailActivityViewModel"/>
+        <!-- true if items are in the adapter-->
+        <variable
+            name="hasItems"
+            type="boolean"/>
+
+        <variable
+            name="departureCount"
+            type="int"/>
+
+        <import
+            type="android.view.View"/>
     </data>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@id/swipeRefreshLayout"
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:refreshing="@{viewModel.isRefreshing}">
+        android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <android.support.v4.widget.SwipeRefreshLayout
+            android:id="@+id/swipeRefreshLayout"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:enabled="@{departureCount>0}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:refreshing="@{departureCount > 0 &amp;&amp; viewModel.isRefreshing}">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+        <android.support.v4.widget.ContentLoadingProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="@{(departureCount == 0 &amp;&amp; viewModel.isRefreshing)?View.VISIBLE:View.GONE}"
+            app:layout_constraintBottom_toTopOf="@id/txtStatus"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+        <TextView
+            android:id="@+id/txtStatus"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/list_single_line_horizontal_padding"
+            android:layout_marginStart="@dimen/list_single_line_horizontal_padding"
+            android:gravity="center_horizontal"
+            android:text="@{(!viewModel.hasLoadError &amp;&amp; viewModel.isRefreshing)?@string/loading_departures:@string/error_loading_departures}"
+            android:visibility="@{departureCount > 0 ? View.GONE : View.VISIBLE}"
+            app:layout_constraintBottom_toTopOf="@id/btnRetry"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progressBar"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+        <Button
+            android:id="@+id/btnRetry"
+            style="?attr/borderlessButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> viewModel.refresh()}"
+            android:text="@string/retry"
+            android:visibility="@{(viewModel.hasLoadError &amp;&amp; departureCount == 0) ? View.VISIBLE : View.GONE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtStatus"
+            app:layout_constraintVertical_chainStyle="packed"/>
+
+    </android.support.constraint.ConstraintLayout>
 </layout>

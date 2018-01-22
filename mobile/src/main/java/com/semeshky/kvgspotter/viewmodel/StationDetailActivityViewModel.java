@@ -22,7 +22,6 @@ import org.joda.time.format.DateTimeFormat;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import io.reactivex.Flowable;
 import io.reactivex.Single;
@@ -40,9 +39,9 @@ public final class StationDetailActivityViewModel extends ViewModel {
     public final ObservableField<String> stationName = new ObservableField<>();
     public final ObservableField<String> stationShortName = new ObservableField<>();
     public final ObservableBoolean isRefreshing = new ObservableBoolean(false);
+    public final ObservableBoolean hasLoadError = new ObservableBoolean(true);
     public final ObservableField<String> lastUpdateTimestamp = new ObservableField<>("");
     private final MutableLiveData<Station> mStationMutableLiveData = new MutableLiveData<>();
-    private final AtomicBoolean mIsRefreshing = new AtomicBoolean(false);
     private final MediatorLiveData<Boolean> mFavoritedLiveData = new MediatorLiveData<>();
     private final MediatorLiveData<List<StopPoint>> mStopPointsLiveData = new MediatorLiveData<>();
     private LiveData<List<StopPoint>> mStopPointsDatabaseLiveData;
@@ -156,7 +155,6 @@ public final class StationDetailActivityViewModel extends ViewModel {
                         .getInstance()
                         .favoriteSationDao()
                         .delete(shortName);
-                Timber.d("Remove result: " + result);
                 emitter.onSuccess(result == 1);
             }
         })
@@ -219,6 +217,9 @@ public final class StationDetailActivityViewModel extends ViewModel {
                     public Station apply(Long aLong) throws Exception {
                         StationDetailActivityViewModel
                                 .this
+                                .hasLoadError.set(false);
+                        StationDetailActivityViewModel
+                                .this
                                 .isRefreshing.set(false);
                         return loadStation();
                     }
@@ -237,6 +238,7 @@ public final class StationDetailActivityViewModel extends ViewModel {
 
     public void refresh() {
         this.isRefreshing.set(true);
+        this.hasLoadError.set(false);
         Single.create(new SingleOnSubscribe<Station>() {
             @Override
             public void subscribe(SingleEmitter<Station> emitter) throws Exception {
@@ -268,6 +270,6 @@ public final class StationDetailActivityViewModel extends ViewModel {
     }
 
     public void setStationLoadError(Throwable stationLoadError) {
-
+        this.hasLoadError.set(true);
     }
 }
