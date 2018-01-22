@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -32,8 +33,10 @@ import com.semeshky.kvgspotter.fragments.StationDetailsFragment;
 import com.semeshky.kvgspotter.viewmodel.StationDetailActivityViewModel;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.atomic.AtomicBoolean;
 
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.DisposableSingleObserver;
 import timber.log.Timber;
 
@@ -41,10 +44,10 @@ public final class StationDetailActivity extends AppCompatActivity {
     public final static String EXTRA_STATION_SHORT_NAME = StationDetailActivity.class.getName() + ".stop_short_name";
     public static final String EXTRA_STATION_NAME = StationDetailActivity.class.getName() + ".stop_name";
     public static final String SCENE_TRANSITION_TITLE = "transitionTitle";
-    private final AtomicBoolean mIsRefreshing = new AtomicBoolean(false);
     private ActivityDetailStationBinding mBinding;
     private StationDetailActivityViewModel mViewModel;
     private MenuItem mFavoriteMenuItem;
+    private Disposable mErrorDisposable;
 
     public final static Intent createIntent(@NonNull Context context, @NonNull FulltextSearchResult fulltextSearchResult) {
         return StationDetailActivity.createIntent(context,
@@ -97,9 +100,11 @@ public final class StationDetailActivity extends AppCompatActivity {
                     .observe(this,
                             new Observer<Boolean>() {
                                 @Override
-                                public void onChanged(@Nullable Boolean aBoolean) {
+                                public void onChanged(@Nullable Boolean favorited) {
+                                    if (favorited == null)
+                                        return;
                                     StationDetailActivity.this
-                                            .setFavoriteDrawable(aBoolean);
+                                            .setFavoriteDrawable(favorited);
                                 }
                             });
         }
@@ -128,28 +133,30 @@ public final class StationDetailActivity extends AppCompatActivity {
         }
     }
 
-    private TextView getToolbarTitleTextView2(@NonNull Toolbar toolbar) {
-        TextView textViewTitle = null;
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            View view = toolbar.getChildAt(i);
-            Timber.d("found: %s", view.toString());
-            if (view instanceof TextView) {
-                textViewTitle = (TextView) view;
-                break;
-            }
-        }
-        return textViewTitle;
-    }
 
     @Override
     public void onResume() {
         super.onResume();
-        //this.mViewModel.updateData();
+        this.mErrorDisposable = this.mViewModel
+                .getLoadErrorFlowable()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(Throwable throwable) throws Exception {
+                        StationDetailActivity
+                                .this
+                                .showNetworkErrorSnackbar();
+                    }
+                });
         this.mViewModel.startSyncService();
     }
 
     @Override
     public void onPause() {
+        if (this.mErrorDisposable != null &&
+                !this.mErrorDisposable.isDisposed()) {
+            this.mErrorDisposable.dispose();
+        }
         this.mViewModel.stopSyncService();
         super.onPause();
     }
@@ -174,7 +181,12 @@ public final class StationDetailActivity extends AppCompatActivity {
         return AnimatedVectorDrawableCompat.create(this, id);
     }
 
-    private void setFavoriteDrawable(final boolean isFavorited) {
+    protected void setFavoriteDrawable(final boolean isFavorited) {
+        /**
+         * Menus can be sometimes not yet being inflated when this method will be called
+         */
+        if (this.mFavoriteMenuItem == null)
+            return;
         if (isFavorited) {
             AnimatedVectorDrawableCompat drawableCompat = getAnimatedVectorDrawable(R.drawable.ic_favorite_animated_24dp);
             this.mFavoriteMenuItem.setIcon(drawableCompat);
@@ -213,6 +225,21 @@ public final class StationDetailActivity extends AppCompatActivity {
         }
     }
 
+    protected void showNetworkErrorSnackbar() {
+        final Snackbar snackbar = Snackbar.make(this.mBinding.coordinatorLayout,
+                R.string.error_loading_departures,
+                Snackbar.LENGTH_LONG);
+        snackbar.setAction(R.string.retry, new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                StationDetailActivity
+                        .this
+                        .mViewModel
+                        .refresh();
+            }
+        });
+        snackbar.show();
+    }
     private class PagerAdapter extends FragmentPagerAdapter {
 
         PagerAdapter(FragmentManager fm) {

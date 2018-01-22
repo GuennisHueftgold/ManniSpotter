@@ -30,6 +30,7 @@ import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
 import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.processors.PublishProcessor;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import retrofit2.Response;
@@ -49,6 +50,7 @@ public final class StationDetailActivityViewModel extends ViewModel {
     private LiveData<Stop> mStopDatabaseLiveData;
     private MediatorLiveData<Stop> mStopLiveData = new MediatorLiveData<>();
     private DisposableSubscriber<Station> mStationSubscription;
+    private PublishProcessor<Throwable> mPublishProcessorLoadErrors = PublishProcessor.create();
 
     public LiveData<Boolean> isStationFavorited() {
         return this.mFavoritedLiveData;
@@ -133,7 +135,6 @@ public final class StationDetailActivityViewModel extends ViewModel {
 
     public Single<Boolean> toggleFavorite() {
         if (this.mFavoritedLiveData.getValue()) {
-            Timber.d("Remove favorite");
             return this.removeFavorite(this.stationShortName.get())
                     .map(new Function<Boolean, Boolean>() {
                         @Override
@@ -142,7 +143,6 @@ public final class StationDetailActivityViewModel extends ViewModel {
                         }
                     });
         } else {
-            Timber.d("Give favorite");
             return this.favoriteStation(this.stationShortName.get());
         }
     }
@@ -271,5 +271,15 @@ public final class StationDetailActivityViewModel extends ViewModel {
 
     public void setStationLoadError(Throwable stationLoadError) {
         this.hasLoadError.set(true);
+        this.mPublishProcessorLoadErrors.onNext(stationLoadError);
+    }
+
+    @Override
+    protected void onCleared() {
+        this.mPublishProcessorLoadErrors.onComplete();
+    }
+
+    public Flowable<Throwable> getLoadErrorFlowable() {
+        return this.mPublishProcessorLoadErrors;
     }
 }
