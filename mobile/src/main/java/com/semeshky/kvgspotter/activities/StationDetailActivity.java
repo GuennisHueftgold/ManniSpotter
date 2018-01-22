@@ -159,6 +159,14 @@ public final class StationDetailActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.station_detail, menu);
         this.mFavoriteMenuItem = menu.findItem(R.id.action_favorize);
+        if (this.mViewModel.isStationFavorited().getValue() != null) {
+            /**
+             * Using the viewpager reinflates the menu so it needs to be set every time
+             */
+            this.mFavoriteMenuItem.setIcon(this.mViewModel.isStationFavorited().getValue() ?
+                    R.drawable.ic_favorite_white_24dp :
+                    R.drawable.ic_favorite_border_white_24dp);
+        }
         return true;
     }
 
