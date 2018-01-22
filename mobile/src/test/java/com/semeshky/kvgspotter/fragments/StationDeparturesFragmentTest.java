@@ -3,7 +3,9 @@ package com.semeshky.kvgspotter.fragments;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 
 import com.github.guennishueftgold.trapezeapi.Departure;
 import com.github.guennishueftgold.trapezeapi.Station;
@@ -23,6 +25,8 @@ import org.robolectric.annotation.Config;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
@@ -89,6 +93,30 @@ public class StationDeparturesFragmentTest {
         verify(departureAdapter, times(1)).setItems(combinedDepartures);
         verify(departuresBindingSpy, times(1)).setDepartureCount(combinedDepartures.size());
         verify(departuresBindingSpy, times(1)).executePendingBindings();
+    }
+
+    @Test
+    public void binding_in_layout_progress_bar_should_show_correctly() throws Exception {
+        StationDeparturesFragment fragment = new StationDeparturesFragment();
+        startVisibleFragment(fragment, StationDeparturesTestActivity.class, 1);
+        ProgressBar progressBar = fragment.getView().findViewById(R.id.progressBar);
+        assertNotNull(progressBar);
+        fragment.mViewModel.isRefreshing.set(true);
+        fragment.mBinding.setDepartureCount(0);
+        fragment.mBinding.executePendingBindings();
+        assertEquals("should be visible", View.VISIBLE, progressBar.getVisibility());
+        fragment.mViewModel.isRefreshing.set(true);
+        fragment.mBinding.setDepartureCount(10);
+        fragment.mBinding.executePendingBindings();
+        assertEquals("should be not visible", View.GONE, progressBar.getVisibility());
+        fragment.mViewModel.isRefreshing.set(false);
+        fragment.mBinding.setDepartureCount(0);
+        fragment.mBinding.executePendingBindings();
+        assertEquals("should be not visible", View.GONE, progressBar.getVisibility());
+        fragment.mViewModel.isRefreshing.set(false);
+        fragment.mBinding.setDepartureCount(10);
+        fragment.mBinding.executePendingBindings();
+        assertEquals("should be not visible", View.GONE, progressBar.getVisibility());
     }
 }
 
