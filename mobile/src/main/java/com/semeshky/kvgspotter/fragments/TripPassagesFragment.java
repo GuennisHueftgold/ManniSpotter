@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 
 import com.github.guennishueftgold.trapezeapi.TripPassageStop;
 import com.github.guennishueftgold.trapezeapi.TripPassages;
-import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.activities.StationDetailActivity;
 import com.semeshky.kvgspotter.adapter.TripPassagesAdapter;
 import com.semeshky.kvgspotter.databinding.FragmentTripPassagesBinding;
@@ -76,7 +74,7 @@ public class TripPassagesFragment extends Fragment implements SwipeRefreshLayout
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_trip_passages, container, false);
+        this.mBinding = FragmentTripPassagesBinding.inflate(inflater, container, false);
         return this.mBinding.getRoot();
     }
 

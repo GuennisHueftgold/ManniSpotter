@@ -89,8 +89,10 @@ public final class StationDetailActivity extends AppCompatActivity {
         this.mViewModel = ViewModelProviders.of(this)
                 .get(StationDetailActivityViewModel.class);
         final Bundle extras = this.getIntent().getExtras();
-        this.mViewModel.stationName.set(extras.getString(EXTRA_STATION_NAME, getString(R.string.station_name)));
-        this.mViewModel.stationShortName.set(extras.getString(EXTRA_STATION_SHORT_NAME, ""));
+        if (extras != null) {
+            this.mViewModel.stationName.set(extras.getString(EXTRA_STATION_NAME, getString(R.string.station_name)));
+            this.mViewModel.stationShortName.set(extras.getString(EXTRA_STATION_SHORT_NAME, ""));
+        }
         this.setSupportActionBar(this.mBinding.toolbar);
         this.mBinding.setVariable(BR.viewModel, this.mViewModel);
         if (this.mBinding.viewPager != null) {

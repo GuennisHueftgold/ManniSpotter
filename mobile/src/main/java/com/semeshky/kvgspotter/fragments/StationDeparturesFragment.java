@@ -2,7 +2,6 @@ package com.semeshky.kvgspotter.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -14,7 +13,6 @@ import android.view.ViewGroup;
 
 import com.github.guennishueftgold.trapezeapi.Departure;
 import com.github.guennishueftgold.trapezeapi.Station;
-import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.activities.TripPassagesActivity;
 import com.semeshky.kvgspotter.adapter.DepartureAdapter;
 import com.semeshky.kvgspotter.databinding.FragmentStationDeparturesBinding;
@@ -48,7 +46,9 @@ public final class StationDeparturesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_station_departures, container, false);
+        this.mBinding = FragmentStationDeparturesBinding.inflate(inflater,
+                container,
+                false);
         this.mBinding.setViewModel(this.mViewModel);
         return this.mBinding.getRoot();
     }

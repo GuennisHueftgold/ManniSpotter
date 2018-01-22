@@ -4,19 +4,15 @@
         tools:context="com.semeshky.kvgspotter.activities.StationDetailActivity">
 
     <data>
-
-        <variable
-            name="tripPassages"
-            type="com.github.guennishueftgold.trapezeapi.TripPassages"/>
     </data>
 
     <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@id/swipeRefreshLayout"
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <android.support.v7.widget.RecyclerView
-            android:id="@id/recyclerView"
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </android.support.v4.widget.SwipeRefreshLayout>

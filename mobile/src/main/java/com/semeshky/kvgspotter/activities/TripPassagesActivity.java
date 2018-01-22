@@ -122,11 +122,13 @@ public final class TripPassagesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.mViewModel = ViewModelProviders.of(this).get(TripPassagesViewModel.class);
         this.mBinding = DataBindingUtil.setContentView(this, R.layout.activity_trip_passages);
-        this.mViewModel.setTripId(this.getIntent().getExtras().getString(EXTRA_TRIP_ID));
-        this.mViewModel.routeName.set(this.getIntent().getExtras().getString(EXTRA_ROUTE_NAME));
-        this.mViewModel.direction.set(this.getIntent().getExtras().getString(EXTRA_DIRECTION));
-        this.mVehicleId = this.getIntent().getExtras().getString(EXTRA_VEHICLE_ID, null);
-        this.mMode = this.getIntent().getExtras().getString(EXTRA_MODE);
+        if (this.getIntent().getExtras() != null) {
+            this.mViewModel.setTripId(this.getIntent().getExtras().getString(EXTRA_TRIP_ID));
+            this.mViewModel.routeName.set(this.getIntent().getExtras().getString(EXTRA_ROUTE_NAME));
+            this.mViewModel.direction.set(this.getIntent().getExtras().getString(EXTRA_DIRECTION));
+            this.mVehicleId = this.getIntent().getExtras().getString(EXTRA_VEHICLE_ID, null);
+            this.mMode = this.getIntent().getExtras().getString(EXTRA_MODE);
+        }
         this.setSupportActionBar(this.mBinding.toolbar);
         this.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         this.getSupportActionBar().setHomeButtonEnabled(true);
