@@ -29,11 +29,11 @@ public class TripPassagesFragmentTest {
     @Test
     public void shouldNotBeNull() throws Exception {
         TripPassagesFragment fragment = new TripPassagesFragment();
-        startVisibleFragment(fragment, TestActivity.class, 1);
+        startVisibleFragment(fragment, TripPassagesTestActivity.class, 1);
     }
 }
 
-class TestActivity extends AppCompatActivity {
+class TripPassagesTestActivity extends AppCompatActivity {
     private TripPassagesViewModel mViewModel;
 
     @Override

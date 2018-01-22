@@ -23,9 +23,9 @@ import java.util.List;
 
 public final class StationDeparturesFragment extends Fragment {
 
-    private StationDetailActivityViewModel mViewModel;
-    private FragmentStationDeparturesBinding mBinding;
-    private DepartureAdapter mDepartureAdapter;
+    protected StationDetailActivityViewModel mViewModel;
+    protected FragmentStationDeparturesBinding mBinding;
+    protected DepartureAdapter mDepartureAdapter;
     private SwipeRefreshLayout.OnRefreshListener mSwipeRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
@@ -84,11 +84,11 @@ public final class StationDeparturesFragment extends Fragment {
         List<Departure> departureList = new ArrayList<>();
         departureList.addAll(station.getActual());
         departureList.addAll(station.getOld());
-        StationDeparturesFragment
-                .this
-                .mDepartureAdapter
+        this.mDepartureAdapter
                 .setItems(departureList);
-        this.mBinding.setDepartureCount(departureList.size());
-        this.mBinding.executePendingBindings();
+        this.mBinding
+                .setDepartureCount(departureList.size());
+        this.mBinding
+                .executePendingBindings();
     }
 }
