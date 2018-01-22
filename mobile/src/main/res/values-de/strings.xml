@@ -49,4 +49,7 @@
     <string name="no_nearby_stops_found_yet">Keine Haltestellen in der Nähe bisher gefunden</string>
     <string name="update">Update</string>
     <string name="update_available">Update verfügbar</string>
+    <string name="loading_departures">Loading departures</string>
+    <string name="retry">Retry</string>
+    <string name="error_loading_departures">Ein Fehler trat auf beim Versuch die Abfahrten zu laden</string>
 </resources>

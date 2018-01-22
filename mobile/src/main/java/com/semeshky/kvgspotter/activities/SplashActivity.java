@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.semeshky.kvgspotter.viewmodel.SplashActivityViewModel;
 
+/**
+ * Activity to be used as splashscreen on app start to display app logo
+ */
 public final class SplashActivity extends AppCompatActivity {
     private SplashActivityViewModel mViewModel;
 
@@ -22,25 +25,7 @@ public final class SplashActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        super.onResume();/*
-        this.mViewModel
-                .isSynchronized()
-                .subscribe(new SingleObserver<Boolean>(){
-
-                    @Override
-                    public void onSubscribe(Disposable d) {
-
-                    }
-
-                    @Override
-                    public void onSuccess(Boolean aBoolean) {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-
-                    }
-                });*/
+        super.onResume();
     }
 
     @Override
