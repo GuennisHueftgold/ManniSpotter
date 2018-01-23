@@ -26,7 +26,7 @@ public final class StationDeparturesFragment extends Fragment {
     protected StationDetailActivityViewModel mViewModel;
     protected FragmentStationDeparturesBinding mBinding;
     protected DepartureAdapter mDepartureAdapter;
-    private SwipeRefreshLayout.OnRefreshListener mSwipeRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+    protected SwipeRefreshLayout.OnRefreshListener mSwipeRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
         @Override
         public void onRefresh() {
             StationDeparturesFragment
@@ -46,9 +46,10 @@ public final class StationDeparturesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.mBinding = FragmentStationDeparturesBinding.inflate(inflater,
-                container,
-                false);
+        this.mBinding = FragmentStationDeparturesBinding
+                .inflate(inflater,
+                        container,
+                        false);
         this.mBinding.setViewModel(this.mViewModel);
         return this.mBinding.getRoot();
     }
@@ -68,14 +69,14 @@ public final class StationDeparturesFragment extends Fragment {
         this.mViewModel
                 .getStation()
                 .observe(this,
-                new Observer<Station>() {
-                    @Override
-                    public void onChanged(@Nullable Station station) {
-                        StationDeparturesFragment
-                                .this
-                                .updateViews(station);
-                    }
-                });
+                        new Observer<Station>() {
+                            @Override
+                            public void onChanged(@Nullable Station station) {
+                                StationDeparturesFragment
+                                        .this
+                                        .updateViews(station);
+                            }
+                        });
     }
 
     protected void updateViews(Station station) {
