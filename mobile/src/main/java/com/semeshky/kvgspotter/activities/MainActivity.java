@@ -73,6 +73,20 @@ public class MainActivity extends AppCompatActivity {
         }
     };
     protected ActivityMainBinding mBinding;
+    protected final Consumer<Release> mReleaseConsumer = new Consumer<Release>() {
+        @Override
+        public void accept(Release release) throws Exception {
+            if (release == null)
+                return;
+            final SemVer current = SemVer.parse(BuildConfig.VERSION_NAME);
+            final SemVer onlineVersion = SemVer.parse(release.getTagName());
+            if (onlineVersion != null &&
+                    current != null &&
+                    onlineVersion.isNewer(current)) {
+                showUpdateNotice(release);
+            }
+        }
+    };
     protected MainActivityViewModel mViewModel;
     protected HomeAdapter mHomeAdapter;
     protected Disposable mFavoriteDisposable;
@@ -185,18 +199,7 @@ public class MainActivity extends AppCompatActivity {
                 .getLatestReleaseSingle()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Release>() {
-                    @Override
-                    public void accept(Release release) throws Exception {
-                        final SemVer current = SemVer.parse(BuildConfig.VERSION_NAME);
-                        final SemVer onlineVersion = SemVer.parse(release.getTagName());
-                        if (onlineVersion != null &&
-                                current != null &&
-                                onlineVersion.isNewer(current)) {
-                            showUpdateNotice(release);
-                        }
-                    }
-                }, SILENT_ERROR_CONSUMER);
+                .subscribe(this.mReleaseConsumer, SILENT_ERROR_CONSUMER);
     }
 
     protected void showUpdateNotice(@NonNull final Release release) {

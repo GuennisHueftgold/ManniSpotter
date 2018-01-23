@@ -12,6 +12,7 @@ import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.ShadowTimber;
 import com.semeshky.kvgspotter.api.Release;
 import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
+import com.semeshky.kvgspotter.util.SemVer;
 import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
 
 import org.junit.Before;
@@ -22,6 +23,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowIntent;
 
 import java.util.List;
@@ -72,6 +74,34 @@ public class MainActivityTest {
         MainActivity.SILENT_ERROR_CONSUMER.accept(testThrowable);
         assertEquals(1, ShadowTimber.getExceptionCount());
         assertEquals(testThrowable, ShadowTimber.getLastException());
+    }
+
+    @Test
+    @Config(shadows = {ShadowMainActivity.class})
+    public void MainActivity_release_consumer_should_work_correctly() throws Exception {
+        ActivityController activityController = Robolectric.buildActivity(MainActivity.class);
+        activityController.create();
+        MainActivity mainActivity = (MainActivity) activityController.get();
+        ShadowMainActivity shadowMainActivity = Shadow.extract(mainActivity);
+        mainActivity.mReleaseConsumer.accept(null);
+        assertEquals(0, shadowMainActivity.getShowUpdateNoticeCallCount());
+        final SemVer semVer = SemVer.parse(BuildConfig.VERSION_NAME);
+        Release release = new Release.Builder()
+                .setTagName(semVer.getMajor() + "." + semVer.getMinor() + "." + (semVer.getPatch() - 1))
+                .build();
+        mainActivity.mReleaseConsumer.accept(release);
+        assertEquals(0, shadowMainActivity.getShowUpdateNoticeCallCount());
+        release = new Release.Builder()
+                .setTagName(semVer.getMajor() + "." + semVer.getMinor() + "." + semVer.getPatch())
+                .build();
+        mainActivity.mReleaseConsumer.accept(release);
+        assertEquals(0, shadowMainActivity.getShowUpdateNoticeCallCount());
+        release = new Release.Builder()
+                .setTagName(semVer.getMajor() + "." + semVer.getMinor() + "." + (semVer.getPatch() + 1))
+                .build();
+        mainActivity.mReleaseConsumer.accept(release);
+        assertEquals(1, shadowMainActivity.getShowUpdateNoticeCallCount());
+        assertEquals(release, shadowMainActivity.getLastShowUpdateNoticeArg());
     }
 
     @Test
@@ -223,3 +253,4 @@ public class MainActivityTest {
         assertEquals(1, ShadowActivityCompat.getRequestPermissionCallCount());
     }
 }
+
