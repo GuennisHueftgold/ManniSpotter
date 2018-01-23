@@ -9,6 +9,7 @@ import android.view.MenuItem;
 
 import com.semeshky.kvgspotter.BuildConfig;
 import com.semeshky.kvgspotter.R;
+import com.semeshky.kvgspotter.ShadowTimber;
 import com.semeshky.kvgspotter.api.Release;
 import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
 import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
@@ -26,6 +27,7 @@ import org.robolectric.shadows.ShadowIntent;
 import java.util.List;
 
 import io.reactivex.Flowable;
+import io.reactivex.disposables.Disposable;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -33,7 +35,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.nullable;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
@@ -59,6 +65,16 @@ public class MainActivityTest {
     }
 
     @Test
+    @Config(shadows = {ShadowTimber.class})
+    public void MainActivity_check_silent_error_consumer() throws Exception {
+        assertEquals(0, ShadowTimber.getExceptionCount());
+        final Throwable testThrowable = new Throwable("test");
+        MainActivity.SILENT_ERROR_CONSUMER.accept(testThrowable);
+        assertEquals(1, ShadowTimber.getExceptionCount());
+        assertEquals(testThrowable, ShadowTimber.getLastException());
+    }
+
+    @Test
     public void MainActivity_should_start_location_updates() {
         ActivityController activityController = Robolectric.buildActivity(MainActivity.class);
         activityController.create();
@@ -72,6 +88,41 @@ public class MainActivityTest {
         activityController.pause();
         assertNotNull(mainActivity.mFavoriteDisposable);
         assertTrue(mainActivity.mFavoriteDisposable.isDisposed());
+    }
+
+    @Test
+    public void MainActivity_should_dispose_all_consumer_on_pause() {
+        ActivityController activityController = Robolectric.buildActivity(MainActivity.class);
+        activityController.create();
+        MainActivity mainActivity = (MainActivity) activityController.get();
+        mainActivity.mFavoriteDisposable = null;
+        mainActivity.mNearbyDisposable = null;
+        mainActivity.mUpdateCheckDisposable = null;
+        activityController.pause();
+
+        final Disposable mockFavoriteDisposable = mock(Disposable.class);
+        final Disposable mockNearbyDisposable = mock(Disposable.class);
+        final Disposable mockUpdateCheckDisposable = mock(Disposable.class);
+        mainActivity.mFavoriteDisposable = mockFavoriteDisposable;
+        mainActivity.mNearbyDisposable = mockNearbyDisposable;
+        mainActivity.mUpdateCheckDisposable = mockUpdateCheckDisposable;
+        when(mockFavoriteDisposable.isDisposed()).thenReturn(true);
+        when(mockNearbyDisposable.isDisposed()).thenReturn(true);
+        when(mockUpdateCheckDisposable.isDisposed()).thenReturn(true);
+        activityController.pause();
+        verify(mockFavoriteDisposable, never()).dispose();
+        verify(mockNearbyDisposable, never()).dispose();
+        verify(mockUpdateCheckDisposable, never()).dispose();
+        reset(mockFavoriteDisposable);
+        reset(mockNearbyDisposable);
+        reset(mockUpdateCheckDisposable);
+        when(mockFavoriteDisposable.isDisposed()).thenReturn(false);
+        when(mockNearbyDisposable.isDisposed()).thenReturn(false);
+        when(mockUpdateCheckDisposable.isDisposed()).thenReturn(false);
+        activityController.pause();
+        verify(mockFavoriteDisposable, times(1)).dispose();
+        verify(mockNearbyDisposable, times(1)).dispose();
+        verify(mockUpdateCheckDisposable, times(1)).dispose();
     }
 
     @Test

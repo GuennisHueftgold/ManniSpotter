@@ -47,6 +47,12 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity {
 
     protected final static String TAG_ASK_FOR_LOCATION = "ask_for_location";
+    protected static final Consumer<Throwable> SILENT_ERROR_CONSUMER = new Consumer<Throwable>() {
+        @Override
+        public void accept(Throwable throwable) throws Exception {
+            Timber.e(throwable);
+        }
+    };
     final static String KEY_LAST_SUCCESSFUL_UPDATE_CHECK = MainActivity.class.getName() + ".last.successful.update.check";
     final static long MINIMUM_UPDATE_DELTA = 6 * 60 * 1000L; // 5 minutes
     private static final int REQUEST_CODE_ACCESS_LOCATION = 2928;
@@ -66,12 +72,6 @@ public class MainActivity extends AppCompatActivity {
                     .requestLocationPermission();
         }
     };
-    private final Consumer<Throwable> SILENT_ERROR_CONSUMER = new Consumer<Throwable>() {
-        @Override
-        public void accept(Throwable throwable) throws Exception {
-            Timber.e(throwable);
-        }
-    };
     protected ActivityMainBinding mBinding;
     protected MainActivityViewModel mViewModel;
     protected HomeAdapter mHomeAdapter;
@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
     protected LocationHelper mLocationHelper;
     protected Disposable mNearbyDisposable;
     protected long mLastSuccessfulUpdateCheckTimestamp = 0;
-    private Disposable mUpdateCheckDisposable;
+    protected Disposable mUpdateCheckDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
