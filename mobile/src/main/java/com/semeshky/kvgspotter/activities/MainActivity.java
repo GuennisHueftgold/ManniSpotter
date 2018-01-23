@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
             Timber.e(throwable);
         }
     };
-    final static String KEY_LAST_SUCCESSFUL_UPDATE_CHECK = MainActivity.class.getName() + ".last.successful.update.check";
+    final static String KEY_LAST_SUCCESSFUL_UPDATE_CHECK = MainActivity.class.getName() + ".last_successful_update_check";
     final static long MINIMUM_UPDATE_DELTA = 6 * 60 * 1000L; // 5 minutes
     private static final int REQUEST_CODE_ACCESS_LOCATION = 2928;
     private final HomeAdapter.HomeAdapterEventListener mFavoriteSelectedListener = new HomeAdapter.HomeAdapterEventListener() {
@@ -138,8 +138,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
         super.onSaveInstanceState(outState, outPersistentState);
-        outState
-                .putLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, this.mLastSuccessfulUpdateCheckTimestamp);
         outPersistentState
                 .putLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, this.mLastSuccessfulUpdateCheckTimestamp);
     }
@@ -147,8 +145,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onRestoreInstanceState(Bundle instanceState, PersistableBundle persistableBundle) {
         super.onRestoreInstanceState(instanceState, persistableBundle);
-        this.mLastSuccessfulUpdateCheckTimestamp = instanceState
-                .getLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, 0);
         this.mLastSuccessfulUpdateCheckTimestamp = persistableBundle
                 .getLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, this.mLastSuccessfulUpdateCheckTimestamp);
     }

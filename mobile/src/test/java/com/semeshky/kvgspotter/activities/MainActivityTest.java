@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.design.widget.Snackbar;
 import android.view.MenuItem;
 
@@ -40,6 +42,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.nullable;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -251,6 +254,54 @@ public class MainActivityTest {
         assertEquals(0, ShadowActivityCompat.getRequestPermissionCallCount());
         shadowFragment.mListener.onApproveRequest(true);
         assertEquals(1, ShadowActivityCompat.getRequestPermissionCallCount());
+    }
+
+    @Test
+    public void onSaveInstanceState_should_work() {
+        ActivityController activityController = Robolectric.buildActivity(MainActivity.class);
+        activityController.create();
+        MainActivity mainActivity = (MainActivity) activityController.get();
+        final Bundle bundle = mock(Bundle.class);
+        final PersistableBundle persistantBundle = mock(PersistableBundle.class);
+        final long testTimestamp = 299382L;
+        mainActivity.mLastSuccessfulUpdateCheckTimestamp = testTimestamp;
+        mainActivity.onSaveInstanceState(bundle);
+        verify(bundle, times(1))
+                .putLong(MainActivity.KEY_LAST_SUCCESSFUL_UPDATE_CHECK, testTimestamp);
+        reset(bundle);
+        mainActivity.onSaveInstanceState(bundle, persistantBundle);
+        verify(bundle, times(1))
+                .putLong(MainActivity.KEY_LAST_SUCCESSFUL_UPDATE_CHECK, testTimestamp);
+        verify(persistantBundle, times(1))
+                .putLong(MainActivity.KEY_LAST_SUCCESSFUL_UPDATE_CHECK, testTimestamp);
+    }
+
+    @Test
+    public void onRestoreInstanceState_should_work() {
+        ActivityController activityController = Robolectric.buildActivity(MainActivity.class);
+        activityController.create();
+        MainActivity mainActivity = (MainActivity) activityController.get();
+        final Bundle bundle = new Bundle();
+        final Bundle spyBundle = spy(bundle);
+        final PersistableBundle persistantBundle = new PersistableBundle();
+        final PersistableBundle spyPersistableBundle = spy(persistantBundle);
+        final long testTimestampA = 299382L;
+        final long testTimestampB = 238382L;
+        final long testTimestampC = 135382L;
+        bundle.putLong(MainActivity.KEY_LAST_SUCCESSFUL_UPDATE_CHECK, testTimestampA);
+        persistantBundle.putLong(MainActivity.KEY_LAST_SUCCESSFUL_UPDATE_CHECK, testTimestampB);
+        mainActivity.onRestoreInstanceState(spyBundle);
+        verify(spyBundle, times(1))
+                .getLong(MainActivity.KEY_LAST_SUCCESSFUL_UPDATE_CHECK, 0);
+        assertEquals(testTimestampA, mainActivity.mLastSuccessfulUpdateCheckTimestamp);
+        reset(spyBundle);
+        mainActivity.mLastSuccessfulUpdateCheckTimestamp = testTimestampC;
+        mainActivity.onRestoreInstanceState(spyBundle, spyPersistableBundle);
+        verify(spyBundle, times(1))
+                .getLong(MainActivity.KEY_LAST_SUCCESSFUL_UPDATE_CHECK, 0);
+        verify(spyPersistableBundle, times(1))
+                .getLong(MainActivity.KEY_LAST_SUCCESSFUL_UPDATE_CHECK, testTimestampA);
+        assertEquals(testTimestampB, mainActivity.mLastSuccessfulUpdateCheckTimestamp);
     }
 }
 
