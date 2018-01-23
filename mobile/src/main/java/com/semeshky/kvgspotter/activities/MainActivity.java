@@ -41,7 +41,6 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                     .requestLocationPermission();
         }
     };
-    private final Consumer<Throwable> LOCATION_THROWABLE_CONSUMER = new Consumer<Throwable>() {
+    private final Consumer<Throwable> SILENT_ERROR_CONSUMER = new Consumer<Throwable>() {
         @Override
         public void accept(Throwable throwable) throws Exception {
             Timber.e(throwable);
@@ -80,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     protected LocationHelper mLocationHelper;
     protected Disposable mNearbyDisposable;
     protected long mLastSuccessfulUpdateCheckTimestamp = 0;
+    private Disposable mUpdateCheckDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,14 +180,14 @@ public class MainActivity extends AppCompatActivity {
         if (System.currentTimeMillis() - MINIMUM_UPDATE_DELTA < this.mLastSuccessfulUpdateCheckTimestamp) {
             return;
         }
-        KvgApiClient
+        this.mUpdateCheckDisposable = KvgApiClient
                 .getUpdateService()
                 .getLatestReleaseSingle()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableSingleObserver<Release>() {
+                .subscribe(new Consumer<Release>() {
                     @Override
-                    public void onSuccess(Release release) {
+                    public void accept(Release release) throws Exception {
                         final SemVer current = SemVer.parse(BuildConfig.VERSION_NAME);
                         final SemVer onlineVersion = SemVer.parse(release.getTagName());
                         if (onlineVersion != null &&
@@ -196,12 +196,7 @@ public class MainActivity extends AppCompatActivity {
                             showUpdateNotice(release);
                         }
                     }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e);
-                    }
-                });
+                }, SILENT_ERROR_CONSUMER);
     }
 
     protected void showUpdateNotice(@NonNull final Release release) {
@@ -251,7 +246,7 @@ public class MainActivity extends AppCompatActivity {
                         public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
                             mHomeAdapter.setNearby(distanceStops);
                         }
-                    }, LOCATION_THROWABLE_CONSUMER);
+                    }, SILENT_ERROR_CONSUMER);
             favoriteFlowable = this.mViewModel.getFavoriteFlowable(this.mLocationHelper.getLocationFlowable());
         } else {
             this.mHomeAdapter.setHasLocationPermission(false);
@@ -263,7 +258,7 @@ public class MainActivity extends AppCompatActivity {
                     public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
                         mHomeAdapter.setFavorites(distanceStops);
                     }
-                }, LOCATION_THROWABLE_CONSUMER);
+                }, SILENT_ERROR_CONSUMER);
         this.checkForUpdates();
     }
 
@@ -274,6 +269,8 @@ public class MainActivity extends AppCompatActivity {
             this.mFavoriteDisposable.dispose();
         if (this.mNearbyDisposable != null && !this.mNearbyDisposable.isDisposed())
             this.mNearbyDisposable.dispose();
+        if (this.mUpdateCheckDisposable != null && !this.mUpdateCheckDisposable.isDisposed())
+            this.mUpdateCheckDisposable.dispose();
     }
 
     protected void showRequestPermissionDialog() {
