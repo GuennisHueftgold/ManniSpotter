@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -47,6 +48,8 @@ import timber.log.Timber;
 public class MainActivity extends AppCompatActivity {
 
     protected final static String TAG_ASK_FOR_LOCATION = "ask_for_location";
+    final static String KEY_LAST_SUCCESSFUL_UPDATE_CHECK = MainActivity.class.getName() + ".last.successful.update.check";
+    final static long MINIMUM_UPDATE_DELTA = 6 * 60 * 1000L; // 5 minutes
     private static final int REQUEST_CODE_ACCESS_LOCATION = 2928;
     private final HomeAdapter.HomeAdapterEventListener mFavoriteSelectedListener = new HomeAdapter.HomeAdapterEventListener() {
         @Override
@@ -76,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
     protected Disposable mFavoriteDisposable;
     protected LocationHelper mLocationHelper;
     protected Disposable mNearbyDisposable;
+    protected long mLastSuccessfulUpdateCheckTimestamp = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +106,37 @@ public class MainActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(false);
         searchView.setSubmitButtonEnabled(true);
         return true;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, this.mLastSuccessfulUpdateCheckTimestamp);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle instanceState) {
+        super.onRestoreInstanceState(instanceState);
+        this.mLastSuccessfulUpdateCheckTimestamp = instanceState
+                .getLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, 0);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState
+                .putLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, this.mLastSuccessfulUpdateCheckTimestamp);
+        outPersistentState
+                .putLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, this.mLastSuccessfulUpdateCheckTimestamp);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle instanceState, PersistableBundle persistableBundle) {
+        super.onRestoreInstanceState(instanceState, persistableBundle);
+        this.mLastSuccessfulUpdateCheckTimestamp = instanceState
+                .getLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, 0);
+        this.mLastSuccessfulUpdateCheckTimestamp = persistableBundle
+                .getLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, this.mLastSuccessfulUpdateCheckTimestamp);
     }
 
     @Override
@@ -142,6 +177,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void checkForUpdates() {
+        if (System.currentTimeMillis() - MINIMUM_UPDATE_DELTA < this.mLastSuccessfulUpdateCheckTimestamp) {
+            return;
+        }
         KvgApiClient
                 .getUpdateService()
                 .getLatestReleaseSingle()
