@@ -33,7 +33,7 @@ public final class ClientSettings {
     }
 
     public boolean isFirstSetupDone() {
-        return this.mSharedPreferences.getBoolean(KEY_FIRST_SETUP_DONE, true);
+        return this.mSharedPreferences.getBoolean(KEY_FIRST_SETUP_DONE, false);
     }
 
     public void setFirstSetup(boolean firstSetupDone) {
