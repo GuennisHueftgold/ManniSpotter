@@ -29,10 +29,13 @@ public interface StopPointDao {
     int countStops();
 
     @Query("SELECT COUNT(*) from stopPoints")
-    public LiveData<Integer> countStopsSync();
+    LiveData<Integer> countStopsSync();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(StopPoint... users);
+    void insertAll(StopPoint... stopPoints);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<StopPoint> stopPoints);
 
     @Delete
     void delete(StopPoint user);
