@@ -36,6 +36,22 @@ public final class SemVer {
         return new SemVer(major, minor, patch, appendix);
     }
 
+    public int getMajor() {
+        return mMajor;
+    }
+
+    public int getMinor() {
+        return mMinor;
+    }
+
+    public int getPatch() {
+        return mPatch;
+    }
+
+    public String getAppendix() {
+        return mAppendix;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

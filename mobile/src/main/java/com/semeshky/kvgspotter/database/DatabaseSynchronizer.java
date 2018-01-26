@@ -2,7 +2,6 @@ package com.semeshky.kvgspotter.database;
 
 import android.content.Context;
 
-import com.github.guennishueftgold.trapezeapi.StationLocation;
 import com.github.guennishueftgold.trapezeapi.StationLocations;
 import com.github.guennishueftgold.trapezeapi.StopPoints;
 import com.semeshky.kvgspotter.api.KvgApiClient;
@@ -39,12 +38,9 @@ public class DatabaseSynchronizer {
                         emitter.onError(new Exception("Couldnt reach server with error:" + response.code()));
                         return;
                     }
-                    for (StationLocation stop : response.body().getStops()) {
-                        AppDatabase
-                                .getInstance()
-                                .stopDao()
-                                .insertAll(Stop.create(stop));
-                    }
+                    AppDatabase.getInstance()
+                            .stopDao()
+                            .insertAll(Stop.create(response.body().getStops()));
                     emitter.onSuccess(response.body().getStops().size());
                 } catch (RuntimeException | IOException ex) {
                     emitter.onError(ex);
@@ -115,12 +111,10 @@ public class DatabaseSynchronizer {
                         emitter.onError(new Exception("Couldnt reach server with error:" + response.code()));
                         return;
                     }
-                    for (com.github.guennishueftgold.trapezeapi.StopPoint stop : response.body().getStopPoints()) {
-                        AppDatabase
+                    AppDatabase
                                 .getInstance()
                                 .stopPointDao()
-                                .insertAll(StopPoint.create(stop));
-                    }
+                            .insertAll(StopPoint.create(response.body().getStopPoints()));
                     emitter.onSuccess(response.body().getStopPoints().size());
                 } catch (RuntimeException | IOException ex) {
                     emitter.onError(ex);

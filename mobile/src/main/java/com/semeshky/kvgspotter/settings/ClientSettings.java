@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 public final class ClientSettings {
     final static String NAME = "client_settings";
     static final String KEY_LAST_UPDATE_NOTICE_TIMESTAMP = "last_update_notice_timestamp";
+    static final String KEY_FIRST_SETUP_DONE = "first_setup_done";
     protected static ClientSettings sClientSettings;
     private final SharedPreferences mSharedPreferences;
 
@@ -28,6 +29,16 @@ public final class ClientSettings {
     public void setLastUpdateNoticeTimestamp(long timestamp) {
         SharedPreferences.Editor editor = this.mSharedPreferences.edit();
         editor.putLong(KEY_LAST_UPDATE_NOTICE_TIMESTAMP, timestamp);
+        editor.commit();
+    }
+
+    public boolean isFirstSetupDone() {
+        return this.mSharedPreferences.getBoolean(KEY_FIRST_SETUP_DONE, false);
+    }
+
+    public void setFirstSetup(boolean firstSetupDone) {
+        SharedPreferences.Editor editor = this.mSharedPreferences.edit();
+        editor.putBoolean(KEY_FIRST_SETUP_DONE, firstSetupDone);
         editor.commit();
     }
 }

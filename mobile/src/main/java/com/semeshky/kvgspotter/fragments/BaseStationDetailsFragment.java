@@ -3,7 +3,6 @@ package com.semeshky.kvgspotter.fragments;
 
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
@@ -42,7 +41,7 @@ abstract class BaseStationDetailsFragment extends MapFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        this.mBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_station_details, container, false);
+        this.mBinding = FragmentStationDetailsBinding.inflate(inflater, container, false);
         return this.mBinding.getRoot();
     }
 

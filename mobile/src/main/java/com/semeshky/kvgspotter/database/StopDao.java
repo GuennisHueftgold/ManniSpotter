@@ -40,7 +40,10 @@ public interface StopDao {
     LiveData<Integer> countStopsSync();
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void insertAll(Stop... users);
+    void insertAll(Stop... stop);
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    void insertAll(List<Stop> stops);
 
     @Delete
     void delete(Stop user);

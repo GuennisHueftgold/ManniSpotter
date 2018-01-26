@@ -52,4 +52,11 @@
     <string name="loading_departures">Loading departures</string>
     <string name="retry">Retry</string>
     <string name="error_loading_departures">Ein Fehler trat auf beim Versuch die Abfahrten zu laden</string>
+    <string name="first_setup_description">Bevor die App das erste Mal benutzt werden kann müssen Daten synchronisiert werden. Eine Internet-Verbindung ist notwendig für diesen Vorgang!</string>
+    <string name="setup">Setup</string>
+    <string name="synchronize">Synchronize</string>
+    <string name="synchronizing_ellipsis">Synchronisieren&#8230;</string>
+    <string name="an_error_occured_check_internet">An Error occured. Consider checking your internet connection and please try again!</string>
+    <string name="proceed">Proceed</string>
+    <string name="successfully_synchronized">Successfully synchronized</string>
 </resources>

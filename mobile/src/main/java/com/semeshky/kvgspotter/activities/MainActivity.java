@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -40,13 +41,20 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
-import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
     protected final static String TAG_ASK_FOR_LOCATION = "ask_for_location";
+    protected static final Consumer<Throwable> SILENT_ERROR_CONSUMER = new Consumer<Throwable>() {
+        @Override
+        public void accept(Throwable throwable) throws Exception {
+            Timber.e(throwable);
+        }
+    };
+    final static String KEY_LAST_SUCCESSFUL_UPDATE_CHECK = MainActivity.class.getName() + ".last_successful_update_check";
+    final static long MINIMUM_UPDATE_DELTA = 6 * 60 * 1000L; // 5 minutes
     private static final int REQUEST_CODE_ACCESS_LOCATION = 2928;
     private final HomeAdapter.HomeAdapterEventListener mFavoriteSelectedListener = new HomeAdapter.HomeAdapterEventListener() {
         @Override
@@ -64,18 +72,28 @@ public class MainActivity extends AppCompatActivity {
                     .requestLocationPermission();
         }
     };
-    private final Consumer<Throwable> LOCATION_THROWABLE_CONSUMER = new Consumer<Throwable>() {
+    protected ActivityMainBinding mBinding;
+    protected final Consumer<Release> mReleaseConsumer = new Consumer<Release>() {
         @Override
-        public void accept(Throwable throwable) throws Exception {
-            Timber.e(throwable);
+        public void accept(Release release) throws Exception {
+            if (release == null)
+                return;
+            final SemVer current = SemVer.parse(BuildConfig.VERSION_NAME);
+            final SemVer onlineVersion = SemVer.parse(release.getTagName());
+            if (onlineVersion != null &&
+                    current != null &&
+                    onlineVersion.isNewer(current)) {
+                showUpdateNotice(release);
+            }
         }
     };
-    protected ActivityMainBinding mBinding;
     protected MainActivityViewModel mViewModel;
     protected HomeAdapter mHomeAdapter;
     protected Disposable mFavoriteDisposable;
     protected LocationHelper mLocationHelper;
     protected Disposable mNearbyDisposable;
+    protected long mLastSuccessfulUpdateCheckTimestamp = 0;
+    protected Disposable mUpdateCheckDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,6 +120,33 @@ public class MainActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(false);
         searchView.setSubmitButtonEnabled(true);
         return true;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, this.mLastSuccessfulUpdateCheckTimestamp);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle instanceState) {
+        super.onRestoreInstanceState(instanceState);
+        this.mLastSuccessfulUpdateCheckTimestamp = instanceState
+                .getLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, 0);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outPersistentState
+                .putLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, this.mLastSuccessfulUpdateCheckTimestamp);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle instanceState, PersistableBundle persistableBundle) {
+        super.onRestoreInstanceState(instanceState, persistableBundle);
+        this.mLastSuccessfulUpdateCheckTimestamp = persistableBundle
+                .getLong(KEY_LAST_SUCCESSFUL_UPDATE_CHECK, this.mLastSuccessfulUpdateCheckTimestamp);
     }
 
     @Override
@@ -142,28 +187,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void checkForUpdates() {
-        KvgApiClient
+        if (System.currentTimeMillis() - MINIMUM_UPDATE_DELTA < this.mLastSuccessfulUpdateCheckTimestamp) {
+            return;
+        }
+        this.mUpdateCheckDisposable = KvgApiClient
                 .getUpdateService()
                 .getLatestReleaseSingle()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new DisposableSingleObserver<Release>() {
-                    @Override
-                    public void onSuccess(Release release) {
-                        final SemVer current = SemVer.parse(BuildConfig.VERSION_NAME);
-                        final SemVer onlineVersion = SemVer.parse(release.getTagName());
-                        if (onlineVersion != null &&
-                                current != null &&
-                                onlineVersion.isNewer(current)) {
-                            showUpdateNotice(release);
-                        }
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Timber.e(e);
-                    }
-                });
+                .subscribe(this.mReleaseConsumer, SILENT_ERROR_CONSUMER);
     }
 
     protected void showUpdateNotice(@NonNull final Release release) {
@@ -213,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
                         public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
                             mHomeAdapter.setNearby(distanceStops);
                         }
-                    }, LOCATION_THROWABLE_CONSUMER);
+                    }, SILENT_ERROR_CONSUMER);
             favoriteFlowable = this.mViewModel.getFavoriteFlowable(this.mLocationHelper.getLocationFlowable());
         } else {
             this.mHomeAdapter.setHasLocationPermission(false);
@@ -225,7 +257,7 @@ public class MainActivity extends AppCompatActivity {
                     public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
                         mHomeAdapter.setFavorites(distanceStops);
                     }
-                }, LOCATION_THROWABLE_CONSUMER);
+                }, SILENT_ERROR_CONSUMER);
         this.checkForUpdates();
     }
 
@@ -236,6 +268,8 @@ public class MainActivity extends AppCompatActivity {
             this.mFavoriteDisposable.dispose();
         if (this.mNearbyDisposable != null && !this.mNearbyDisposable.isDisposed())
             this.mNearbyDisposable.dispose();
+        if (this.mUpdateCheckDisposable != null && !this.mUpdateCheckDisposable.isDisposed())
+            this.mUpdateCheckDisposable.dispose();
     }
 
     protected void showRequestPermissionDialog() {
