@@ -47,7 +47,6 @@ public final class SplashActivity extends AppCompatActivity {
         }
     };
     private ConstraintLayout mConstraintLayout;
-    private boolean state1 = false, state2 = false;
     private boolean mAnimationPlayed = false;
 
     protected void startInAnimation() {
@@ -81,21 +80,6 @@ public final class SplashActivity extends AppCompatActivity {
         constraintSet2.applyTo(mConstraintLayout);
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        state1 = true;
-    }
-
-    @Override
-    public void onWindowFocusChanged(boolean focus) {
-        super.onWindowFocusChanged(focus);
-        startInAnimation();
-        if (state1 && state2)
-            return;
-        state2 = true;
-        startInAnimation();
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,10 +88,7 @@ public final class SplashActivity extends AppCompatActivity {
                 .isFirstSetupDone()) {
             gotoMainActivity();
         } else {
-            if (savedInstanceState != null)
-                this.mAnimationPlayed = savedInstanceState.getBoolean(KEY_ANIMATION_PLAYED, false);
-            else
-                this.mAnimationPlayed = false;
+            this.mAnimationPlayed = savedInstanceState != null && savedInstanceState.getBoolean(KEY_ANIMATION_PLAYED, false);
             this.setTheme(R.style.AppTheme);
             this.setContentView(this.mAnimationPlayed ? R.layout.activity_splash_setup_end : R.layout.activity_splash_setup);
             this.mConstraintLayout = this.findViewById(R.id.constraintLayout);
