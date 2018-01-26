@@ -90,7 +90,7 @@ public class MainActivityTest {
         assertEquals(0, shadowMainActivity.getShowUpdateNoticeCallCount());
         final SemVer semVer = SemVer.parse(BuildConfig.VERSION_NAME);
         Release release = new Release.Builder()
-                .setTagName(semVer.getMajor() + "." + semVer.getMinor() + "." + (semVer.getPatch() - 1))
+                .setTagName(semVer.getMajor() + "." + (semVer.getPatch() == 0 ? semVer.getMinor() - 1 : semVer.getMinor()) + "." + (semVer.getPatch() == 0 ? semVer.getPatch() : semVer.getPatch() - 1))
                 .build();
         mainActivity.mReleaseConsumer.accept(release);
         assertEquals(0, shadowMainActivity.getShowUpdateNoticeCallCount());
