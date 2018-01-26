@@ -52,4 +52,11 @@
     <string name="loading_departures">Loading departures</string>
     <string name="retry">Retry</string>
     <string name="error_loading_departures">An error occured while loading departures</string>
+    <string name="first_setup_description">During the first setup the app needs to synchronize some data in order to work properly. An internet connection is required for this process!</string>
+    <string name="setup">Setup</string>
+    <string name="synchronize">Synchronize</string>
+    <string name="synchronizing_ellipsis">Synchronizing&#8230;</string>
+    <string name="an_error_occured_check_internet">An Error occured. Consider checking your internet connection and please try again!</string>
+    <string name="proceed">Proceed</string>
+    <string name="successfully_synchronized">Successfully synchronized</string>
 </resources>

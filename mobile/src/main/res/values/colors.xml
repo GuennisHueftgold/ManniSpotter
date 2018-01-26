@@ -9,4 +9,7 @@
     <color name="text_inactive_black">#26000000</color>
     <color name="text_secondary_black">#8a000000</color>
     <color name="stepper_circle_inactive">#26000000</color>
+    <color name="success_green">#4CAF50</color>
+    <color name="error_red">#F44336</color>
+    <color name="btn_text_disabled">#1F000000</color>
 </resources>
