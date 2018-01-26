@@ -54,22 +54,30 @@ public final class SplashActivity extends AppCompatActivity {
         ConstraintSet constraintSet2 = new ConstraintSet();
         constraintSet2.clone(SplashActivity.this, R.layout.activity_splash_setup_end);
         //////////
-        Transition transitionScale = new ChangeBounds();
+        final TransitionSet transitionSetMain = new TransitionSet();
+        final TransitionSet transitionSetSub = new TransitionSet();
+        final Transition transitionScale = new ChangeBounds();
         transitionScale.addTarget(R.id.appIcon);
+        final Transition transitionFadeBackground = new Fade();
+        transitionFadeBackground.addTarget(R.id.colorBackground);
+        transitionSetSub.setOrdering(TransitionSet.ORDERING_TOGETHER);
+        transitionSetSub.addTransition(transitionScale);
+        transitionSetSub.addTransition(transitionFadeBackground);
+
         Transition transitionFade = new Fade();
         transitionFade.addTarget(R.id.btnSynchronize);
         transitionFade.addTarget(R.id.progressBar);
         transitionFade.addTarget(R.id.txtStatus);
         transitionFade.addTarget(R.id.txtTitle);
         transitionFade.addTarget(R.id.txtFirstSetupDescription);
-        TransitionSet transitionSet = new TransitionSet();
-        transitionSet.setOrdering(TransitionSet.ORDERING_SEQUENTIAL);
-        transitionSet.addTransition(transitionScale);
-        transitionSet.addTransition(transitionFade);
-        transitionSet.setStartDelay(100);
+
+        transitionSetMain.setOrdering(TransitionSet.ORDERING_SEQUENTIAL);
+        transitionSetMain.addTransition(transitionSetSub);
+        transitionSetMain.addTransition(transitionFade);
+        transitionSetMain.setStartDelay(100);
         //transitionSet.setDuration(10000);
         //////////
-        TransitionManager.beginDelayedTransition(mConstraintLayout, transitionSet);
+        TransitionManager.beginDelayedTransition(mConstraintLayout, transitionSetMain);
         constraintSet2.applyTo(mConstraintLayout);
     }
 
