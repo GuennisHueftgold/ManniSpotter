@@ -61,4 +61,8 @@
     <string name="successfully_synchronized">Successfully synchronized</string>
     <string name="next">Next</string>
     <string name="previos">Previos</string>
+    <string name="ask_for_location_description">In order to show stops near you this app needs access to your location. You can enable this later in the settings too.</string>
+    <string name="location">Location</string>
+    <string name="grant_access">Grant Access</string>
+    <string name="access_granted">Access Granted</string>
 </resources>

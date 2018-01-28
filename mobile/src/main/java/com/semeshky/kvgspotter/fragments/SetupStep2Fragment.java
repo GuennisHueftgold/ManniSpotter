@@ -1,8 +1,10 @@
 package com.semeshky.kvgspotter.fragments;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
+import android.support.annotation.Nullable;
 import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -19,18 +21,36 @@ import com.semeshky.kvgspotter.viewmodel.SplashActivityViewModel;
  */
 public class SetupStep2Fragment extends Fragment {
     private SplashActivityViewModel mViewModel;
+    private View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (view.getId() == R.id.btnSynchronize) {
+                mViewModel.synchronize();
+            }
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_setup_step_1, container, false);
+        return inflater.inflate(R.layout.fragment_setup_step_2, container, false);
     }
 
     @CallSuper
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         this.mViewModel = ViewModelProviders.of(this.getActivity()).get(SplashActivityViewModel.class);
-
+        this.mViewModel.getSyncStatus()
+                .observe(this, new Observer<Integer>() {
+                    @Override
+                    public void onChanged(@Nullable Integer integer) {
+                        if (integer == null) {
+                            return;
+                        }
+                        updateStatus(integer);
+                    }
+                });
+        view.findViewById(R.id.btnSynchronize).setOnClickListener(this.mOnClickListener);
     }
 
     protected void updateStatus(@SplashActivityViewModel.SyncStatus int status) {
@@ -45,7 +65,8 @@ public class SetupStep2Fragment extends Fragment {
             syncButton.setEnabled(false);
             syncButton.setText(R.string.synchronizing_ellipsis);
         } else if (status == SplashActivityViewModel.SYNC_STATUS_SYNCED) {
-            syncButton.setEnabled(true);
+            syncButton.setEnabled(false);
+            syncButton.setVisibility(View.GONE);
             syncButton.setText(R.string.proceed);
         } else {
             syncButton.setEnabled(true);

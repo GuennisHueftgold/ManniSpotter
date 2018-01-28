@@ -1,9 +1,12 @@
 package com.semeshky.kvgspotter.activities;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -12,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.TransitionManager;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.fragments.SetupStep1Fragment;
@@ -43,8 +47,7 @@ public final class SplashActivity extends AppCompatActivity {
             if (position >= 1) {
                 mConstraintLayout.setBackgroundColor(Color.TRANSPARENT);
             }
-            findViewById(R.id.btnPrevious)
-                    .setEnabled(position != 0);
+            updateButtonState(position);
         }
 
         @Override
@@ -72,6 +75,15 @@ public final class SplashActivity extends AppCompatActivity {
             }
         }
     };
+    private ImageView mIvTest;
+
+    protected void updateButtonState(int currentPage) {
+        findViewById(R.id.btnPrevious)
+                .setEnabled(currentPage != 0);
+        final boolean blockAdvance = currentPage == 1 && !mViewModel.isSynchronized();
+        findViewById(R.id.btnNext)
+                .setEnabled(!blockAdvance);
+    }
 
     private void gotoNextPage() {
         if (this.mViewPager.getCurrentItem() == this.mAd.getCount() - 1) {
@@ -91,7 +103,7 @@ public final class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (ClientSettings.getInstance(this)
+        if (!ClientSettings.getInstance(this)
                 .isFirstSetupDone()) {
             gotoMainActivity();
         } else {
@@ -113,6 +125,21 @@ public final class SplashActivity extends AppCompatActivity {
                     .setVisibility(animationPlayed ? View.VISIBLE : View.GONE);
             btnNext.setVisibility(animationPlayed ? View.VISIBLE : View.GONE);
             btnPrevious.setVisibility(animationPlayed ? View.VISIBLE : View.GONE);
+            this.mViewModel
+                    .getSyncStatus()
+                    .observe(this, new Observer<Integer>() {
+                        @Override
+                        public void onChanged(@Nullable Integer integer) {
+                            if (integer == null) {
+                                return;
+                            }
+                            if (integer == SplashActivityViewModel.SYNC_STATUS_SYNCED) {
+                                mAd.setAllowAdvance(true);
+                            } else {
+                                mAd.setAllowAdvance(false);
+                            }
+                        }
+                    });
         }
     }
 
@@ -163,10 +190,18 @@ public final class SplashActivity extends AppCompatActivity {
 
     class Ad extends FragmentPagerAdapter {
 
+        private final boolean mRequiresAskingForLocation = Build.VERSION.SDK_INT >= 23;
+        private boolean mAllowAdvance = false;
         public Ad(FragmentManager fm) {
             super(fm);
         }
 
+        public void setAllowAdvance(boolean allowAdvance) {
+            if (this.mAllowAdvance == allowAdvance)
+                return;
+            this.mAllowAdvance = allowAdvance;
+            this.notifyDataSetChanged();
+        }
         @Override
         public Fragment getItem(int position) {
             switch (position) {
@@ -175,9 +210,15 @@ public final class SplashActivity extends AppCompatActivity {
                 case 1:
                     return new SetupStep2Fragment();
                 case 2:
-                    return new SetupStep3Fragment();
+                    if (this.mRequiresAskingForLocation) {
+                        return new SetupStep3Fragment();
+                    } else {
+                        return new SetupStep4Fragment();
+                    }
                 case 3:
-                    return new SetupStep4Fragment();
+                    if (this.mRequiresAskingForLocation) {
+                        return new SetupStep4Fragment();
+                    }
                 default:
                     return null;
             }
@@ -185,7 +226,7 @@ public final class SplashActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            return 4;
+            return this.mAllowAdvance ? (this.mRequiresAskingForLocation ? 4 : 3) : 2;
         }
     }
 }

@@ -16,7 +16,7 @@ public class SetupStep4Fragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_setup_step_1, container, false);
+        return inflater.inflate(R.layout.fragment_setup_step_4, container, false);
     }
 
     @CallSuper
