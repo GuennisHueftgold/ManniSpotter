@@ -59,4 +59,6 @@
     <string name="an_error_occured_check_internet">An Error occured. Consider checking your internet connection and please try again!</string>
     <string name="proceed">Proceed</string>
     <string name="successfully_synchronized">Successfully synchronized</string>
+    <string name="next">Next</string>
+    <string name="previos">Previos</string>
 </resources>
