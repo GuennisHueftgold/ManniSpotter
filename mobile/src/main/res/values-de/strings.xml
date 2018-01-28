@@ -65,4 +65,5 @@
     <string name="location">Location</string>
     <string name="grant_access">Grant Access</string>
     <string name="access_granted">Access Granted</string>
+    <string name="delete_favorite">Delete Favorite</string>
 </resources>

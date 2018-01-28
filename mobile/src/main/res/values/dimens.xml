@@ -37,4 +37,5 @@
     <dimen name="default_icon_size">24dp</dimen>
     <dimen name="horizontal_content_padding">16dp</dimen>
     <dimen name="vertical_content_padding">8dp</dimen>
+    <dimen name="list_secondary_action_icon_padding">16dp</dimen>
 </resources>
