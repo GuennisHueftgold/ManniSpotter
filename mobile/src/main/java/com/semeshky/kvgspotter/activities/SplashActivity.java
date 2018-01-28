@@ -77,6 +77,10 @@ public final class SplashActivity extends AppCompatActivity {
     };
     private ImageView mIvTest;
 
+
+    protected void updateButtonState() {
+        this.updateButtonState(this.mViewPager.getCurrentItem());
+    }
     protected void updateButtonState(int currentPage) {
         findViewById(R.id.btnPrevious)
                 .setEnabled(currentPage != 0);
@@ -138,6 +142,7 @@ public final class SplashActivity extends AppCompatActivity {
                             } else {
                                 mAd.setAllowAdvance(false);
                             }
+                            updateButtonState();
                         }
                     });
         }

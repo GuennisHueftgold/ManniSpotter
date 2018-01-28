@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.constraint.ConstraintLayout;
 import android.support.v4.app.Fragment;
-import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -53,7 +52,6 @@ public class SetupStep3Fragment extends Fragment {
     }
 
     protected void updateStatusViews(boolean accessGranted) {
-        TransitionManager.beginDelayedTransition(this.mConstraintLayout);
         getView()
                 .findViewById(R.id.btnGrantAccess)
                 .setVisibility(accessGranted ? View.GONE : View.VISIBLE);
