@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -15,4 +16,26 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/txtDescription"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:lines="1"
+        android:paddingBottom="@dimen/vertical_content_padding"
+        android:paddingEnd="@dimen/horizontal_content_padding"
+        android:paddingStart="@dimen/horizontal_content_padding"
+        android:paddingTop="@dimen/vertical_content_padding"
+        android:text="@string/welcome"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:visibility="gone"
+        app:autoSizeMaxTextSize="128sp"
+        app:autoSizeMinTextSize="12sp"
+        app:autoSizeStepGranularity="2sp"
+        app:autoSizeTextType="uniform"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/appIcon"/>
 </android.support.constraint.ConstraintLayout>

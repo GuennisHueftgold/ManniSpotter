@@ -3,6 +3,7 @@ package com.semeshky.kvgspotter.fragments;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.v4.app.Fragment;
+import android.transition.TransitionManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +19,14 @@ public class SetupStep1Fragment extends Fragment {
 
     @CallSuper
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
+        view.post(new Runnable() {
+            @Override
+            public void run() {
+                TransitionManager.beginDelayedTransition((ViewGroup) view.findViewById(R.id.constraintLayout));
+                view.findViewById(R.id.txtDescription)
+                        .setVisibility(View.VISIBLE);
+            }
+        });
     }
 }

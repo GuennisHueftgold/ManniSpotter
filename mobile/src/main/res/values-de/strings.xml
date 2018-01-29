@@ -67,4 +67,5 @@
     <string name="access_granted">Access Granted</string>
     <string name="delete_favorite">Delete Favorite</string>
     <string name="setup_favorites_description">Select your favorite stops above to get quick access to them within the app.</string>
+    <string name="welcome">Welcome</string>
 </resources>

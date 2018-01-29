@@ -8,6 +8,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintLayout;
+import android.support.transition.TransitionManager;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -41,6 +43,8 @@ public class SetupStep4Fragment extends Fragment {
     private RecyclerView mRecyclerView;
     private SetupFavoriteAdapter mAdapter;
     private TextView mTxtDescription;
+    private ConstraintLayout mConstraintLayout;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -53,6 +57,7 @@ public class SetupStep4Fragment extends Fragment {
         this.mSearchView = view.findViewById(R.id.searchView);
         this.mRecyclerView = view.findViewById(R.id.recyclerView);
         this.mTxtDescription = view.findViewById(R.id.txtDescription);
+        this.mConstraintLayout = view.findViewById(R.id.constraintLayout);
         this.mAdapter = new SetupFavoriteAdapter();
         final Context context = view.getContext();
         SearchManager searchManager = (SearchManager) context.getSystemService(Context.SEARCH_SERVICE);
@@ -135,6 +140,7 @@ public class SetupStep4Fragment extends Fragment {
     }
 
     public void setFavoriteStations(List<FavoriteStationWithName> favoriteStations) {
+        TransitionManager.beginDelayedTransition(this.mConstraintLayout);
         final boolean listIsEmpty = (favoriteStations == null || favoriteStations.size() == 0);
         this.mTxtDescription.setVisibility(listIsEmpty ? View.VISIBLE : View.GONE);
         this.mRecyclerView.setVisibility(listIsEmpty ? View.GONE : View.VISIBLE);
