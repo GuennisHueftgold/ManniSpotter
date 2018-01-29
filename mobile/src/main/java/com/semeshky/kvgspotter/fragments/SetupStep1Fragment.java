@@ -13,7 +13,9 @@ import android.view.ViewGroup;
 import com.semeshky.kvgspotter.R;
 
 public class SetupStep1Fragment extends Fragment {
+    private static final String KEY_ENTRY_ANIMATION_PLAYED = SetupStep1Fragment.class.getName() + "#entryAnimationPlayed";
     private ConstraintLayout mConstraintLayout;
+    private boolean mEntryAnimationPlayed = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -25,21 +27,36 @@ public class SetupStep1Fragment extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         this.mConstraintLayout = view.findViewById(R.id.constraintLayout);
+        this.mEntryAnimationPlayed = savedInstanceState != null && savedInstanceState.getBoolean(KEY_ENTRY_ANIMATION_PLAYED, false);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
-        this.mConstraintLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                Fade fade = new Fade();
-                fade.addTarget(R.id.txtDescription);
-                TransitionManager.beginDelayedTransition(mConstraintLayout, fade);
-                mConstraintLayout.findViewById(R.id.txtDescription)
-                        .setVisibility(View.VISIBLE);
-            }
-        });
+        if (!this.mEntryAnimationPlayed) {
+            this.mConstraintLayout.findViewById(R.id.txtDescription)
+                    .setVisibility(View.GONE);
+            this.mConstraintLayout.post(new Runnable() {
+                @Override
+                public void run() {
+                    Fade fade = new Fade();
+                    fade.addTarget(R.id.txtDescription);
+                    TransitionManager.beginDelayedTransition(mConstraintLayout, fade);
+                    mConstraintLayout.findViewById(R.id.txtDescription)
+                            .setVisibility(View.VISIBLE);
+                }
+            });
+            this.mEntryAnimationPlayed = true;
+        } else {
+            this.mConstraintLayout.findViewById(R.id.txtDescription)
+                    .setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_ENTRY_ANIMATION_PLAYED, this.mEntryAnimationPlayed);
     }
 }
