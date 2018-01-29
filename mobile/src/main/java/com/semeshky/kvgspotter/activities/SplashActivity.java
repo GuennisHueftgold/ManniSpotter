@@ -15,6 +15,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.TransitionManager;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.semeshky.kvgspotter.R;
@@ -81,9 +82,13 @@ public final class SplashActivity extends AppCompatActivity {
     protected void updateButtonState() {
         this.updateButtonState(this.mViewPager.getCurrentItem());
     }
+
     protected void updateButtonState(int currentPage) {
-        findViewById(R.id.btnPrevious)
+        final ImageButton btnPrevios = findViewById(R.id.btnPrevious);
+        btnPrevios
                 .setEnabled(currentPage != 0);
+        btnPrevios
+                .setVisibility(currentPage == 0 ? View.GONE : View.VISIBLE);
         final boolean blockAdvance = currentPage == 1 && !mViewModel.isSynchronized();
         findViewById(R.id.btnNext)
                 .setEnabled(!blockAdvance);
@@ -158,7 +163,7 @@ public final class SplashActivity extends AppCompatActivity {
                 findViewById(R.id.btnNext)
                         .setVisibility(View.VISIBLE);
                 findViewById(R.id.btnPrevious)
-                        .setVisibility(View.VISIBLE);
+                        .setVisibility(View.GONE);
             }
         });
     }
@@ -176,9 +181,7 @@ public final class SplashActivity extends AppCompatActivity {
         if (!this.mEntryAnimationPlayed) {
             startEntryAnimation();
         }
-        if (this.mViewPager.getCurrentItem() == 0) {
-            findViewById(R.id.btnPrevious).setEnabled(false);
-        }
+        updateButtonState();
     }
 
     @Override
@@ -197,6 +200,7 @@ public final class SplashActivity extends AppCompatActivity {
 
         private final boolean mRequiresAskingForLocation = Build.VERSION.SDK_INT >= 23;
         private boolean mAllowAdvance = false;
+
         public Ad(FragmentManager fm) {
             super(fm);
         }
@@ -207,6 +211,7 @@ public final class SplashActivity extends AppCompatActivity {
             this.mAllowAdvance = allowAdvance;
             this.notifyDataSetChanged();
         }
+
         @Override
         public Fragment getItem(int position) {
             switch (position) {
