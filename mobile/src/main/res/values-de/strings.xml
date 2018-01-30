@@ -75,4 +75,9 @@
     <string name="app_version_summary">The current App Version</string>
     <string name="app_version">App Version</string>
     <string name="general">General</string>
+    <string name="synchronization">Synchronization</string>
+    <string name="synchronization_summary">Synchronize the local database</string>
+    <string name="stops">Stops</string>
+    <string name="x_stop_points_synchronized">%d Stoppoints synchronized</string>
+    <string name="x_stops_synchronized">%d Stops synchronized</string>
 </resources>
