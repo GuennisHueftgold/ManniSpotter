@@ -184,7 +184,7 @@ dependencies {
     compile 'android.arch.lifecycle:extensions:' + rootProject.archRoomVersion
     annotationProcessor 'android.arch.lifecycle:compiler:' + rootProject.archRoomVersion
     implementation 'android.arch.lifecycle:runtime:1.0.3'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0-beta4'
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.mockito:mockito-android:2.13.0'
     androidTestImplementation 'org.mockito:mockito-android:2.13.0'

@@ -14,8 +14,6 @@ import com.semeshky.kvgspotter.fragments.PreferencesMainFragment;
 
 import java.lang.reflect.Constructor;
 
-import timber.log.Timber;
-
 public class PreferencesActivity extends AppCompatActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     final static String TAG_MAIN_FRAGMENT = "mainFragment";
@@ -43,11 +41,12 @@ public class PreferencesActivity extends AppCompatActivity implements
             Class<?> clazz = Class.<PreferenceFragmentCompat>forName(pref.getFragment());
             Constructor<?> ctor = clazz.getConstructor();
             BasePreferenceFragment fragmentCompat = (BasePreferenceFragment) ctor.newInstance();
+            final boolean hasDetailsFragment = findViewById(R.id.detailsFragment) != null;
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.mainFragment, fragmentCompat, fragmentCompat.getTagName());
-            ft.addToBackStack(fragmentCompat.getTagName());
+            ft.replace(hasDetailsFragment ? R.id.detailsFragment : R.id.mainFragment, fragmentCompat, fragmentCompat.getTagName());
+            if (!hasDetailsFragment)
+                ft.addToBackStack(fragmentCompat.getTagName());
             ft.commit();
-            Timber.d("onPreferenceStartFragment - %s - %s", fragmentCompat.getTag(), fragmentCompat.getTagName());
             return true;
         } catch (Exception e) {
             e.printStackTrace();

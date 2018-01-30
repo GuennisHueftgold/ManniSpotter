@@ -112,7 +112,7 @@ public final class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (!ClientSettings.getInstance(this)
+        if (ClientSettings.getInstance(this)
                 .isFirstSetupDone()) {
             gotoMainActivity();
         } else {
