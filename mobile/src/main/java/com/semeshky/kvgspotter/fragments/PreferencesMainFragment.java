@@ -39,13 +39,23 @@ public final class PreferencesMainFragment extends BasePreferenceFragment {
         }
     }
 
+    protected boolean addDebugLayout() {
+        if (!BuildConfig.DEBUG || getContext() == null)
+            return false;
+        final int resourceId = getResources()
+                .getIdentifier("preferences_main_debug", "xml", getContext().getPackageName());
+        //per docs 0 as return value is an invalid resource identifier
+        if (resourceId != 0) {
+            addPreferencesFromResource(resourceId);
+        }
+        return resourceId != 0;
+    }
+
     @Override
     public void onCreatePreferences(Bundle bundle, String s) {
         // Load the Preferences from the XML file
         addPreferencesFromResource(R.xml.preferences_main);
-        if (BuildConfig.DEBUG) {
-            addPreferencesFromResource(R.xml.preferences_main_debug);
-        }
+        addDebugLayout();
         this.mPreferenceLocationPermission = (CheckBoxPreference) this.findPreference(KEY_LOCATION_PERMISSION);
         this.mPreferenceAppVersion = this.findPreference(KEY_APP_VERSION);
         this.mPreferenceLocationPermission.setOnPreferenceChangeListener(this.mOnPreferenceChangeListener);
