@@ -22,9 +22,8 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
-        <fragment
-            android:id="@id/mapFragment"
-            android:name="com.semeshky.kvgspotter.fragments.PreferencesMainFragment"
+        <FrameLayout
+            android:id="@+id/mainFragment"
             android:layout_width="0dp"
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
