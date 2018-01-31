@@ -27,7 +27,7 @@ allprojects {
 ext {
     buildToolsVersion = "27.0.3"
     supportLibVersion = "27.0.+"
-    playServicesVersion = "11.4.+"
+    playServicesVersion = "11.8.+"
     glideVersion = "4.2.0"
     archRoomVersion = "1.0.0"
     retrofitVersion = "2.3.0"
