@@ -16,7 +16,7 @@ public class ShadowSplashFragmentAdapter {
     @Implementation
     public Fragment getItem(int position) {
         this.mGetItemArgs.add(position);
-        return null;
+        return new Fragment();
     }
 
     public int getGetItemArg(int callNum) {

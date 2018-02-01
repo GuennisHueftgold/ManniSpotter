@@ -3,8 +3,10 @@ package com.semeshky.kvgspotter.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 
 import com.semeshky.kvgspotter.BuildConfig;
+import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.settings.ClientSettings;
 
 import org.junit.Before;
@@ -101,6 +103,26 @@ public class SplashActivityTest {
         SplashActivity splashActivity = (SplashActivity) activityController.get();
         assertNotNull(splashActivity.mViewModel);
         activityController.start();
+    }
+
+    @Test
+    public void SplashActivity_updateButtonState_should_work_properly() {
+        ShadowClientSettings clientSettings = ShadowClientSettings.shadowOf(ClientSettings.getInstance(context));
+        clientSettings.setFirstSetup(false);
+        ActivityController activityController = Robolectric.buildActivity(SplashActivity.class);
+        activityController.create();
+        activityController.resume();
+        activityController.visible();
+        SplashActivity splashActivity = (SplashActivity) activityController.get();
+        splashActivity.updateButtonState(0);
+        View btnNext = splashActivity.findViewById(R.id.btnNext);
+        View btnPrevious = splashActivity.findViewById(R.id.btnPrevious);
+        assertNotNull(btnNext);
+        assertNotNull(btnPrevious);
+        assertEquals(View.VISIBLE, btnNext.getVisibility());
+        assertEquals(View.GONE, btnPrevious.getVisibility());
+        assertTrue(btnNext.isEnabled());
+        assertFalse(btnPrevious.isEnabled());
     }
 
 }
