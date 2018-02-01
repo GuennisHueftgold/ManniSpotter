@@ -16,7 +16,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.transition.TransitionManager;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.fragments.SetupStep1Fragment;
@@ -31,7 +30,41 @@ import com.semeshky.kvgspotter.viewmodel.SplashActivityViewModel;
  */
 public final class SplashActivity extends AppCompatActivity {
     private static final String KEY_ENTRY_ANIMATION_PLAYED = "entry_animation_played";
-    private SplashActivityViewModel mViewModel;
+    protected SplashActivityViewModel mViewModel;
+    protected ViewPager mViewPager;
+    protected boolean mEntryAnimationPlayed = false;
+    protected Ad mAd;
+    protected final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            switch (view.getId()) {
+                case R.id.btnNext:
+                    SplashActivity
+                            .this
+                            .gotoNextPage();
+                    break;
+                case R.id.btnPrevious:
+                    SplashActivity
+                            .this
+                            .gotoPreviosPage();
+                    break;
+            }
+        }
+    };
+    protected Observer<Integer> mSyncStatusObserver = new Observer<Integer>() {
+        @Override
+        public void onChanged(@Nullable Integer integer) {
+            if (integer == null) {
+                return;
+            }
+            if (integer == SplashActivityViewModel.SYNC_STATUS_SYNCED) {
+                mAd.setAllowAdvance(true);
+            } else {
+                mAd.setAllowAdvance(false);
+            }
+            updateButtonState();
+        }
+    };
     private ConstraintLayout mConstraintLayout;
     protected final ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
 
@@ -56,28 +89,6 @@ public final class SplashActivity extends AppCompatActivity {
 
         }
     };
-    private ViewPager mViewPager;
-    private boolean mEntryAnimationPlayed = false;
-    private Ad mAd;
-    protected final View.OnClickListener mOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            switch (view.getId()) {
-                case R.id.btnNext:
-                    SplashActivity
-                            .this
-                            .gotoNextPage();
-                    break;
-                case R.id.btnPrevious:
-                    SplashActivity
-                            .this
-                            .gotoPreviosPage();
-                    break;
-            }
-        }
-    };
-    private ImageView mIvTest;
-
 
     protected void updateButtonState() {
         this.updateButtonState(this.mViewPager.getCurrentItem());
@@ -136,20 +147,7 @@ public final class SplashActivity extends AppCompatActivity {
             btnPrevious.setVisibility(animationPlayed ? View.VISIBLE : View.GONE);
             this.mViewModel
                     .getSyncStatus()
-                    .observe(this, new Observer<Integer>() {
-                        @Override
-                        public void onChanged(@Nullable Integer integer) {
-                            if (integer == null) {
-                                return;
-                            }
-                            if (integer == SplashActivityViewModel.SYNC_STATUS_SYNCED) {
-                                mAd.setAllowAdvance(true);
-                            } else {
-                                mAd.setAllowAdvance(false);
-                            }
-                            updateButtonState();
-                        }
-                    });
+                    .observe(this, this.mSyncStatusObserver);
         }
     }
 
