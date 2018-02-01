@@ -4,13 +4,9 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.transition.TransitionManager;
@@ -18,10 +14,6 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.semeshky.kvgspotter.R;
-import com.semeshky.kvgspotter.fragments.SetupStep1Fragment;
-import com.semeshky.kvgspotter.fragments.SetupStep2Fragment;
-import com.semeshky.kvgspotter.fragments.SetupStep3Fragment;
-import com.semeshky.kvgspotter.fragments.SetupStep4Fragment;
 import com.semeshky.kvgspotter.settings.ClientSettings;
 import com.semeshky.kvgspotter.viewmodel.SplashActivityViewModel;
 
@@ -29,11 +21,11 @@ import com.semeshky.kvgspotter.viewmodel.SplashActivityViewModel;
  * Activity to be used as splashscreen on app start to display app logo
  */
 public final class SplashActivity extends AppCompatActivity {
-    private static final String KEY_ENTRY_ANIMATION_PLAYED = "entry_animation_played";
+    protected static final String KEY_ENTRY_ANIMATION_PLAYED = "entry_animation_played";
     protected SplashActivityViewModel mViewModel;
     protected ViewPager mViewPager;
     protected boolean mEntryAnimationPlayed = false;
-    protected Ad mAd;
+    protected SplashFragmentAdapter mPagerAdapter;
     protected final View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -58,9 +50,9 @@ public final class SplashActivity extends AppCompatActivity {
                 return;
             }
             if (integer == SplashActivityViewModel.SYNC_STATUS_SYNCED) {
-                mAd.setAllowAdvance(true);
+                mPagerAdapter.setAllowAdvance(true);
             } else {
-                mAd.setAllowAdvance(false);
+                mPagerAdapter.setAllowAdvance(false);
             }
             updateButtonState();
         }
@@ -106,7 +98,7 @@ public final class SplashActivity extends AppCompatActivity {
     }
 
     private void gotoNextPage() {
-        if (this.mViewPager.getCurrentItem() == this.mAd.getCount() - 1) {
+        if (this.mViewPager.getCurrentItem() == this.mPagerAdapter.getCount() - 1) {
             gotoMainActivity();
         } else {
             this.mViewPager.setCurrentItem(this.mViewPager.getCurrentItem() + 1);
@@ -132,8 +124,8 @@ public final class SplashActivity extends AppCompatActivity {
             this.mConstraintLayout = this.findViewById(R.id.constraintLayout);
             this.mViewPager = this.findViewById(R.id.viewPager);
             this.mViewModel = ViewModelProviders.of(this).get(SplashActivityViewModel.class);
-            this.mAd = new Ad(this.getSupportFragmentManager());
-            this.mViewPager.setAdapter(this.mAd);
+            this.mPagerAdapter = new SplashFragmentAdapter(this.getSupportFragmentManager());
+            this.mViewPager.setAdapter(this.mPagerAdapter);
             this.mViewPager
                     .addOnPageChangeListener(this.mOnPageChangeListener);
             final View btnPrevious = findViewById(R.id.btnPrevious);
@@ -194,47 +186,4 @@ public final class SplashActivity extends AppCompatActivity {
         this.mEntryAnimationPlayed = inState.getBoolean(KEY_ENTRY_ANIMATION_PLAYED, false);
     }
 
-    class Ad extends FragmentPagerAdapter {
-
-        private final boolean mRequiresAskingForLocation = Build.VERSION.SDK_INT >= 23;
-        private boolean mAllowAdvance = false;
-
-        public Ad(FragmentManager fm) {
-            super(fm);
-        }
-
-        public void setAllowAdvance(boolean allowAdvance) {
-            if (this.mAllowAdvance == allowAdvance)
-                return;
-            this.mAllowAdvance = allowAdvance;
-            this.notifyDataSetChanged();
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return new SetupStep1Fragment();
-                case 1:
-                    return new SetupStep2Fragment();
-                case 2:
-                    if (this.mRequiresAskingForLocation) {
-                        return new SetupStep3Fragment();
-                    } else {
-                        return new SetupStep4Fragment();
-                    }
-                case 3:
-                    if (this.mRequiresAskingForLocation) {
-                        return new SetupStep4Fragment();
-                    }
-                default:
-                    return null;
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return this.mAllowAdvance ? (this.mRequiresAskingForLocation ? 4 : 3) : 2;
-        }
-    }
 }
