@@ -2,7 +2,6 @@ package com.semeshky.kvgspotter.activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -13,10 +12,11 @@ import com.semeshky.kvgspotter.BuildConfig;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.ShadowTimber;
 import com.semeshky.kvgspotter.api.Release;
+import com.semeshky.kvgspotter.database.AppDatabase;
 import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
 import com.semeshky.kvgspotter.util.SemVer;
-import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,9 +28,6 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowIntent;
 
-import java.util.List;
-
-import io.reactivex.Flowable;
 import io.reactivex.disposables.Disposable;
 
 import static org.junit.Assert.assertEquals;
@@ -40,7 +37,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.nullable;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
@@ -52,15 +48,23 @@ import static org.robolectric.Shadows.shadowOf;
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class,
         shadows = {ShadowSnackbar.class,
-                ShadowRequestLocationPermissionDialogFragment.class})
+                ShadowRequestLocationPermissionDialogFragment.class,
+                ShadowMainActivityViewModel.class,
+                ShadowLocationHelper.class})
 public class MainActivityTest {
     private Context context;
-
+    private AppDatabase mAppDatabase;
     @Before
     public void setup() {
         context = RuntimeEnvironment.application;
+        AppDatabase.init(context);
+        this.mAppDatabase = AppDatabase.getInstance();
     }
 
+    @After
+    public void tearDown() throws Exception {
+        this.mAppDatabase.close();
+    }
     @Test
     public void MainActivity_should_construct_correclty() {
         ActivityController activityController = Robolectric.buildActivity(MainActivity.class);
@@ -112,9 +116,6 @@ public class MainActivityTest {
         ActivityController activityController = Robolectric.buildActivity(MainActivity.class);
         activityController.create();
         MainActivity mainActivity = (MainActivity) activityController.get();
-        MainActivityViewModel mockViewModel = mock(MainActivityViewModel.class);
-        when(mockViewModel.getFavoriteFlowable(nullable(Flowable.class))).thenReturn(Flowable.<List<Location>>empty());
-        mainActivity.mViewModel = mockViewModel;
         activityController.start();
         activityController.resume();
         assertNotNull(mainActivity.mFavoriteDisposable);
