@@ -114,6 +114,9 @@ public class SplashActivityTest {
         activityController.resume();
         activityController.visible();
         SplashActivity splashActivity = (SplashActivity) activityController.get();
+        ShadowSplashActivityViewModel shadowViewModel = ShadowSplashActivityViewModel
+                .shadowOf(splashActivity.mViewModel);
+        shadowViewModel.setSynchronized(false);
         splashActivity.updateButtonState(0);
         View btnNext = splashActivity.findViewById(R.id.btnNext);
         View btnPrevious = splashActivity.findViewById(R.id.btnPrevious);
@@ -123,6 +126,23 @@ public class SplashActivityTest {
         assertEquals(View.GONE, btnPrevious.getVisibility());
         assertTrue(btnNext.isEnabled());
         assertFalse(btnPrevious.isEnabled());
+        shadowViewModel.setSynchronized(true);
+        assertEquals(View.VISIBLE, btnNext.getVisibility());
+        assertEquals(View.GONE, btnPrevious.getVisibility());
+        assertTrue(btnNext.isEnabled());
+        assertFalse(btnPrevious.isEnabled());
+        shadowViewModel.setSynchronized(false);
+        splashActivity.updateButtonState(1);
+        assertEquals(View.VISIBLE, btnNext.getVisibility());
+        assertEquals(View.VISIBLE, btnPrevious.getVisibility());
+        assertFalse(btnNext.isEnabled());
+        assertTrue(btnPrevious.isEnabled());
+        shadowViewModel.setSynchronized(true);
+        splashActivity.updateButtonState(1);
+        assertEquals(View.VISIBLE, btnNext.getVisibility());
+        assertEquals(View.VISIBLE, btnPrevious.getVisibility());
+        assertTrue(btnNext.isEnabled());
+        assertTrue(btnPrevious.isEnabled());
     }
 
 }
