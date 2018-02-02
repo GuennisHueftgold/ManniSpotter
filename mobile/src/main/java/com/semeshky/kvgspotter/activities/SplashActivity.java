@@ -38,7 +38,7 @@ public final class SplashActivity extends AppCompatActivity {
                 case R.id.btnPrevious:
                     SplashActivity
                             .this
-                            .gotoPreviosPage();
+                            .gotoPreviousPage();
                     break;
             }
         }
@@ -97,7 +97,7 @@ public final class SplashActivity extends AppCompatActivity {
                 .setEnabled(!blockAdvance);
     }
 
-    private void gotoNextPage() {
+    protected void gotoNextPage() {
         if (this.mViewPager.getCurrentItem() == this.mPagerAdapter.getCount() - 1) {
             gotoMainActivity();
         } else {
@@ -105,7 +105,7 @@ public final class SplashActivity extends AppCompatActivity {
         }
     }
 
-    private void gotoPreviosPage() {
+    protected void gotoPreviousPage() {
         if (this.mViewPager.getCurrentItem() == 0) {
             return;
         }

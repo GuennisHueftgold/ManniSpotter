@@ -145,4 +145,41 @@ public class SplashActivityTest {
         assertTrue(btnPrevious.isEnabled());
     }
 
+    @Test
+    public void gotoNextPage_should_work() {
+        ShadowClientSettings clientSettings = ShadowClientSettings.shadowOf(ClientSettings.getInstance(context));
+        clientSettings.setFirstSetup(false);
+        ActivityController activityController = Robolectric.buildActivity(SplashActivity.class);
+        activityController.create();
+        activityController.resume();
+        activityController.visible();
+        SplashActivity splashActivity = (SplashActivity) activityController.get();
+        ShadowSplashFragmentAdapter shadowAdapter = ShadowSplashFragmentAdapter.shadowOf(splashActivity.mPagerAdapter);
+        splashActivity.mViewPager.setCurrentItem(1);
+        shadowAdapter.setCount(3);
+        splashActivity.gotoNextPage();
+        assertEquals(splashActivity.mViewPager.getCurrentItem(), 2);
+        splashActivity.gotoNextPage();
+        assertEquals(splashActivity.mViewPager.getCurrentItem(), 2);
+        Intent startedIntent = shadowOf(splashActivity).getNextStartedActivity();
+        ShadowIntent shadowIntent = shadowOf(startedIntent);
+        assertEquals(MainActivity.class, shadowIntent.getIntentClass());
+        assertTrue(splashActivity.isFinishing());
+    }
+
+    @Test
+    public void gotoPreviousPage_should_work() {
+        ShadowClientSettings clientSettings = ShadowClientSettings.shadowOf(ClientSettings.getInstance(context));
+        clientSettings.setFirstSetup(false);
+        ActivityController activityController = Robolectric.buildActivity(SplashActivity.class);
+        activityController.create();
+        activityController.resume();
+        activityController.visible();
+        SplashActivity splashActivity = (SplashActivity) activityController.get();
+        splashActivity.mViewPager.setCurrentItem(1);
+        splashActivity.gotoPreviousPage();
+        assertEquals(splashActivity.mViewPager.getCurrentItem(), 0);
+        splashActivity.gotoPreviousPage();
+        assertEquals(splashActivity.mViewPager.getCurrentItem(), 0);
+    }
 }
