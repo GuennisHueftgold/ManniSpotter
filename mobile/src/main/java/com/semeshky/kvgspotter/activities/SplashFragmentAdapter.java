@@ -12,8 +12,8 @@ import com.semeshky.kvgspotter.fragments.SetupStep4Fragment;
 
 class SplashFragmentAdapter extends FragmentPagerAdapter {
 
-    private final boolean mRequiresAskingForLocation = Build.VERSION.SDK_INT >= 23;
-    private boolean mAllowAdvance = false;
+    protected final boolean mRequiresAskingForLocation = Build.VERSION.SDK_INT >= 23;
+    protected boolean mAllowAdvance = false;
 
     public SplashFragmentAdapter(FragmentManager fm) {
         super(fm);

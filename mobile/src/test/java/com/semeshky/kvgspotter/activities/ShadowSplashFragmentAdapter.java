@@ -38,6 +38,11 @@ public class ShadowSplashFragmentAdapter {
         }
     }
 
+    /**
+     * Set the count to be returned by the adapter. Set it to a value lower than 0 to call the original implementation
+     *
+     * @param count
+     */
     public void setCount(int count) {
         this.mCount = count;
         Shadow.directlyOn(realAdapter, PagerAdapter.class).notifyDataSetChanged();
