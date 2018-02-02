@@ -36,7 +36,7 @@ public class AbstractLocationHelperTest {
     }
 
     @Test
-    @Config(sdk = {22})
+    @Config(maxSdk = 22)
     public void hasLocationPermission_should_return_true_for_sub_23sdk_int() {
         final Context contextSpy = spy(context);
         when(contextSpy.checkPermission(anyString(), anyInt(), anyInt())).thenReturn(PackageManager.PERMISSION_DENIED);
@@ -45,7 +45,7 @@ public class AbstractLocationHelperTest {
     }
 
     @Test
-    @Config(sdk = {23})
+    @Config(minSdk = 23)
     public void hasLocationPermission_should_return_true_for_23sdk_int_and_above() {
         final Context contextSpy = spy(context);
         when(contextSpy.checkPermission(anyString(), anyInt(), anyInt())).thenReturn(PackageManager.PERMISSION_GRANTED);
@@ -55,7 +55,7 @@ public class AbstractLocationHelperTest {
     }
 
     @Test
-    @Config(sdk = {23})
+    @Config(minSdk = 23)
     public void hasLocationPermission_should_return_false_for_23sdk_int_and_above() {
         final Context contextSpy = spy(context);
         when(contextSpy.checkPermission(eq(Manifest.permission.ACCESS_FINE_LOCATION), anyInt(), anyInt())).thenReturn(PackageManager.PERMISSION_DENIED);
