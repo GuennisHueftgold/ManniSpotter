@@ -173,7 +173,7 @@ public final class StationDetailActivity extends AppCompatActivity {
                 .subscribe(new DisposableSingleObserver<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
-                        Timber.d("Successfully liked: %s", aBoolean);
+                        showFavoriteStatusSnackar(aBoolean);
                     }
 
                     @Override
@@ -181,6 +181,16 @@ public final class StationDetailActivity extends AppCompatActivity {
                         Timber.e(e);
                     }
                 });
+    }
+
+    /**
+     * @param favorited
+     */
+    protected void showFavoriteStatusSnackar(boolean favorited) {
+        final Snackbar snackbar = Snackbar.make(this.mBinding.coordinatorLayout,
+                favorited ? R.string.stop_favorited : R.string.stop_removed_from_favorites,
+                Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override

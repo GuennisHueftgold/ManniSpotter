@@ -82,4 +82,6 @@
     <string name="x_stops_synchronized">%d Stops synchronized</string>
     <string name="departures">Departures</string>
     <string name="map">Map</string>
+    <string name="stop_removed_from_favorites">Stop removed from Favorites</string>
+    <string name="stop_favorited">Stop favorited</string>
 </resources>
