@@ -32,14 +32,12 @@ public class ShadowMainActivityViewModel {
 
     @Implementation
     public Flowable<List<HomeAdapter.DistanceStop>> createNearbyFlowable(Flowable<Location> locationFlowable) {
-        System.out.println("Shadow called nearby");
         return this.mNearbyFlowable;
     }
 
 
     @Implementation
     public Flowable<List<HomeAdapter.DistanceStop>> getFavoriteFlowable(Flowable<Location> locationFlowable) {
-        System.out.println("Shadow called favorite");
         return this.mFavoriteFlowable;
     }
 }
