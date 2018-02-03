@@ -27,13 +27,16 @@ import com.semeshky.kvgspotter.fragments.LiveMapDepartureFragment;
 import com.semeshky.kvgspotter.fragments.LiveMapPassagesFragment;
 import com.semeshky.kvgspotter.viewmodel.ActivityLiveMapViewModel;
 
-import timber.log.Timber;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 
 public class LiveMapActivity extends AppCompatActivity {
 
+    protected final static String KEY_DETAILS_STATUS = LiveMapActivity.class.getSimpleName() + ".key_details_STATUS";
     protected ActivityLiveMapBinding mBinding;
     protected ActivityLiveMapViewModel mViewModel;
     protected BottomSheetBehavior<FrameLayout> mBottomSheetBehavior;
+    private Disposable mDetailPaneStatusDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +49,10 @@ public class LiveMapActivity extends AppCompatActivity {
         }
         this.mBinding = DataBindingUtil.setContentView(this, R.layout.activity_live_map);
         this.mViewModel = ViewModelProviders.of(this).get(ActivityLiveMapViewModel.class);
+        if (savedInstanceState != null) {
+            if (savedInstanceState.containsKey(KEY_DETAILS_STATUS))
+                this.mViewModel.setDetailsStatus(savedInstanceState.getInt(KEY_DETAILS_STATUS));
+        }
         if (this.mBinding.bottomSheet != null) {
             this.mBottomSheetBehavior = BottomSheetBehavior.from(this.mBinding.bottomSheet);
             this.mBottomSheetBehavior.setPeekHeight(300);
@@ -100,7 +107,6 @@ public class LiveMapActivity extends AppCompatActivity {
                     .observe(this, new Observer<Stop>() {
                         @Override
                         public void onChanged(@Nullable Stop stop) {
-                            Timber.d("stop clicked: %s", stop.toString());
                             if (stop == null) {
                                 mBottomSheetBehavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                             } else {
@@ -110,11 +116,11 @@ public class LiveMapActivity extends AppCompatActivity {
                     });
 
         }
-        this.mViewModel
-                .getDetailsStatus()
-                .observe(this, new Observer<Integer>() {
+        this.mDetailPaneStatusDisposable = this.mViewModel
+                .getDetailsStatusFlowable()
+                .subscribe(new Consumer<Integer>() {
                     @Override
-                    public void onChanged(@Nullable Integer integer) {
+                    public void accept(Integer integer) {
                         switch (integer) {
                             case ActivityLiveMapViewModel.DETAILS_STATUS_SHOW_STOP:
                                 getSupportFragmentManager().beginTransaction()
@@ -159,7 +165,22 @@ public class LiveMapActivity extends AppCompatActivity {
     @Override
     public void onPause() {
         this.mViewModel.stopVehicleLocationUpdater();
+        if (this.mDetailPaneStatusDisposable != null)
+            this.mDetailPaneStatusDisposable.dispose();
         super.onPause();
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(KEY_DETAILS_STATUS, this.mViewModel.getDetailsStatus());
+    }
+
+    @Override
+    public void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+        if (inState.containsKey(KEY_DETAILS_STATUS))
+            this.mViewModel.setDetailsStatus(inState.getInt(KEY_DETAILS_STATUS));
     }
 
     /**

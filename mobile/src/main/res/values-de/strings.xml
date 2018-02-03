@@ -80,4 +80,6 @@
     <string name="stops">Stops</string>
     <string name="x_stop_points_synchronized">%d Stoppoints synchronized</string>
     <string name="x_stops_synchronized">%d Stops synchronized</string>
+    <string name="departures">Departures</string>
+    <string name="map">Map</string>
 </resources>
