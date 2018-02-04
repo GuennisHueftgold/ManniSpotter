@@ -1,9 +1,12 @@
 package com.semeshky.kvgspotter.activities;
 
 import android.content.Context;
+import android.content.Intent;
 
+import com.github.guennishueftgold.trapezeapi.TripPassageStop;
 import com.semeshky.kvgspotter.BuildConfig;
 import com.semeshky.kvgspotter.R;
+import com.semeshky.kvgspotter.database.Stop;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -76,5 +79,28 @@ public class StationDetailActivityTest {
         this.mStationDetailActivity.showFavoriteStatusSnackar(false);
         assertEquals(1, ShadowSnackbar.shownSnackbarCount());
         assertEquals(mContext.getString(R.string.stop_removed_from_favorites), ShadowSnackbar.getTextOfLatestSnackbar());
+    }
+
+    @Test
+    public void createIntent_should_create_correct_intent() {
+        final String testName = "test stop name";
+        final String testShortName = "test_short_stop_name";
+        final TripPassageStop tripPassageStop = new TripPassageStop.Builder()
+                .setName(testName)
+                .setShortName(testShortName)
+                .build();
+        final Intent intent1 = StationDetailActivity.createIntent(this.mContext, tripPassageStop);
+        final Stop stop = new Stop();
+        stop.setShortName(testShortName);
+        stop.setName(testName);
+        final Intent intent2 = StationDetailActivity.createIntent(this.mContext, stop);
+        assertNull(intent1.getAction());
+        assertNull(intent2.getAction());
+        assertEquals(testShortName, intent1.getStringExtra(StationDetailActivity.EXTRA_STATION_SHORT_NAME));
+        assertEquals(testName, intent1.getStringExtra(StationDetailActivity.EXTRA_STATION_NAME));
+        assertEquals(testShortName, intent2.getStringExtra(StationDetailActivity.EXTRA_STATION_SHORT_NAME));
+        assertEquals(testName, intent2.getStringExtra(StationDetailActivity.EXTRA_STATION_NAME));
+        assertEquals(StationDetailActivity.class.getName(), intent1.getComponent().getClassName());
+        assertEquals(StationDetailActivity.class.getName(), intent2.getComponent().getClassName());
     }
 }
