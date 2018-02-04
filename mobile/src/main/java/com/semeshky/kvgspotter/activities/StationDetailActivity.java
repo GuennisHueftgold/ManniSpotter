@@ -36,6 +36,17 @@ public final class StationDetailActivity extends AppCompatActivity {
     public static final String SCENE_TRANSITION_TITLE = "transitionTitle";
     protected ActivityDetailStationBinding mBinding;
     protected StationDetailActivityViewModel mViewModel;
+    protected final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (view.getId() == android.support.design.R.id.snackbar_action) {
+                StationDetailActivity
+                        .this
+                        .mViewModel
+                        .refresh();
+            }
+        }
+    };
     protected MenuItem mFavoriteMenuItem;
     protected Disposable mErrorDisposable;
 
@@ -102,7 +113,6 @@ public final class StationDetailActivity extends AppCompatActivity {
                             }
                         });
     }
-
 
     @Override
     public void onResume() {
@@ -209,15 +219,7 @@ public final class StationDetailActivity extends AppCompatActivity {
         final Snackbar snackbar = Snackbar.make(this.mBinding.coordinatorLayout,
                 R.string.error_loading_departures,
                 Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.retry, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                StationDetailActivity
-                        .this
-                        .mViewModel
-                        .refresh();
-            }
-        });
+        snackbar.setAction(R.string.retry, this.mOnClickListener);
         snackbar.show();
     }
 }

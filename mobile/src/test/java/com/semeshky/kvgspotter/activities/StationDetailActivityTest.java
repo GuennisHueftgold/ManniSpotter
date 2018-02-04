@@ -82,6 +82,16 @@ public class StationDetailActivityTest {
     }
 
     @Test
+    public void showNetworkErrorSnackbar_correctly_creates_snackbar() {
+        this.mStationDetailActivity.showNetworkErrorSnackbar();
+        assertEquals(1, ShadowSnackbar.shownSnackbarCount());
+        ShadowSnackbar shadowSnackbar = ShadowSnackbar.shadowOf(ShadowSnackbar.getLatestSnackbar());
+        assertEquals(mContext.getString(R.string.error_loading_departures), ShadowSnackbar.getTextOfLatestSnackbar());
+        assertEquals(R.string.retry, shadowSnackbar.actionResId);
+        assertEquals(this.mStationDetailActivity.mOnClickListener, shadowSnackbar.actionClickListener);
+    }
+
+    @Test
     public void createIntent_should_create_correct_intent() {
         final String testName = "test stop name";
         final String testShortName = "test_short_stop_name";
