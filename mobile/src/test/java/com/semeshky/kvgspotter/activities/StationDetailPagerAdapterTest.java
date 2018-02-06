@@ -20,6 +20,7 @@ import org.robolectric.annotation.Config;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
@@ -51,11 +52,13 @@ public class StationDetailPagerAdapterTest {
     public void getPageTitle_should_return_correct_name() {
         assertEquals(this.mContext.getString(R.string.departures), this.mAdapter.getPageTitle(0));
         assertEquals(this.mContext.getString(R.string.map), this.mAdapter.getPageTitle(1));
+        assertNull(this.mAdapter.getPageTitle(2));
     }
 
     @Test
     public void getItem_should_return_correct_fragment() {
         assertThat(this.mAdapter.getItem(0), instanceOf(StationDeparturesFragment.class));
         assertThat(this.mAdapter.getItem(1), instanceOf(StationDetailsFragment.class));
+        assertNull(this.mAdapter.getItem(2));
     }
 }
