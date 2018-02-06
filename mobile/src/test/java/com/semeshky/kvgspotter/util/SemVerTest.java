@@ -34,7 +34,11 @@ public class SemVerTest {
                 new SemVer(9, 2, 0, "appendix")
         };
         for (int i = 0; i < input.length; i++) {
-            assertEquals("expected parse: " + input[i], outputs[i], SemVer.parse(input[i]));
+            final SemVer testSemVer = SemVer.parse(input[i]);
+            assertEquals(testSemVer.getMajor(), outputs[i].getMajor());
+            assertEquals(testSemVer.getMinor(), outputs[i].getMinor());
+            assertEquals(testSemVer.getPatch(), outputs[i].getPatch());
+            assertEquals(testSemVer.getAppendix(), outputs[i].getAppendix());
         }
     }
 
