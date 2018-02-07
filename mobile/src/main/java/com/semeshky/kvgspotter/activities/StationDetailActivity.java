@@ -157,7 +157,7 @@ public final class StationDetailActivity extends AppCompatActivity {
         return true;
     }
 
-    private AnimatedVectorDrawableCompat getAnimatedVectorDrawable(@DrawableRes int id) {
+    protected AnimatedVectorDrawableCompat getAnimatedVectorDrawable(@DrawableRes int id) {
         return AnimatedVectorDrawableCompat.create(this, id);
     }
 
@@ -167,15 +167,9 @@ public final class StationDetailActivity extends AppCompatActivity {
          */
         if (this.mFavoriteMenuItem == null)
             return;
-        if (isFavorited) {
-            AnimatedVectorDrawableCompat drawableCompat = getAnimatedVectorDrawable(R.drawable.ic_favorite_animated_24dp);
-            this.mFavoriteMenuItem.setIcon(drawableCompat);
-            drawableCompat.start();
-        } else {
-            AnimatedVectorDrawableCompat drawableCompat = getAnimatedVectorDrawable(R.drawable.ic_unfavorite_animated_24dp);
-            this.mFavoriteMenuItem.setIcon(drawableCompat);
-            drawableCompat.start();
-        }
+        AnimatedVectorDrawableCompat drawableCompat = getAnimatedVectorDrawable(isFavorited ? R.drawable.ic_favorite_animated_24dp : R.drawable.ic_unfavorite_animated_24dp);
+        this.mFavoriteMenuItem.setIcon(drawableCompat);
+        drawableCompat.start();
     }
 
     private void switchFavorite() {

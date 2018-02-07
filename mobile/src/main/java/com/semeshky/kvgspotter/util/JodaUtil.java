@@ -14,6 +14,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 
 public final class JodaUtil {
+    public final static int DELTA_MINUTE_BORDER = 20;
     private final static DateTimeFormatter SHORT_DATE_TIME_FORMATTER = DateTimeFormat.shortDateTime();
 
     public static String convertLocalTime(@Nullable LocalTime localTime) {
@@ -27,9 +28,14 @@ public final class JodaUtil {
         if (localTime == null) {
             return "--:--";
         }
-        final int delta = Minutes.minutesBetween(LocalTime.now(), localTime).getMinutes();
-        if (delta < 20) {
-            return context.getResources().getQuantityString(R.plurals.minutes, delta);
+        final LocalTime currentTime = LocalTime.now();
+        final LocalTime futureBorder = currentTime.plusMinutes(DELTA_MINUTE_BORDER);
+
+        int minuteDelta= Minutes.minutesBetween(currentTime,localTime).getMinutes();
+        if( minuteDelta< 0)
+            minuteDelta+=24*60;
+        if (minuteDelta<DELTA_MINUTE_BORDER) {
+            return context.getResources().getQuantityString(R.plurals.minutes, minuteDelta);
         } else {
             return localTime.toString(DateTimeFormat.shortDateTime());
         }
