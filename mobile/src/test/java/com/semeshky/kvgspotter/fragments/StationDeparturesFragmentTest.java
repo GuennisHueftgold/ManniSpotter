@@ -118,6 +118,30 @@ public class StationDeparturesFragmentTest {
         fragment.mBinding.executePendingBindings();
         assertEquals("should be not visible", View.GONE, progressBar.getVisibility());
     }
+
+    @Test
+    public void binding_in_layout_status_text_should_show_correctly() throws Exception {
+        StationDeparturesFragment fragment = new StationDeparturesFragment();
+        startVisibleFragment(fragment, StationDeparturesTestActivity.class, 1);
+        ProgressBar progressBar = fragment.getView().findViewById(R.id.progressBar);
+        assertNotNull(progressBar);
+        fragment.mViewModel.isRefreshing.set(true);
+        fragment.mBinding.setDepartureCount(0);
+        fragment.mBinding.executePendingBindings();
+        assertEquals("should be visible", View.VISIBLE, progressBar.getVisibility());
+        fragment.mViewModel.isRefreshing.set(true);
+        fragment.mBinding.setDepartureCount(10);
+        fragment.mBinding.executePendingBindings();
+        assertEquals("should be not visible", View.GONE, progressBar.getVisibility());
+        fragment.mViewModel.isRefreshing.set(false);
+        fragment.mBinding.setDepartureCount(0);
+        fragment.mBinding.executePendingBindings();
+        assertEquals("should be not visible", View.GONE, progressBar.getVisibility());
+        fragment.mViewModel.isRefreshing.set(false);
+        fragment.mBinding.setDepartureCount(10);
+        fragment.mBinding.executePendingBindings();
+        assertEquals("should be not visible", View.GONE, progressBar.getVisibility());
+    }
 }
 
 
