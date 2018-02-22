@@ -163,7 +163,7 @@ public final class StationDetailActivityViewModel extends ViewModel {
     }
 
     public void startSyncService() {
-        if (this.mStationSubscription != null || !this.mStationSubscription.isDisposed())
+        if (this.mStationSubscription != null && !this.mStationSubscription.isDisposed())
             return;
         this.mStationSubscription = new DisposableSubscriber<Station>() {
             @Override
