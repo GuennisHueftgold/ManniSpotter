@@ -1,19 +1,17 @@
 package com.semeshky.kvgspotter.viewholder;
 
-import android.databinding.DataBindingUtil;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import com.semeshky.kvgspotter.R;
-import com.semeshky.kvgspotter.databinding.VhNoFavoriteBinding;
+
+import static com.semeshky.kvgspotter.adapter.HomeAdapter.TYPE_FAVORITE_INFO;
 
 
-public class NoFavoriteViewHolder extends DataboundViewHolder<VhNoFavoriteBinding> {
-    public NoFavoriteViewHolder(ViewGroup parent) {
-        super((VhNoFavoriteBinding) DataBindingUtil
-                .inflate(LayoutInflater.from(parent.getContext()),
-                        R.layout.vh_no_favorite,
-                        parent,
-                        false));
+public class NoFavoriteViewHolder extends HomeAdapterViewHolder {
+    public NoFavoriteViewHolder(@NonNull LayoutInflater from, @NonNull ViewGroup parent) {
+        super(from, parent,
+                R.layout.vh_no_favorite, TYPE_FAVORITE_INFO);
     }
 }

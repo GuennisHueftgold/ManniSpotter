@@ -5,6 +5,10 @@ import android.support.v7.util.DiffUtil;
 
 import java.util.List;
 
+import timber.log.Timber;
+
+import static com.semeshky.kvgspotter.adapter.HomeAdapter.TYPE_STOP;
+
 
 final class HomeAdapterDiffUtilCallback extends DiffUtil.Callback {
 
@@ -39,8 +43,20 @@ final class HomeAdapterDiffUtilCallback extends DiffUtil.Callback {
         return oldItem.equals(newItem);
     }
 
+
     @Nullable
     public Object getChangePayload(int oldItemPosition, int newItemPosition) {
+        if (this.mNewList.get(newItemPosition).type == TYPE_STOP &&
+                this.mOldList.get(oldItemPosition).type == TYPE_STOP) {
+            HomeAdapter.DistanceStop oldItem = (HomeAdapter.DistanceStop) this.mOldList.get(oldItemPosition).tag;
+            HomeAdapter.DistanceStop newItem = (HomeAdapter.DistanceStop) this.mNewList.get(newItemPosition).tag;
+            if (oldItemPosition == 1 && newItemPosition == 1) {
+                Timber.d("ZZZ %s || %s", oldItem.toString(), newItem.toString());
+            }
+            if (oldItem.distance >= 0f && newItem.distance >= 0f && oldItem.distance != newItem.distance) {
+                return new DistanceDelta(oldItem.distance, newItem.distance);
+            }
+        }
         return null;
     }
 }
