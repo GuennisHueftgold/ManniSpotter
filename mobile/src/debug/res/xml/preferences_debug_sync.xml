@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/preferences">
+
+    <PreferenceCategory
+        android:summary="@string/debug_information_summary"
+        android:title="@string/debug_information">
+        <Preference
+            android:fragment="com.semeshky.kvgspotter.fragments.PreferencesDebugFragment"
+            android:summary="@string/debug_information_summary"
+            android:title="@string/debug_information">
+        </Preference>
+
+    </PreferenceCategory>
+</PreferenceScreen>

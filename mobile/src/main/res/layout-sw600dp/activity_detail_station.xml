@@ -46,6 +46,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/appBarLayout"/>
 
+        <View
+            android:id="@+id/divider"
+            android:layout_width="1dp"
+            android:layout_height="0dp"
+            android:background="@color/text_inactive_black"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/stationDeparturesFragment"
+            app:layout_constraintStart_toEndOf="@id/stationDetailsFragment"
+            app:layout_constraintTop_toBottomOf="@id/appBarLayout"/>
         <fragment
             android:id="@+id/stationDeparturesFragment"
             android:name="com.semeshky.kvgspotter.fragments.StationDeparturesFragment"
@@ -53,7 +62,7 @@
             android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/stationDetailsFragment"
+            app:layout_constraintStart_toEndOf="@id/divider"
             app:layout_constraintTop_toBottomOf="@id/appBarLayout"/>
     </android.support.constraint.ConstraintLayout>
 </layout>

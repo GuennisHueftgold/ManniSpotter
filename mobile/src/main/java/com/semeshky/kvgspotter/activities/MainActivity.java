@@ -8,6 +8,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.databinding.DataBindingUtil;
+import android.location.Location;
+import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.PersistableBundle;
@@ -29,6 +31,9 @@ import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.adapter.HomeAdapter;
 import com.semeshky.kvgspotter.api.KvgApiClient;
 import com.semeshky.kvgspotter.api.Release;
+import com.semeshky.kvgspotter.database.AppDatabase;
+import com.semeshky.kvgspotter.database.FavoriteStationWithName;
+import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.databinding.ActivityMainBinding;
 import com.semeshky.kvgspotter.fragments.RequestLocationPermissionDialogFragment;
 import com.semeshky.kvgspotter.location.LocationHelper;
@@ -36,11 +41,14 @@ import com.semeshky.kvgspotter.util.SemVer;
 import com.semeshky.kvgspotter.viewmodel.MainActivityViewModel;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Consumer;
+import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 import timber.log.Timber;
 
@@ -94,15 +102,16 @@ public class MainActivity extends AppCompatActivity {
     protected Disposable mNearbyDisposable;
     protected long mLastSuccessfulUpdateCheckTimestamp = 0;
     protected Disposable mUpdateCheckDisposable;
+    private Disposable mUpdateDisposable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.mBinding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        this.mViewModel = ViewModelProviders.of(this)
+        this.mViewModel = ViewModelProviders.of(this, new MainActivityViewModel.Factory(AppDatabase.getInstance()))
                 .get(MainActivityViewModel.class);
         this.setSupportActionBar((Toolbar) this.mBinding.toolbar.getRoot());
-        this.mHomeAdapter = new HomeAdapter(this.mFavoriteSelectedListener);
+        this.mHomeAdapter = new HomeAdapter(this, this.mFavoriteSelectedListener);
         this.mBinding.recyclerView.setLayoutManager(new LinearLayoutManager(this));
         this.mBinding.recyclerView.setAdapter(this.mHomeAdapter);
         this.mBinding.executePendingBindings();
@@ -239,25 +248,61 @@ public class MainActivity extends AppCompatActivity {
         Flowable<List<HomeAdapter.DistanceStop>> favoriteFlowable;
         if (LocationHelper.hasLocationPermission(this)) {
             this.mHomeAdapter.setHasLocationPermission(true);
-            this.mNearbyDisposable = this.mViewModel.createNearbyFlowable(this.mLocationHelper.getLocationFlowable())
+            Flowable<Location> t = Flowable.interval(0, 1, TimeUnit.SECONDS)
+                    .map(new Function<Long, Location>() {
+                        @Override
+                        public Location apply(Long aLong) throws Exception {
+                            Location location = new Location(LocationManager.GPS_PROVIDER);
+                            location.setLongitude(10.1311577 + (Math.random() * 0.001));
+                            location.setLatitude(54.3302802 + (Math.random() * 0.001));
+                            return location;
+                        }
+                    });
+            final Flowable<List<HomeAdapter.DistanceStop>> favorites = Flowable.combineLatest(t,
+                    AppDatabase.getInstance().favoriteSationDao().getAllWithNameFlow(),
+                    new BiFunction<Location, List<FavoriteStationWithName>, List<HomeAdapter.DistanceStop>>() {
+                        @Override
+                        public List<HomeAdapter.DistanceStop> apply(Location location, List<FavoriteStationWithName> favoriteStationWithNames) throws Exception {
+                            return MainActivityViewModel.transformFavorites(favoriteStationWithNames, location);
+                        }
+                    });
+            final Flowable<List<HomeAdapter.DistanceStop>> nearby = Flowable.combineLatest(t,
+                    AppDatabase.getInstance().stopDao().getAllFlow(),
+                    new BiFunction<Location, List<Stop>, List<HomeAdapter.DistanceStop>>() {
+                        @Override
+                        public List<HomeAdapter.DistanceStop> apply(Location location, List<Stop> favoriteStationWithNames) throws Exception {
+                            return MainActivityViewModel.transform(favoriteStationWithNames, location);
+                        }
+                    }).map(MainActivityViewModel.DISTANCE_STOP_SORT_SHORT_FUNC);
+            this.mUpdateDisposable = Flowable.combineLatest(
+                    favorites,
+                    nearby,
+                    new BiFunction<List<HomeAdapter.DistanceStop>, List<HomeAdapter.DistanceStop>, List<HomeAdapter.DistanceStop>[]>() {
+                        @Override
+                        public List<HomeAdapter.DistanceStop>[] apply(List<HomeAdapter.DistanceStop> distanceStops, List<HomeAdapter.DistanceStop> distanceStops2) throws Exception {
+                            return new List[]{distanceStops, distanceStops2};
+                        }
+                    })
+                    .subscribeOn(Schedulers.computation())
+                    .throttleFirst(1, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<List<HomeAdapter.DistanceStop>[]>() {
+                        @Override
+                        public void accept(List<HomeAdapter.DistanceStop>[] lists) throws Exception {
+                            mHomeAdapter.setFavorites(lists[0], false);
+                            mHomeAdapter.setNearby(lists[1], true);
+                        }
+                    });
+        } else {
+            this.mHomeAdapter.setHasLocationPermission(false);
+            this.mUpdateDisposable = this.mViewModel.getFavoriteFlowable(null)
                     .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
                         @Override
                         public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
-                            mHomeAdapter.setNearby(distanceStops);
+                            mHomeAdapter.setFavorites(distanceStops);
                         }
                     }, SILENT_ERROR_CONSUMER);
-            favoriteFlowable = this.mViewModel.getFavoriteFlowable(this.mLocationHelper.getLocationFlowable());
-        } else {
-            this.mHomeAdapter.setHasLocationPermission(false);
-            favoriteFlowable = this.mViewModel.getFavoriteFlowable(null);
         }
-        this.mFavoriteDisposable = favoriteFlowable
-                .subscribe(new Consumer<List<HomeAdapter.DistanceStop>>() {
-                    @Override
-                    public void accept(List<HomeAdapter.DistanceStop> distanceStops) throws Exception {
-                        mHomeAdapter.setFavorites(distanceStops);
-                    }
-                }, SILENT_ERROR_CONSUMER);
         this.checkForUpdates();
     }
 
@@ -270,6 +315,9 @@ public class MainActivity extends AppCompatActivity {
             this.mNearbyDisposable.dispose();
         if (this.mUpdateCheckDisposable != null && !this.mUpdateCheckDisposable.isDisposed())
             this.mUpdateCheckDisposable.dispose();
+        if (this.mUpdateDisposable != null && !this.mUpdateDisposable.isDisposed()) {
+            this.mUpdateDisposable.dispose();
+        }
     }
 
     protected void showRequestPermissionDialog() {

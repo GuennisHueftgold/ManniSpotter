@@ -108,7 +108,7 @@ public class ShadowSnackbar {
         return make(view, view.getResources().getText(resId), duration);
     }
 
-    static ShadowSnackbar shadowOf(Snackbar bar) {
+    public static ShadowSnackbar shadowOf(Snackbar bar) {
         return (ShadowSnackbar) Shadow.extract(bar);
     }
 

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+    >
+
+    <data>
+
+        <variable
+            name="actionDescription"
+            type="int"/>
+
+        <variable
+            name="actionIcon"
+            type="int"/>
+
+        <variable
+            name="titleText"
+            type="String"/>
+
+        <variable
+            name="title"
+            type="int"/>
+
+    </data>
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/list_single_line_tile_height">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:fontFamily="sans-serif-medium"
+            android:gravity="start|center_vertical"
+            android:lines="1"
+            android:paddingEnd="@dimen/list_single_line_horizontal_padding"
+            android:paddingStart="@dimen/list_single_line_horizontal_padding"
+            android:text="@{titleText==null?context.getResources().getString(title):titleText, default=PLACEHOLDER}"
+            android:textSize="@dimen/list_single_line_text_size"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/btnAction"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="@tools:sample/full_names"/>
+
+        <ImageButton
+            android:id="@+id/btnAction"
+            style="@style/Widget.AppCompat.Button.Borderless"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:contentDescription="@{context.getResources().getString(actionDescription)}"
+            android:paddingEnd="@dimen/list_secondary_action_icon_padding"
+            android:paddingStart="@dimen/list_secondary_action_icon_padding"
+            android:src="@{actionIcon}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+    </android.support.constraint.ConstraintLayout>
+</layout>

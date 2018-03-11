@@ -24,6 +24,7 @@ import io.reactivex.SingleEmitter;
 import io.reactivex.SingleOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Function;
+import io.reactivex.processors.BehaviorProcessor;
 import io.reactivex.schedulers.Schedulers;
 import io.reactivex.subscribers.DisposableSubscriber;
 import retrofit2.Call;
@@ -37,7 +38,7 @@ public class ActivityLiveMapViewModel extends ViewModel {
     public final static int DETAILS_STATUS_CLOSED = 1,
             DETAILS_STATUS_SHOW_STOP = 2,
             DETAILS_STATUS_SHOW_TRIP = 3;
-    private final MutableLiveData<Integer> mDetailsStatusLiveData = new MutableLiveData<>();
+    protected final BehaviorProcessor<Integer> mDetailsStatusProcessor = BehaviorProcessor.createDefault(DETAILS_STATUS_CLOSED);
     protected LiveData<List<Stop>> mStopsLiveData;
     private MutableLiveData<VehicleLocations> mVehicleLocationsMutableLiveData = new MutableLiveData<>();
     private MutableLiveData<Stop> mStopSelectedLiveData = new MutableLiveData<>();
@@ -45,19 +46,14 @@ public class ActivityLiveMapViewModel extends ViewModel {
     private DisposableSubscriber<VehicleLocations> mVehicleLocationUpdateSubscriber;
 
     public ActivityLiveMapViewModel() {
-        this.mDetailsStatusLiveData.setValue(DETAILS_STATUS_CLOSED);
         this.mStopsLiveData = AppDatabase
                 .getInstance()
                 .stopDao()
                 .getAllSync();
     }
 
-    public LiveData<Integer> getDetailsStatus() {
-        return this.mDetailsStatusLiveData;
-    }
-
-    public void setDetailsStatus(@DETAILS_STATUS int detailsStatus) {
-        this.mDetailsStatusLiveData.postValue(detailsStatus);
+    public Flowable<Integer> getDetailsStatusFlowable() {
+        return this.mDetailsStatusProcessor;
     }
 
     public LiveData<VehicleLocations> getVehicleLocations() {
@@ -70,7 +66,7 @@ public class ActivityLiveMapViewModel extends ViewModel {
 
     public void setSelectedStop(Stop stop) {
         this.mStopSelectedLiveData.postValue(stop);
-        this.mDetailsStatusLiveData.postValue(DETAILS_STATUS_SHOW_STOP);
+        this.setDetailsStatus(DETAILS_STATUS_SHOW_STOP);
     }
 
     public LiveData<List<Stop>> getStops() {
@@ -83,7 +79,7 @@ public class ActivityLiveMapViewModel extends ViewModel {
 
     public void setSelectedVehicle(VehicleLocation vehicleLocation) {
         this.mVehicleSelectedLiveData.postValue(vehicleLocation);
-        this.mDetailsStatusLiveData.postValue(DETAILS_STATUS_SHOW_TRIP);
+        this.setDetailsStatus(DETAILS_STATUS_SHOW_TRIP);
     }
 
     private VehicleLocations loadVehicleLocations() throws IOException {
@@ -207,6 +203,15 @@ public class ActivityLiveMapViewModel extends ViewModel {
         })
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    @DETAILS_STATUS
+    public int getDetailsStatus() {
+        return this.mDetailsStatusProcessor.getValue();
+    }
+
+    public void setDetailsStatus(@DETAILS_STATUS int detailsStatus) {
+        this.mDetailsStatusProcessor.onNext(detailsStatus);
     }
 
     @Retention(SOURCE)

@@ -1,84 +1,54 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto">
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                                             xmlns:app="http://schemas.android.com/apk/res-auto"
+                                             xmlns:tools="http://schemas.android.com/tools"
+                                             android:layout_width="match_parent"
+                                             android:layout_height="@dimen/list_double_line_tile_height"
+                                             android:background="?android:attr/selectableItemBackground"
+                                             android:onClick="@{(view) -> clickListener.onFavoriteSelected(shortName,title)}">
 
-    <data>
+    <ImageView
+        android:id="@id/ivIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/list_double_line_icon_left_padding"
+        android:maxHeight="@dimen/default_icon_size"
+        android:maxWidth="@dimen/default_icon_size"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:src="@drawable/ic_my_location_black_24dp"/>
 
-        <variable
-            name="stopIcon"
-            type="int"/>
+    <TextView
+        android:id="@id/txtTitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="@dimen/list_double_line_text_right_padding"
+        android:layout_marginStart="@dimen/list_double_line_text_left_padding"
+        android:gravity="start|center_vertical"
+        android:lines="1"
+        android:textColor="@color/text_active_black"
+        android:textSize="@dimen/list_double_line_text_size_primary"
+        app:layout_constraintBottom_toTopOf="@id/txtSubtitle"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        tools:text="Station name"/>
 
-        <variable
-            name="shortName"
-            type="String"/>
+    <TextView
+        android:id="@id/txtSubtitle"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:gravity="start|center_vertical"
+        android:lines="1"
+        android:textColor="@color/text_secondary_black"
+        android:textSize="@dimen/list_double_line_text_size_secondary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/txtTitle"
+        app:layout_constraintStart_toStartOf="@id/txtTitle"
+        app:layout_constraintTop_toBottomOf="@id/txtTitle"
+        tools:text="100.4m"/>
 
-        <variable
-            name="title"
-            type="String"/>
-
-        <variable
-            name="distance"
-            type="float"/>
-
-        <import type="android.view.View"/>
-
-        <variable
-            name="clickListener"
-            type="com.semeshky.kvgspotter.adapter.HomeAdapter.HomeAdapterEventListener"/>
-
-        <import type="android.support.v4.content.ContextCompat"/>
-    </data>
-
-    <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/list_double_line_tile_height"
-        android:background="?android:attr/selectableItemBackground"
-        android:onClick="@{(view) -> clickListener.onFavoriteSelected(shortName,title)}">
-
-        <ImageView
-            android:id="@id/ivIcon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/list_double_line_icon_left_padding"
-            android:maxHeight="@dimen/default_icon_size"
-            android:maxWidth="@dimen/default_icon_size"
-            android:scaleType="fitXY"
-            android:src="@{ContextCompat.getDrawable(context,stopIcon), default=@drawable/ic_update_black_24dp}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-        <TextView
-            android:id="@id/txtTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/list_double_line_text_right_padding"
-            android:layout_marginStart="@dimen/list_double_line_text_left_padding"
-            android:gravity="start|center_vertical"
-            android:lines="1"
-            android:text="@{title, default=PLACEHOLDER}"
-            android:textColor="@color/text_active_black"
-            android:textSize="@dimen/list_double_line_text_size_primary"
-            app:layout_constraintBottom_toTopOf="@id/txtSubtitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"/>
-
-        <TextView
-            android:id="@id/txtSubtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="start|center_vertical"
-            android:lines="1"
-            android:text="@{distance &lt; 1000 ? @string/x_meter_short(distance) : @string/x_kilometer_short(distance/1000.0f), default=PLACEHOLDER}"
-            android:textColor="@color/text_secondary_black"
-            android:textSize="@dimen/list_double_line_text_size_secondary"
-            android:visibility="@{distance>=0?View.VISIBLE:View.GONE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/txtTitle"
-            app:layout_constraintStart_toStartOf="@id/txtTitle"
-            app:layout_constraintTop_toBottomOf="@id/txtTitle"/>
-
-    </android.support.constraint.ConstraintLayout>
-
-</layout>
+</android.support.constraint.ConstraintLayout>

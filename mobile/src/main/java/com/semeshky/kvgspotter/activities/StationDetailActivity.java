@@ -5,22 +5,16 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.graphics.drawable.AnimatedVectorDrawableCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.TextView;
 
 import com.github.guennishueftgold.trapezeapi.FulltextSearchResult;
 import com.github.guennishueftgold.trapezeapi.TripPassageStop;
@@ -28,11 +22,7 @@ import com.semeshky.kvgspotter.BR;
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.database.Stop;
 import com.semeshky.kvgspotter.databinding.ActivityDetailStationBinding;
-import com.semeshky.kvgspotter.fragments.StationDeparturesFragment;
-import com.semeshky.kvgspotter.fragments.StationDetailsFragment;
 import com.semeshky.kvgspotter.viewmodel.StationDetailActivityViewModel;
-
-import java.lang.reflect.Field;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
@@ -44,10 +34,21 @@ public final class StationDetailActivity extends AppCompatActivity {
     public final static String EXTRA_STATION_SHORT_NAME = StationDetailActivity.class.getName() + ".stop_short_name";
     public static final String EXTRA_STATION_NAME = StationDetailActivity.class.getName() + ".stop_name";
     public static final String SCENE_TRANSITION_TITLE = "transitionTitle";
-    private ActivityDetailStationBinding mBinding;
-    private StationDetailActivityViewModel mViewModel;
-    private MenuItem mFavoriteMenuItem;
-    private Disposable mErrorDisposable;
+    protected ActivityDetailStationBinding mBinding;
+    protected StationDetailActivityViewModel mViewModel;
+    protected final View.OnClickListener mOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            if (view.getId() == android.support.design.R.id.snackbar_action) {
+                StationDetailActivity
+                        .this
+                        .mViewModel
+                        .refresh();
+            }
+        }
+    };
+    protected MenuItem mFavoriteMenuItem;
+    protected Disposable mErrorDisposable;
 
     public final static Intent createIntent(@NonNull Context context, @NonNull FulltextSearchResult fulltextSearchResult) {
         return StationDetailActivity.createIntent(context,
@@ -96,45 +97,22 @@ public final class StationDetailActivity extends AppCompatActivity {
         this.setSupportActionBar(this.mBinding.toolbar);
         this.mBinding.setVariable(BR.viewModel, this.mViewModel);
         if (this.mBinding.viewPager != null) {
-            this.mBinding.viewPager.setAdapter(new StationDetailActivity.PagerAdapter(getSupportFragmentManager()));
+            final StationDetailPagerAdapter detailPagerAdapter = new StationDetailPagerAdapter(getSupportFragmentManager(), this);
+            this.mBinding.viewPager.setAdapter(detailPagerAdapter);
             this.mBinding.tabLayout.setupWithViewPager(this.mBinding.viewPager);
-            this.mViewModel.isStationFavorited()
-                    .observe(this,
-                            new Observer<Boolean>() {
-                                @Override
-                                public void onChanged(@Nullable Boolean favorited) {
-                                    if (favorited == null)
-                                        return;
-                                    StationDetailActivity.this
-                                            .setFavoriteDrawable(favorited);
-                                }
-                            });
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            final TextView toolbarTitle = this.getToolbarTitleTextView(this.mBinding.toolbar);
-            if (toolbarTitle != null)
-                toolbarTitle.setTransitionName(SCENE_TRANSITION_TITLE);
-        }
+        this.mViewModel.isStationFavorited()
+                .observe(this,
+                        new Observer<Boolean>() {
+                            @Override
+                            public void onChanged(@Nullable Boolean favorited) {
+                                if (favorited == null)
+                                    return;
+                                StationDetailActivity.this
+                                        .setFavoriteDrawable(favorited);
+                            }
+                        });
     }
-
-    /**
-     * Gets the toolbar title textview via reflection
-     *
-     * @param toolbar
-     * @return the textview or null
-     */
-    @Nullable
-    private TextView getToolbarTitleTextView(@NonNull Toolbar toolbar) {
-        try {
-            Field f = toolbar.getClass().getDeclaredField("mTitleTextView");
-            f.setAccessible(true);
-            return (TextView) f.get(toolbar);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
 
     @Override
     public void onResume() {
@@ -179,7 +157,7 @@ public final class StationDetailActivity extends AppCompatActivity {
         return true;
     }
 
-    private AnimatedVectorDrawableCompat getAnimatedVectorDrawable(@DrawableRes int id) {
+    protected AnimatedVectorDrawableCompat getAnimatedVectorDrawable(@DrawableRes int id) {
         return AnimatedVectorDrawableCompat.create(this, id);
     }
 
@@ -189,15 +167,9 @@ public final class StationDetailActivity extends AppCompatActivity {
          */
         if (this.mFavoriteMenuItem == null)
             return;
-        if (isFavorited) {
-            AnimatedVectorDrawableCompat drawableCompat = getAnimatedVectorDrawable(R.drawable.ic_favorite_animated_24dp);
-            this.mFavoriteMenuItem.setIcon(drawableCompat);
-            drawableCompat.start();
-        } else {
-            AnimatedVectorDrawableCompat drawableCompat = getAnimatedVectorDrawable(R.drawable.ic_unfavorite_animated_24dp);
-            this.mFavoriteMenuItem.setIcon(drawableCompat);
-            drawableCompat.start();
-        }
+        AnimatedVectorDrawableCompat drawableCompat = getAnimatedVectorDrawable(isFavorited ? R.drawable.ic_favorite_animated_24dp : R.drawable.ic_unfavorite_animated_24dp);
+        this.mFavoriteMenuItem.setIcon(drawableCompat);
+        drawableCompat.start();
     }
 
     private void switchFavorite() {
@@ -205,7 +177,7 @@ public final class StationDetailActivity extends AppCompatActivity {
                 .subscribe(new DisposableSingleObserver<Boolean>() {
                     @Override
                     public void onSuccess(Boolean aBoolean) {
-                        Timber.d("Successfully liked: %s", aBoolean);
+                        showFavoriteStatusSnackar(aBoolean);
                     }
 
                     @Override
@@ -213,6 +185,16 @@ public final class StationDetailActivity extends AppCompatActivity {
                         Timber.e(e);
                     }
                 });
+    }
+
+    /**
+     * @param favorited
+     */
+    protected void showFavoriteStatusSnackar(boolean favorited) {
+        final Snackbar snackbar = Snackbar.make(this.mBinding.coordinatorLayout,
+                favorited ? R.string.stop_favorited : R.string.stop_removed_from_favorites,
+                Snackbar.LENGTH_LONG);
+        snackbar.show();
     }
 
     @Override
@@ -231,50 +213,7 @@ public final class StationDetailActivity extends AppCompatActivity {
         final Snackbar snackbar = Snackbar.make(this.mBinding.coordinatorLayout,
                 R.string.error_loading_departures,
                 Snackbar.LENGTH_LONG);
-        snackbar.setAction(R.string.retry, new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                StationDetailActivity
-                        .this
-                        .mViewModel
-                        .refresh();
-            }
-        });
+        snackbar.setAction(R.string.retry, this.mOnClickListener);
         snackbar.show();
-    }
-    private class PagerAdapter extends FragmentPagerAdapter {
-
-        PagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    return new StationDeparturesFragment();
-                case 1:
-                    return new StationDetailsFragment();
-                default:
-                    return null;
-            }
-        }
-
-        @Override
-        public int getCount() {
-            return 2;
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            switch (position) {
-                case 0:
-                    return "Departures";
-                case 1:
-                    return "Map";
-                default:
-                    return null;
-            }
-        }
     }
 }

@@ -12,4 +12,5 @@
     <color name="success_green">#4CAF50</color>
     <color name="error_red">#F44336</color>
     <color name="btn_text_disabled">#1F000000</color>
+    <color name="splash_background_color">#4a8bc3</color>
 </resources>

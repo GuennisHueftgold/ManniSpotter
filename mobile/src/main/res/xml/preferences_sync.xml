@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:title="@string/preferences">
+    <PreferenceCategory
+        android:title="@string/synchronization">
+        <Preference
+            android:key="key_stop_preference"
+            android:persistent="false"
+            android:summary="@string/app_version"
+            android:title="@string/stops">
+        </Preference>
+        <Preference
+            android:key="key_stop_point_preference"
+            android:persistent="false"
+            android:summary="@string/stop_points"
+            android:title="@string/stop_points">
+        </Preference>
+    </PreferenceCategory>
+</PreferenceScreen>

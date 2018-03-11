@@ -3,20 +3,15 @@ package com.semeshky.kvgspotter.activities;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.constraint.ConstraintSet;
-import android.support.transition.ChangeBounds;
-import android.support.transition.Fade;
-import android.support.transition.Transition;
-import android.support.transition.TransitionManager;
-import android.support.transition.TransitionSet;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.transition.TransitionManager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
+import android.widget.ImageButton;
 
 import com.semeshky.kvgspotter.R;
 import com.semeshky.kvgspotter.settings.ClientSettings;
@@ -26,67 +21,95 @@ import com.semeshky.kvgspotter.viewmodel.SplashActivityViewModel;
  * Activity to be used as splashscreen on app start to display app logo
  */
 public final class SplashActivity extends AppCompatActivity {
-    private static final String KEY_ANIMATION_PLAYED = SplashActivity.class.getSimpleName() + ".animation_played";
-    private SplashActivityViewModel mViewModel;
+    protected static final String KEY_ENTRY_ANIMATION_PLAYED = "entry_animation_played";
+    protected SplashActivityViewModel mViewModel;
+    protected ViewPager mViewPager;
+    protected boolean mEntryAnimationPlayed = false;
+    protected SplashFragmentAdapter mPagerAdapter;
     protected final View.OnClickListener mOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (view.getId() == R.id.btnSynchronize) {
-                if (mViewModel.isSynchronized()) {
-                    ClientSettings
-                            .getInstance(SplashActivity.this)
-                            .setFirstSetup(true);
-                    gotoMainActivity();
-                } else {
+            switch (view.getId()) {
+                case R.id.btnNext:
                     SplashActivity
                             .this
-                            .mViewModel
-                            .synchronize();
-                }
+                            .gotoNextPage();
+                    break;
+                case R.id.btnPrevious:
+                    SplashActivity
+                            .this
+                            .gotoPreviousPage();
+                    break;
             }
         }
     };
+    protected Observer<Integer> mSyncStatusObserver = new Observer<Integer>() {
+        @Override
+        public void onChanged(@Nullable Integer integer) {
+            if (integer == null) {
+                return;
+            }
+            if (integer == SplashActivityViewModel.SYNC_STATUS_SYNCED) {
+                mPagerAdapter.setAllowAdvance(true);
+            } else {
+                mPagerAdapter.setAllowAdvance(false);
+            }
+            updateButtonState();
+        }
+    };
     private ConstraintLayout mConstraintLayout;
-    private boolean state1 = false, state2 = false;
-    private boolean mAnimationPlayed = false;
+    protected final ViewPager.OnPageChangeListener mOnPageChangeListener = new ViewPager.OnPageChangeListener() {
 
-    protected void startInAnimation() {
-        ConstraintSet constraintSet2 = new ConstraintSet();
-        constraintSet2.clone(SplashActivity.this, R.layout.activity_splash_setup_end);
-        //////////
-        Transition transitionScale = new ChangeBounds();
-        transitionScale.addTarget(R.id.appIcon);
-        Transition transitionFade = new Fade();
-        transitionFade.addTarget(R.id.btnSynchronize);
-        transitionFade.addTarget(R.id.progressBar);
-        transitionFade.addTarget(R.id.txtStatus);
-        transitionFade.addTarget(R.id.txtTitle);
-        transitionFade.addTarget(R.id.txtFirstSetupDescription);
-        TransitionSet transitionSet = new TransitionSet();
-        transitionSet.setOrdering(TransitionSet.ORDERING_SEQUENTIAL);
-        transitionSet.addTransition(transitionScale);
-        transitionSet.addTransition(transitionFade);
-        transitionSet.setStartDelay(100);
-        //transitionSet.setDuration(10000);
-        //////////
-        TransitionManager.beginDelayedTransition(mConstraintLayout, transitionSet);
-        constraintSet2.applyTo(mConstraintLayout);
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            if (position == 0) {
+                mConstraintLayout
+                        .setBackgroundColor(Color.argb(Math.round(255 * (1 - positionOffset)), 74, 139, 195));
+            }
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            if (position >= 1) {
+                mConstraintLayout.setBackgroundColor(Color.TRANSPARENT);
+            }
+            updateButtonState(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+
+    protected void updateButtonState() {
+        this.updateButtonState(this.mViewPager.getCurrentItem());
     }
 
-    @Override
-    public void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        state1 = true;
+    protected void updateButtonState(int currentPage) {
+        final ImageButton btnPrevios = findViewById(R.id.btnPrevious);
+        btnPrevios
+                .setEnabled(currentPage != 0);
+        btnPrevios
+                .setVisibility(currentPage == 0 ? View.GONE : View.VISIBLE);
+        final boolean blockAdvance = currentPage == 1 && !mViewModel.isSynchronized();
+        findViewById(R.id.btnNext)
+                .setEnabled(!blockAdvance);
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean focus) {
-        super.onWindowFocusChanged(focus);
-        startInAnimation();
-        if (state1 && state2)
+    protected void gotoNextPage() {
+        if (this.mViewPager.getCurrentItem() == this.mPagerAdapter.getCount() - 1) {
+            gotoMainActivity();
+        } else {
+            this.mViewPager.setCurrentItem(this.mViewPager.getCurrentItem() + 1);
+        }
+    }
+
+    protected void gotoPreviousPage() {
+        if (this.mViewPager.getCurrentItem() == 0) {
             return;
-        state2 = true;
-        startInAnimation();
+        }
+        this.mViewPager.setCurrentItem(this.mViewPager.getCurrentItem() - 1);
     }
 
     @Override
@@ -96,56 +119,45 @@ public final class SplashActivity extends AppCompatActivity {
                 .isFirstSetupDone()) {
             gotoMainActivity();
         } else {
-            if (savedInstanceState != null)
-                this.mAnimationPlayed = savedInstanceState.getBoolean(KEY_ANIMATION_PLAYED, false);
-            else
-                this.mAnimationPlayed = false;
             this.setTheme(R.style.AppTheme);
-            this.setContentView(this.mAnimationPlayed ? R.layout.activity_splash_setup_end : R.layout.activity_splash_setup);
+            this.setContentView(R.layout.activity_splash);
             this.mConstraintLayout = this.findViewById(R.id.constraintLayout);
+            this.mViewPager = this.findViewById(R.id.viewPager);
             this.mViewModel = ViewModelProviders.of(this).get(SplashActivityViewModel.class);
-            this.mViewModel.getSyncStatus()
-                    .observe(this, new Observer<Integer>() {
-                        @Override
-                        public void onChanged(@Nullable Integer status) {
-                            if (status == null)
-                                return;
-                            updateStatus(status);
-                        }
-                    });
-            this.findViewById(R.id.btnSynchronize)
-                    .setOnClickListener(this.mOnClickListener);
+            this.mPagerAdapter = new SplashFragmentAdapter(this.getSupportFragmentManager());
+            this.mViewPager.setAdapter(this.mPagerAdapter);
+            this.mViewPager
+                    .addOnPageChangeListener(this.mOnPageChangeListener);
+            final View btnPrevious = findViewById(R.id.btnPrevious);
+            final View btnNext = findViewById(R.id.btnNext);
+            btnPrevious.setOnClickListener(this.mOnClickListener);
+            btnNext.setOnClickListener(this.mOnClickListener);
+            final boolean animationPlayed = savedInstanceState != null && savedInstanceState.getBoolean(KEY_ENTRY_ANIMATION_PLAYED, false);
+            findViewById(R.id.divider)
+                    .setVisibility(animationPlayed ? View.VISIBLE : View.GONE);
+            btnNext.setVisibility(animationPlayed ? View.VISIBLE : View.GONE);
+            btnPrevious.setVisibility(animationPlayed ? View.VISIBLE : View.GONE);
+            this.mViewModel
+                    .getSyncStatus()
+                    .observe(this, this.mSyncStatusObserver);
         }
     }
 
-    protected void updateStatus(@SplashActivityViewModel.SyncStatus int status) {
-        TransitionManager.beginDelayedTransition((ViewGroup) findViewById(R.id.constraintLayout));
-        findViewById(R.id.progressBar)
-                .setVisibility(status == SplashActivityViewModel.SYNC_STATUS_SYNCHRONIZING ? View.VISIBLE : View.GONE);
-        final Button syncButton = findViewById(R.id.btnSynchronize);
-        if (status == SplashActivityViewModel.SYNC_STATUS_SYNCHRONIZING) {
-            syncButton.setEnabled(false);
-            syncButton.setText(R.string.synchronizing_ellipsis);
-        } else if (status == SplashActivityViewModel.SYNC_STATUS_SYNCED) {
-            syncButton.setEnabled(true);
-            syncButton.setText(R.string.proceed);
-        } else {
-            syncButton.setEnabled(true);
-            syncButton.setText(R.string.synchronize);
-        }
-        final TextView txtStatus = findViewById(R.id.txtStatus);
-        if (status == SplashActivityViewModel.SYNC_STATUS_SYNCED) {
-            txtStatus.setText(R.string.successfully_synchronized);
-            txtStatus.setTextColor(getResources().getColor(R.color.success_green));
-            txtStatus.setVisibility(View.VISIBLE);
-        } else if (status == SplashActivityViewModel.SYNC_STATUS_ERROR) {
-            txtStatus.setVisibility(View.VISIBLE);
-            txtStatus.setTextColor(getResources().getColor(R.color.error_red));
-            txtStatus.setText(R.string.an_error_occured_check_internet);
-        } else {
-            txtStatus.setVisibility(View.GONE);
-        }
+    protected void startEntryAnimation() {
+        this.mConstraintLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                TransitionManager.beginDelayedTransition(mConstraintLayout);
+                findViewById(R.id.divider)
+                        .setVisibility(View.VISIBLE);
+                findViewById(R.id.btnNext)
+                        .setVisibility(View.VISIBLE);
+                findViewById(R.id.btnPrevious)
+                        .setVisibility(View.GONE);
+            }
+        });
     }
+
 
     protected void gotoMainActivity() {
         Intent intent = new Intent(SplashActivity.this, MainActivity.class);
@@ -156,29 +168,22 @@ public final class SplashActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (this.mConstraintLayout != null) {
-            if (!this.mAnimationPlayed) {
-                this.mAnimationPlayed = true;
-                this.mConstraintLayout.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        startInAnimation();
-                    }
-                });
-            }
+        if (!this.mEntryAnimationPlayed) {
+            startEntryAnimation();
         }
+        updateButtonState();
     }
 
     @Override
-    public void onRestoreInstanceState(Bundle state) {
-        super.onRestoreInstanceState(state);
-        this.mAnimationPlayed = state.getBoolean(KEY_ANIMATION_PLAYED, false);
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_ENTRY_ANIMATION_PLAYED, this.mEntryAnimationPlayed);
     }
 
     @Override
-    public void onSaveInstanceState(Bundle state) {
-        super.onSaveInstanceState(state);
-        state.putBoolean(KEY_ANIMATION_PLAYED, this.mAnimationPlayed);
+    public void onRestoreInstanceState(Bundle inState) {
+        super.onRestoreInstanceState(inState);
+        this.mEntryAnimationPlayed = inState.getBoolean(KEY_ENTRY_ANIMATION_PLAYED, false);
     }
 
 }

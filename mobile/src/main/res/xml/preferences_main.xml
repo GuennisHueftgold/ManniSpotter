@@ -2,5 +2,38 @@
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:title="@string/preferences">
-
+    <PreferenceCategory
+        android:title="@string/general">
+        <CheckBoxPreference
+            android:icon="@drawable/ic_my_location_black_24dp"
+            android:key="key_location_permission"
+            android:persistent="false"
+            android:summary="@string/location_permission_summary"
+            android:summaryOff="@string/location_permission_summary_off"
+            android:summaryOn="@string/location_permission_summary_on"
+            android:title="@string/location_permission"/>
+        <Preference
+            android:fragment="com.semeshky.kvgspotter.fragments.PreferencesSyncFragment"
+            android:icon="@drawable/ic_sync_black_24dp"
+            android:summary="@string/synchronization_summary"
+            android:title="@string/synchronization">
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/about">
+        <Preference
+            android:summary="@string/licenses_summary"
+            android:title="@string/licenses">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetClass="com.google.android.gms.oss.licenses.OssLicensesMenuActivity"
+                android:targetPackage="@string/PACKAGE_NAME"/>
+        </Preference>
+        <Preference
+            android:key="key_app_version"
+            android:persistent="false"
+            android:summary="@string/app_version"
+            android:title="@string/app_version">
+        </Preference>
+    </PreferenceCategory>
 </PreferenceScreen>

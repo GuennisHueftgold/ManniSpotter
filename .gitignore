@@ -10,3 +10,4 @@
 /mobile/release_keystore.jks
 /mobile/release_signing.properties
 /mobile/release_signing.tar
+/mobile/src/main/res/raw/third_party_licenses*

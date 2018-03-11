@@ -6,8 +6,18 @@
     android:id="@+id/constraintLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:padding="@dimen/horizontal_content_padding"
     tools:context="com.semeshky.kvgspotter.activities.MainActivity">
+
+    <View
+        android:id="@+id/colorBackground"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/splash_background_color"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <ImageView
         android:id="@+id/appIcon"
@@ -15,7 +25,7 @@
         android:layout_height="wrap_content"
         android:contentDescription="@string/app_name"
         android:src="@drawable/ic_launcher"
-        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -25,6 +35,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="start"
+        android:paddingEnd="@dimen/horizontal_content_padding"
+        android:paddingStart="@dimen/horizontal_content_padding"
         android:text="@string/setup"
         android:textAppearance="@style/TextAppearance.AppCompat.Display1"
         android:visibility="gone"
@@ -36,6 +48,8 @@
         android:id="@+id/txtFirstSetupDescription"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:paddingEnd="@dimen/horizontal_content_padding"
+        android:paddingStart="@dimen/horizontal_content_padding"
         android:text="@string/first_setup_description"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:visibility="gone"
@@ -60,6 +74,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
+        android:paddingEnd="@dimen/horizontal_content_padding"
+        android:paddingStart="@dimen/horizontal_content_padding"
         android:text="@string/an_error_occured_check_internet"
         android:textColor="@color/error_red"
         android:visibility="gone"
@@ -72,6 +88,9 @@
         style="@style/Widget.AppCompat.Button.Borderless"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/horizontal_content_padding"
+        android:layout_marginEnd="@dimen/horizontal_content_padding"
+        android:layout_marginStart="@dimen/horizontal_content_padding"
         android:text="@string/synchronize"
         android:textAlignment="center"
         android:textColor="@color/btn_color_accent"

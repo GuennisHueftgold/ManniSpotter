@@ -9,6 +9,7 @@
         <variable
             name="station"
             type="com.github.guennishueftgold.trapezeapi.Station"/>
+
         <import type="com.semeshky.kvgspotter.util.JodaUtil"/>
     </data>
 
@@ -32,6 +33,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
+
             <TextView
                 android:id="@id/txtTitle"
                 android:layout_width="0dp"
@@ -57,6 +59,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/txtTitle"/>
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerView"
                 android:layout_width="0dp"
@@ -66,6 +69,7 @@
                 app:layout_constraintTop_toBottomOf="@id/txtRoutesTitle">
 
             </android.support.v7.widget.RecyclerView>
+
             <TextView
                 android:id="@+id/txtSubheadAdvanced"
                 android:layout_width="0dp"
@@ -78,6 +82,13 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/recyclerView"/>
+
+            <android.support.constraint.Barrier
+                android:id="@+id/advancedBarrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="txtFirstPassageTimeDesc,txtLastPassageTimeDesc"/>
             <TextView
                 android:id="@+id/txtFirstPassageTimeDesc"
                 android:layout_width="wrap_content"
@@ -98,8 +109,9 @@
                 android:text="@{JodaUtil.timestampToLocalTime(station.firstPassageTime), default=PLACEHOLDER}"
                 app:layout_constraintBottom_toBottomOf="@id/txtFirstPassageTimeDesc"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/txtFirstPassageTimeDesc"
+                app:layout_constraintStart_toEndOf="@id/advancedBarrier"
                 app:layout_constraintTop_toTopOf="@id/txtFirstPassageTimeDesc"/>
+
 
             <TextView
                 android:id="@+id/txtLastPassageTimeDesc"
@@ -121,7 +133,7 @@
                 android:text="@{JodaUtil.timestampToLocalTime(station.lastPassageTime), default=PLACEHOLDER}"
                 app:layout_constraintBottom_toBottomOf="@id/txtLastPassageTimeDesc"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/txtLastPassageTimeDesc"
+                app:layout_constraintStart_toEndOf="@id/advancedBarrier"
                 app:layout_constraintTop_toTopOf="@id/txtLastPassageTimeDesc"/>
         </android.support.constraint.ConstraintLayout>
     </android.support.v4.widget.NestedScrollView>
